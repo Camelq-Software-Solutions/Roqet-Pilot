@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PushNotificationAPI from './PushNotificationAPI';
 import MockPushNotificationService from './MockPushNotificationService';
 import Constants from 'expo-constants';
+import NotificationSettingsService from './NotificationSettingsService';
 
 // Configure notification behavior only if not in Expo Go
 if (!Constants.appOwnership || Constants.appOwnership === 'expo') {
@@ -34,8 +35,11 @@ class PushNotificationService {
   private expoPushToken: string | null = null;
   private notificationListener: Notifications.Subscription | null = null;
   private responseListener: Notifications.Subscription | null = null;
+  private settingsService: NotificationSettingsService;
 
-  private constructor() {}
+  private constructor() {
+    this.settingsService = NotificationSettingsService.getInstance();
+  }
 
   public static getInstance(): PushNotificationService {
     if (!PushNotificationService.instance) {
@@ -49,6 +53,9 @@ class PushNotificationService {
    */
   public async initialize(): Promise<void> {
     try {
+      // Initialize notification settings first
+      await this.settingsService.initialize();
+      
       // Check if we're in Expo Go
       if (!Constants.appOwnership || Constants.appOwnership === 'expo') {
         // Use mock service for Expo Go
@@ -251,6 +258,13 @@ class PushNotificationService {
    */
   public async sendLocalNotification(notificationData: NotificationData): Promise<void> {
     try {
+      // Check notification settings before sending
+      const shouldSend = this.shouldSendNotification(notificationData.type);
+      if (!shouldSend) {
+        console.log(`🔕 Notification blocked by settings: ${notificationData.type}`);
+        return;
+      }
+
       // Check if we're in Expo Go
       if (!Constants.appOwnership || Constants.appOwnership === 'expo') {
         // Use mock service for Expo Go
@@ -261,13 +275,14 @@ class PushNotificationService {
 
       // Real notifications for development build
       const channelId = this.getChannelId(notificationData.type);
+      const settings = this.getNotificationSettings(notificationData.type);
       
       await Notifications.scheduleNotificationAsync({
         content: {
           title: notificationData.title,
           body: notificationData.body,
           data: notificationData.data || {},
-          sound: 'default',
+          sound: settings.sound ? 'default' : undefined,
           priority: Notifications.AndroidNotificationPriority.HIGH,
         },
         trigger: null, // Send immediately
@@ -395,6 +410,51 @@ class PushNotificationService {
    */
   public getCurrentToken(): string | null {
     return this.expoPushToken;
+  }
+
+  /**
+   * Check if notification should be sent based on settings
+   */
+  private shouldSendNotification(type: string): boolean {
+    switch (type) {
+      case 'ride_request':
+        return this.settingsService.isNotificationEnabled('rideRequests');
+      case 'ride_update':
+      case 'ride_completed':
+        return this.settingsService.isNotificationEnabled('rideUpdates');
+      case 'payment_received':
+        return this.settingsService.isNotificationEnabled('paymentReceived');
+      case 'system':
+        return this.settingsService.isNotificationEnabled('systemNotifications');
+      default:
+        return this.settingsService.isNotificationEnabled('systemNotifications');
+    }
+  }
+
+  /**
+   * Get notification settings for a specific type
+   */
+  private getNotificationSettings(type: string): { sound: boolean; vibration: boolean } {
+    switch (type) {
+      case 'ride_request':
+        return this.settingsService.getRideRequestSettings();
+      case 'ride_update':
+      case 'ride_completed':
+        return this.settingsService.getRideUpdateSettings();
+      case 'payment_received':
+        return this.settingsService.getPaymentSettings();
+      case 'system':
+        return this.settingsService.getSystemSettings();
+      default:
+        return this.settingsService.getSystemSettings();
+    }
+  }
+
+  /**
+   * Get notification settings service
+   */
+  public getSettingsService(): NotificationSettingsService {
+    return this.settingsService;
   }
 }
 

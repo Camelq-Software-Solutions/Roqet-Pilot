@@ -16,15 +16,21 @@ import { Layout } from '../../constants/Layout';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { usePushNotifications } from '../../contexts/PushNotificationContext';
 import { useRideNotifications } from '../../hooks/useRideNotifications';
+import { NotificationSettings } from '../../services/NotificationSettingsService';
 
 const { width } = Dimensions.get('window');
 
 export default function SettingsScreen({ navigation }: any) {
   const { t } = useLanguage();
-  const { isInitialized: pushNotificationsInitialized, pushToken } = usePushNotifications();
+  const { 
+    isInitialized: pushNotificationsInitialized, 
+    pushToken,
+    getNotificationSettings,
+    updateNotificationSetting,
+    resetNotificationSettings
+  } = usePushNotifications();
   const { sendSystemNotification } = useRideNotifications();
-  const [notifications, setNotifications] = useState(true);
-  // const [locationServices, setLocationServices] = useState(true);
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings | null>(null);
   const [shareData, setShareData] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -44,6 +50,17 @@ export default function SettingsScreen({ navigation }: any) {
       }),
     ]).start();
   }, []);
+
+  useEffect(() => {
+    if (pushNotificationsInitialized) {
+      loadNotificationSettings();
+    }
+  }, [pushNotificationsInitialized]);
+
+  const loadNotificationSettings = () => {
+    const settings = getNotificationSettings();
+    setNotificationSettings(settings);
+  };
 
   const settingSections = [
     {
@@ -69,10 +86,68 @@ export default function SettingsScreen({ navigation }: any) {
         {
           icon: 'notifications-outline',
           title: t('settings.pushNotifications'),
-          subtitle: pushNotificationsInitialized ? 'Push notifications enabled' : 'Push notifications disabled',
+          subtitle: notificationSettings?.notificationsEnabled ? 'Push notifications enabled' : 'Push notifications disabled',
           toggle: true,
-          value: notifications,
-          onToggle: setNotifications,
+          value: notificationSettings?.notificationsEnabled ?? true,
+          onToggle: async (value: boolean) => {
+            await updateNotificationSetting('notificationsEnabled', value);
+            loadNotificationSettings();
+          },
+        },
+        {
+          icon: 'volume-high-outline',
+          title: t('settings.sound'),
+          subtitle: 'Play sound for notifications',
+          toggle: true,
+          value: notificationSettings?.soundEnabled ?? true,
+          onToggle: async (value: boolean) => {
+            await updateNotificationSetting('soundEnabled', value);
+            loadNotificationSettings();
+          },
+        },
+        {
+          icon: 'phone-portrait-outline',
+          title: t('settings.vibration'),
+          subtitle: 'Vibrate for notifications',
+          toggle: true,
+          value: notificationSettings?.vibrationEnabled ?? true,
+          onToggle: async (value: boolean) => {
+            await updateNotificationSetting('vibrationEnabled', value);
+            loadNotificationSettings();
+          },
+        },
+        {
+          icon: 'car-outline',
+          title: t('settings.rideRequests'),
+          subtitle: 'Get notified for new ride requests',
+          toggle: true,
+          value: notificationSettings?.rideRequests ?? true,
+          onToggle: async (value: boolean) => {
+            await updateNotificationSetting('rideRequests', value);
+            loadNotificationSettings();
+          },
+        },
+        {
+          icon: 'refresh-outline',
+          title: t('settings.rideUpdates'),
+          subtitle: 'Get notified for ride status changes',
+          toggle: true,
+          value: notificationSettings?.rideUpdates ?? true,
+          onToggle: async (value: boolean) => {
+            await updateNotificationSetting('rideUpdates', value);
+            loadNotificationSettings();
+          },
+        },
+        {
+          icon: 'card-outline',
+          title: t('settings.paymentNotifications'),
+          subtitle: 'Get notified when payments are received',
+          toggle: true,
+          value: notificationSettings?.paymentReceived ?? true,
+          onToggle: async (value: boolean) => {
+            await updateNotificationSetting('paymentReceived', value);
+            loadNotificationSettings();
+          },
         },
         {
           icon: 'flash-outline',
@@ -87,14 +162,15 @@ export default function SettingsScreen({ navigation }: any) {
             }
           },
         },
-        // {
-        //   icon: 'location-outline',
-        //   title: 'Location Services',
-        //   subtitle: 'Allow location access for better experience',
-        //   toggle: true,
-        //   value: locationServices,
-        //   onToggle: setLocationServices,
-        // },
+        {
+          icon: 'settings-outline',
+          title: t('settings.resetToDefaults'),
+          subtitle: 'Reset all notification settings to default',
+          action: async () => {
+            await resetNotificationSettings();
+            loadNotificationSettings();
+          },
+        },
         {
           icon: 'card-outline',
           title: t('settings.autoPayment'),

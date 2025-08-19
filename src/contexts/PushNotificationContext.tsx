@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import PushNotificationService, { NotificationData } from '../services/PushNotificationService';
+import NotificationSettingsService, { NotificationSettings } from '../services/NotificationSettingsService';
 
 interface PushNotificationContextType {
   isInitialized: boolean;
@@ -16,6 +17,14 @@ interface PushNotificationContextType {
   clearAllNotifications: () => Promise<void>;
   setBadgeCount: (count: number) => Promise<void>;
   getBadgeCount: () => Promise<number>;
+  // Notification settings
+  getNotificationSettings: () => NotificationSettings;
+  updateNotificationSetting: <K extends keyof NotificationSettings>(
+    key: K,
+    value: NotificationSettings[K]
+  ) => Promise<void>;
+  updateNotificationSettings: (updates: Partial<NotificationSettings>) => Promise<void>;
+  resetNotificationSettings: () => Promise<void>;
 }
 
 const PushNotificationContext = createContext<PushNotificationContextType | undefined>(undefined);
@@ -144,6 +153,26 @@ export const PushNotificationProvider: React.FC<PushNotificationProviderProps> =
     }
   };
 
+  // Notification settings methods
+  const getNotificationSettings = (): NotificationSettings => {
+    return notificationService.getSettingsService().getSettings();
+  };
+
+  const updateNotificationSetting = async <K extends keyof NotificationSettings>(
+    key: K,
+    value: NotificationSettings[K]
+  ): Promise<void> => {
+    await notificationService.getSettingsService().updateSetting(key, value);
+  };
+
+  const updateNotificationSettings = async (updates: Partial<NotificationSettings>): Promise<void> => {
+    await notificationService.getSettingsService().updateSettings(updates);
+  };
+
+  const resetNotificationSettings = async (): Promise<void> => {
+    await notificationService.getSettingsService().resetToDefaults();
+  };
+
   const value: PushNotificationContextType = {
     isInitialized,
     pushToken,
@@ -155,6 +184,10 @@ export const PushNotificationProvider: React.FC<PushNotificationProviderProps> =
     clearAllNotifications,
     setBadgeCount,
     getBadgeCount,
+    getNotificationSettings,
+    updateNotificationSetting,
+    updateNotificationSettings,
+    resetNotificationSettings,
   };
 
   return (

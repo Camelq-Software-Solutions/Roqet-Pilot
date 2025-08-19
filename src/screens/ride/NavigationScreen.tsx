@@ -10,6 +10,7 @@ import socketManager from '../../utils/socket';
 import { Colors } from '../../constants/Colors';
 import BikeAnimation from '../../components/BikeAnimation';
 import CancelRideModal from '../../components/CancelRideModal';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
@@ -54,6 +55,7 @@ interface NavigationScreenProps {
 
 export default function NavigationScreen({ route, navigation }: NavigationScreenProps) {
   const { ride } = route.params;
+  const { t } = useLanguage();
   
   console.log('🚗 NavigationScreen received ride data:', ride);
   console.log('🚗 rideId:', ride?.rideId);
@@ -186,11 +188,11 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
       if (supported) {
         Linking.openURL(url);
       } else {
-        Alert.alert('Error', 'Google Maps is not installed on this device');
+        Alert.alert(t('common.error'), t('ride.googleMapsNotInstalled'));
       }
     }).catch((err) => {
       console.error('Error opening Google Maps:', err);
-      Alert.alert('Error', 'Could not open Google Maps');
+      Alert.alert(t('common.error'), t('ride.couldNotOpenGoogleMaps'));
     });
   };
 
@@ -202,7 +204,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
         'Pickup Location'
       );
     } else {
-      Alert.alert('Error', 'Pickup location not available');
+      Alert.alert(t('common.error'), t('ride.pickupLocationNotAvailable'));
     }
   };
 
@@ -214,7 +216,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
         'Dropoff Location'
       );
     } else {
-      Alert.alert('Error', 'Dropoff location not available');
+      Alert.alert(t('common.error'), t('ride.dropoffLocationNotAvailable'));
     }
   };
 
@@ -227,14 +229,14 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
         if (supported) {
           Linking.openURL(url);
         } else {
-          Alert.alert('Error', 'Google Maps is not installed on this device');
+          Alert.alert(t('common.error'), t('ride.googleMapsNotInstalled'));
         }
       }).catch((err) => {
         console.error('Error opening Google Maps:', err);
-        Alert.alert('Error', 'Could not open Google Maps');
+        Alert.alert(t('common.error'), t('ride.couldNotOpenGoogleMaps'));
       });
     } else {
-      Alert.alert('Error', 'Route locations not available');
+      Alert.alert(t('common.error'), t('ride.routeLocationsNotAvailable'));
     }
   };
 
@@ -263,9 +265,9 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
     
     // Show immediate feedback
     Alert.alert(
-      'Cancelling Ride',
+      t('ride.cancellingRide'),
       'Please wait while we process your cancellation request...',
-      [{ text: 'OK' }]
+      [{ text: t('common.ok') }]
     );
     
     // Note: Navigation will be handled by the driver_cancellation_success event
@@ -279,11 +281,11 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
         console.log('✅ Driver cancellation success received in NavigationScreen:', data);
         // Navigate to home screen after successful cancellation
         Alert.alert(
-          'Ride Cancelled',
+          t('ride.rideCancelled'),
           'The ride has been cancelled successfully.',
           [
             {
-              text: 'OK',
+              text: t('common.ok'),
               onPress: () => {
                 // Reset navigation stack and go to home
                 navigation.reset({
@@ -395,15 +397,15 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
       }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, paddingVertical: 12, paddingHorizontal: 16 }}>
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#222' }}>Navigate to Pickup</Text>
-            <Text style={{ fontSize: 13, color: '#666', marginTop: 2 }}>ETA: {ride.pickup}</Text>
+                         <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#222' }}>{t('ride.navigateToPickup')}</Text>
+             <Text style={{ fontSize: 13, color: '#666', marginTop: 2 }}>ETA: {ride.pickup}</Text>
           </View>
           <TouchableOpacity
             style={{ backgroundColor: Colors.modernYellow, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 }}
             onPress={handleCancelRide}
             activeOpacity={0.7}
           >
-            <Text style={{ fontSize: 13, color: '#fff', fontWeight: '600' }}>Cancel</Text>
+                         <Text style={{ fontSize: 13, color: '#fff', fontWeight: '600' }}>{t('common.cancel')}</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -421,7 +423,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
                 <Ionicons name="location" size={16} color="#fff" />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', color: '#222', marginBottom: 2 }}>Pickup</Text>
+                                 <Text style={{ fontSize: 16, fontWeight: '600', color: '#222', marginBottom: 2 }}>{t('ride.pickupLocation')}</Text>
                 <Text style={{ fontSize: 13, color: '#666', lineHeight: 16 }} numberOfLines={2}>{ride.pickupAddress}</Text>
               </View>
             </Animated.View>
@@ -434,7 +436,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
               <Ionicons name="flag" size={16} color="#fff" />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: '#222', marginBottom: 2 }}>Dropoff</Text>
+                             <Text style={{ fontSize: 16, fontWeight: '600', color: '#222', marginBottom: 2 }}>{t('ride.dropoffLocation')}</Text>
               <Text style={{ fontSize: 13, color: '#666', lineHeight: 16 }} numberOfLines={2}>{ride.dropoffAddress}</Text>
             </View>
           </View>
@@ -449,7 +451,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             activeOpacity={0.8}
           >
             <Ionicons name="navigate" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Navigate to Pickup</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.navigateToPickup')}</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity
             style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
@@ -465,26 +467,26 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             activeOpacity={0.8}
           >
             <Ionicons name="map" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Full Route (Pickup → Dropoff)</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.fullRoute')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={() => {
               console.log('🔗 Navigating to Chat with data:', {
                 ride: { rideId: ride.rideId },
-                user: { name: ride.customerName || 'Customer' },
+                user: { name: ride.customerName || t('ride.customer') },
                 driverId: ride.driverId || 'driver123'
               });
               navigation.navigate('Chat', {
                 ride: { rideId: ride.rideId },
-                user: { name: ride.customerName || 'Customer' },
+                user: { name: ride.customerName || t('ride.customer') },
                 driverId: ride.driverId || 'driver123'
               });
             }}
             activeOpacity={0.8}
           >
             <Ionicons name="chatbubble" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Chat with Customer</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.chatWithCustomer')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
@@ -501,7 +503,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             activeOpacity={0.8}
           >
             <Ionicons name="checkmark-circle" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Arrived at Pickup</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.arrivedAtPickup')}</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity
             style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}

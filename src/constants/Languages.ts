@@ -152,6 +152,12 @@ export interface Translations {
     shareFeedback: string;
     termsOfService: string;
     readTermsAndConditions: string;
+    sound: string;
+    vibration: string;
+    rideRequests: string;
+    rideUpdates: string;
+    paymentNotifications: string;
+    resetToDefaults: string;
   };
 
   // Support
@@ -193,6 +199,51 @@ export interface Translations {
     testNotification: string;
     sendTestNotification: string;
     testNotificationMessage: string;
+    // Surge notifications
+    surgePricing: string;
+    surgePricingBody: string;
+    surgePricingDefault: string;
+    morningSurge: string;
+    morningSurgeBody: string;
+    eveningSurge: string;
+    eveningSurgeBody: string;
+  };
+
+  // Ride
+  ride: {
+    navigateToPickup: string;
+    navigateToDropoff: string;
+    fullRoute: string;
+    pickupToDropoff: string;
+    chatWithCustomer: string;
+    arrivedAtPickup: string;
+    cancelRide: string;
+    cancellingRide: string;
+    rideCancelled: string;
+    cancellationFailed: string;
+    pickupLocation: string;
+    dropoffLocation: string;
+    routeLocationsNotAvailable: string;
+    mapLoadingError: string;
+    unableToLoadRoute: string;
+    googleMapsNotInstalled: string;
+    couldNotOpenGoogleMaps: string;
+    pickupLocationNotAvailable: string;
+    dropoffLocationNotAvailable: string;
+    customer: string;
+    ok: string;
+    home: string;
+    endRide: string;
+  };
+  
+  // Chat
+  chat: {
+    imHere: string;
+    runningLate: string;
+    canYouWait: string;
+    thankYou: string;
+    typeMessage: string;
+    send: string;
   };
 }
 
@@ -357,7 +408,13 @@ export const translations: Record<string, Translations> = {
       getHelpWithAccount: 'Get help with your account',
       shareFeedback: 'Share your feedback',
       termsOfService: 'Terms of Service',
-      readTermsAndConditions: 'Read our terms and conditions'
+      readTermsAndConditions: 'Read our terms and conditions',
+      sound: 'Sound',
+      vibration: 'Vibration',
+      rideRequests: 'Ride Requests',
+      rideUpdates: 'Ride Updates',
+      paymentNotifications: 'Payment Notifications',
+      resetToDefaults: 'Reset to Defaults'
     },
     support: {
       helpAndSupport: 'Help & Support',
@@ -397,6 +454,51 @@ export const translations: Record<string, Translations> = {
       testNotification: 'Test Notification',
       sendTestNotification: 'Send a test push notification',
       testNotificationMessage: 'This is a test push notification from your driver app!',
+      // Surge notifications
+      surgePricing: '🚀 Surge Pricing Active!',
+      surgePricingBody: 'Demand is high! Go online now to earn {multiplier}x more! 💰',
+      surgePricingDefault: 'High demand detected! Go online now to earn more! 💰',
+      morningSurge: '🌅 Morning Rush Hour!',
+      morningSurgeBody: 'Traffic is high and demand is surging! Go online to maximize your earnings! 💰',
+      eveningSurge: '🌆 Evening Rush Hour!',
+      eveningSurgeBody: 'Peak hours are here! High demand means higher earnings. Go online now! 💰',
+    },
+
+    // Ride
+    ride: {
+      navigateToPickup: 'Navigate to Pickup',
+      navigateToDropoff: 'Navigate to Dropoff',
+      fullRoute: 'Full Route (Pickup → Dropoff)',
+      pickupToDropoff: 'Pickup → Dropoff',
+      chatWithCustomer: 'Chat with Customer',
+      arrivedAtPickup: 'Arrived at Pickup',
+      cancelRide: 'Cancel Ride',
+      cancellingRide: 'Cancelling Ride',
+      rideCancelled: 'Ride Cancelled',
+      cancellationFailed: 'Cancellation Failed',
+      pickupLocation: 'Pickup Location',
+      dropoffLocation: 'Dropoff Location',
+      routeLocationsNotAvailable: 'Route locations not available',
+      mapLoadingError: 'Map Loading Error',
+      unableToLoadRoute: 'Unable to load route details, but ride acceptance was successful. You can still navigate manually.',
+      googleMapsNotInstalled: 'Google Maps is not installed on this device',
+      couldNotOpenGoogleMaps: 'Could not open Google Maps',
+      pickupLocationNotAvailable: 'Pickup location not available',
+      dropoffLocationNotAvailable: 'Dropoff location not available',
+      customer: 'Customer',
+      ok: 'OK',
+      home: 'Home',
+      endRide: 'End Ride',
+    },
+
+    // Chat
+    chat: {
+      imHere: 'I\'m here',
+      runningLate: 'Running 2 mins late',
+      canYouWait: 'Can you wait?',
+      thankYou: 'Thank you',
+      typeMessage: 'Type a message...',
+      send: 'Send',
     }
   },
   hi: {
@@ -532,7 +634,13 @@ export const translations: Record<string, Translations> = {
       getHelpWithAccount: 'अपने खाते के साथ सहायता प्राप्त करें',
       shareFeedback: 'अपनी प्रतिक्रिया साझा करें',
       termsOfService: 'सेवा की शर्तें',
-      readTermsAndConditions: 'हमारी शर्तें और नियम पढ़ें'
+      readTermsAndConditions: 'हमारी शर्तें और नियम पढ़ें',
+      sound: 'ध्वनि',
+      vibration: 'कंपन',
+      rideRequests: 'राइड अनुरोध',
+      rideUpdates: 'राइड अपडेट',
+      paymentNotifications: 'भुगतान सूचनाएं',
+      resetToDefaults: 'डिफ़ॉल्ट पर रीसेट करें'
     },
     support: {
       helpAndSupport: 'सहायता और समर्थन',
@@ -572,6 +680,51 @@ export const translations: Record<string, Translations> = {
       testNotification: 'टेस्ट नोटिफिकेशन',
       sendTestNotification: 'एक टेस्ट पुश नोटिफिकेशन भेजें',
       testNotificationMessage: 'यह आपके ड्राइवर ऐप से एक टेस्ट पुश नोटिफिकेशन है!',
+      // Surge notifications
+      surgePricing: '🚀 सर्ज प्राइसिंग सक्रिय!',
+      surgePricingBody: 'मांग अधिक है! अधिक कमाने के लिए अभी ऑनलाइन जाएं {multiplier}x! 💰',
+      surgePricingDefault: 'उच्च मांग का पता चला! अधिक कमाने के लिए अभी ऑनलाइन जाएं! 💰',
+      morningSurge: '🌅 सुबह का रश आवर!',
+      morningSurgeBody: 'ट्रैफिक अधिक है और मांग बढ़ रही है! अपनी कमाई को अधिकतम करने के लिए ऑनलाइन जाएं! 💰',
+      eveningSurge: '🌆 शाम का रश आवर!',
+      eveningSurgeBody: 'पीक आवर्स यहां हैं! उच्च मांग का मतलब अधिक कमाई। अभी ऑनलाइन जाएं! 💰',
+    },
+
+    // Ride
+    ride: {
+      navigateToPickup: 'पिकअप के लिए नेविगेट करें',
+      navigateToDropoff: 'ड्रॉपऑफ के लिए नेविगेट करें',
+      fullRoute: 'पूरा रूट (पिकअप → ड्रॉपऑफ)',
+      pickupToDropoff: 'पिकअप → ड्रॉपऑफ',
+      chatWithCustomer: 'ग्राहक से चैट करें',
+      arrivedAtPickup: 'पिकअप पर पहुंच गए',
+      cancelRide: 'राइड रद्द करें',
+      cancellingRide: 'राइड रद्द हो रही है',
+      rideCancelled: 'राइड रद्द हो गई',
+      cancellationFailed: 'रद्दीकरण विफल',
+      pickupLocation: 'पिकअप स्थान',
+      dropoffLocation: 'ड्रॉपऑफ स्थान',
+      routeLocationsNotAvailable: 'रूट स्थान उपलब्ध नहीं हैं',
+      mapLoadingError: 'मैप लोडिंग त्रुटि',
+      unableToLoadRoute: 'रूट विवरण लोड करने में असमर्थ, लेकिन राइड स्वीकृति सफल थी। आप अभी भी मैन्युअल रूप से नेविगेट कर सकते हैं।',
+      googleMapsNotInstalled: 'इस डिवाइस पर Google Maps इंस्टॉल नहीं है',
+      couldNotOpenGoogleMaps: 'Could not open Google Maps',
+      pickupLocationNotAvailable: 'Pickup location not available',
+      dropoffLocationNotAvailable: 'Dropoff location not available',
+      customer: 'ग्राहक',
+      ok: 'ठीक है',
+      home: 'होम',
+      endRide: 'राइड समाप्त करें',
+    },
+
+    // Chat
+    chat: {
+      imHere: 'मैं यहाँ हूँ',
+      runningLate: '2 मिनट देरी से आ रहा हूँ',
+      canYouWait: 'क्या आप इंतज़ार कर सकते हैं?',
+      thankYou: 'धन्यवाद',
+      typeMessage: 'संदेश लिखें...',
+      send: 'भेजें',
     }
   },
   ta: {
@@ -707,7 +860,13 @@ export const translations: Record<string, Translations> = {
       getHelpWithAccount: 'உங்கள் கணக்குடன் உதவி பெறவும்',
       shareFeedback: 'உங்கள் கருத்தை பகிரவும்',
       termsOfService: 'சேவை விதிமுறைகள்',
-      readTermsAndConditions: 'எங்கள் விதிமுறைகள் மற்றும் நிபந்தனைகளைப் படிக்கவும்'
+      readTermsAndConditions: 'எங்கள் விதிமுறைகள் மற்றும் நிபந்தனைகளைப் படிக்கவும்',
+      sound: 'ஒலி',
+      vibration: 'அதிர்வு',
+      rideRequests: 'சவாரி கோரிக்கைகள்',
+      rideUpdates: 'சவாரி புதுப்பிப்புகள்',
+      paymentNotifications: 'கட்டண அறிவிப்புகள்',
+      resetToDefaults: 'இயல்புநிலைக்கு மீட்டமைக்கவும்'
     },
     support: {
       helpAndSupport: 'உதவி மற்றும் ஆதரவு',
@@ -747,6 +906,51 @@ export const translations: Record<string, Translations> = {
       testNotification: 'சோதனை அறிவிப்பு',
       sendTestNotification: 'ஒரு சோதனை புஷ் அறிவிப்பை அனுப்பவும்',
       testNotificationMessage: 'இது உங்கள் டிரைவர் செயலியிலிருந்து ஒரு சோதனை புஷ் அறிவிப்பு!',
+      // Surge notifications
+      surgePricing: '🚀 சர்ஜ் பிரைசிங் செயலில்!',
+      surgePricingBody: 'தேவை அதிகம்! மேலும் சம்பாதிக்க ஆன்லைனில் செல்லுங்கள் {multiplier}x! 💰',
+      surgePricingDefault: 'அதிக தேவை கண்டறியப்பட்டது! மேலும் சம்பாதிக்க ஆன்லைனில் செல்லுங்கள்! 💰',
+      morningSurge: '🌅 காலை ரஷ் அவர்!',
+      morningSurgeBody: 'போக்குவரத்து அதிகம் மற்றும் தேவை அதிகரிக்கிறது! உங்கள் வருவாயை அதிகரிக்க ஆன்லைனில் செல்லுங்கள்! 💰',
+      eveningSurge: '🌆 மாலை ரஷ் அவர்!',
+      eveningSurgeBody: 'பீக் மணிகள் இங்கே! அதிக தேவை என்பது அதிக வருவாய். இப்போது ஆன்லைனில் செல்லுங்கள்! 💰',
+    },
+
+    // Ride
+    ride: {
+      navigateToPickup: 'பிக்-அப்புக்கு செல்லுங்கள்',
+      navigateToDropoff: 'டிராப்-ஆஃப்புக்கு செல்லுங்கள்',
+      fullRoute: 'முழு பாதை (பிக்-அப் → டிராப்-ஆஃப்)',
+      pickupToDropoff: 'பிக்-அப் → டிராப்-ஆஃப்',
+      chatWithCustomer: 'வாடிக்கையாளருடன் அரட்டையடிக்கவும்',
+      arrivedAtPickup: 'பிக்-அப்பில் வந்தடைந்தார்',
+      cancelRide: 'சவாரியை ரத்து செய்யுங்கள்',
+      cancellingRide: 'சவாரி ரத்து செய்யப்படுகிறது',
+      rideCancelled: 'சவாரி ரத்து செய்யப்பட்டது',
+      cancellationFailed: 'ரத்து செய்தல் தோல்வி',
+      pickupLocation: 'பிக்-அப் இடம்',
+      dropoffLocation: 'டிராப்-ஆஃப் இடம்',
+      routeLocationsNotAvailable: 'பாதை இடங்கள் கிடைக்கவில்லை',
+      mapLoadingError: 'வரைபட ஏற்றும் பிழை',
+      unableToLoadRoute: 'பாதை விவரங்களை ஏற்ற முடியவில்லை, ஆனால் சவாரி ஏற்றுக்கொள்ளுதல் வெற்றிகரமாக இருந்தது. நீங்கள் இன்னும் கைமுறையாக செல்லலாம்.',
+      googleMapsNotInstalled: 'இந்த சாதனத்தில் Google Maps நிறுவப்படவில்லை',
+      couldNotOpenGoogleMaps: 'Google Maps திறக்க முடியவில்லை',
+      pickupLocationNotAvailable: 'பிக்-அப் இடம் கிடைக்கவில்லை',
+      dropoffLocationNotAvailable: 'டிராப்-ஆஃப் இடம் கிடைக்கவில்லை',
+      customer: 'வாடிக்கையாளர்',
+      ok: 'சரி',
+      home: 'முகப்பு',
+      endRide: 'சவாரியை முடிக்கவும்',
+    },
+
+    // Chat
+    chat: {
+      imHere: 'நான் இங்கே இருக்கிறேன்',
+      runningLate: '2 நிமிடம் தாமதமாக வருகிறேன்',
+      canYouWait: 'நீங்கள் காத்திருக்க முடியுமா?',
+      thankYou: 'நன்றி',
+      typeMessage: 'செய்தியை தட்டச்சு செய்யவும்...',
+      send: 'அனுப்பு',
     }
   },
   te: {
@@ -882,7 +1086,13 @@ export const translations: Record<string, Translations> = {
       getHelpWithAccount: 'మీ ఖాతాతో సహాయం పొందండి',
       shareFeedback: 'మీ అభిప్రాయాన్ని షేర్ చేయండి',
       termsOfService: 'సేవా నిబంధనలు',
-      readTermsAndConditions: 'మా నిబంధనలు మరియు షరతులను చదవండి'
+      readTermsAndConditions: 'మా నిబంధనలు మరియు షరతులను చదవండి',
+      sound: 'ధ్వని',
+      vibration: 'వైబ్రేషన్',
+      rideRequests: 'రైడ్ అభ్యర్థనలు',
+      rideUpdates: 'రైడ్ అప్‌డేట్‌లు',
+      paymentNotifications: 'చెల్లింపు నోటిఫికేషన్‌లు',
+      resetToDefaults: 'డిఫాల్ట్‌లకు రీసెట్ చేయండి'
     },
     support: {
       helpAndSupport: 'సహాయం మరియు మద్దతు',
@@ -922,6 +1132,51 @@ export const translations: Record<string, Translations> = {
       testNotification: 'పరీక్ష నోటిఫికేషన్',
       sendTestNotification: 'ఒక పరీక్ష పుష్ నోటిఫికేషన్ పంపండి',
       testNotificationMessage: 'ఇది మీ డ్రైవర్ యాప్ నుండి ఒక పరీక్ష పుష్ నోటిఫికేషన్!',
+      // Surge notifications
+      surgePricing: '🚀 సర్జ్ ప్రైసింగ్ చురుకుగా ఉంది!',
+      surgePricingBody: 'డిమాండ్ ఎక్కువ! మరింత సంపాదించడానికి ఇప్పుడు ఆన్‌లైన్‌లోకి వెళ్లండి {multiplier}x! 💰',
+      surgePricingDefault: 'అధిక డిమాండ్ గుర్తించబడింది! మరింత సంపాదించడానికి ఇప్పుడు ఆన్‌లైన్‌లోకి వెళ్లండి! 💰',
+      morningSurge: '🌅 ఉదయం రష్ అవర్!',
+      morningSurgeBody: 'ట్రాఫిక్ ఎక్కువ మరియు డిమాండ్ పెరుగుతోంది! మీ ఆదాయాన్ని పెంచడానికి ఆన్‌లైన్‌లోకి వెళ్లండి! 💰',
+      eveningSurge: '🌆 సాయంత్రం రష్ అవర్!',
+      eveningSurgeBody: 'పీక్ అవర్స్ ఇక్కడ ఉన్నాయి! అధిక డిమాండ్ అంటే అధిక ఆదాయం. ఇప్పుడు ఆన్‌లైన్‌లోకి వెళ్లండి! 💰',
+    },
+
+    // Ride
+    ride: {
+      navigateToPickup: 'పికప్‌కి నావిగేట్ చేయండి',
+      navigateToDropoff: 'డ్రాప్‌ఆఫ్‌కి నావిగేట్ చేయండి',
+      fullRoute: 'పూర్తి మార్గం (పికప్ → డ్రాప్‌ఆఫ్)',
+      pickupToDropoff: 'పికప్ → డ్రాప్‌ఆఫ్',
+      chatWithCustomer: 'కస్టమర్‌తో చాట్ చేయండి',
+      arrivedAtPickup: 'పికప్‌లో 도착했습니다',
+      cancelRide: 'రైడ్‌ని రద్దు చేయండి',
+      cancellingRide: 'రైడ్ రద్దు చేయబడుతోంది',
+      rideCancelled: 'రైడ్ రద్దు చేయబడింది',
+      cancellationFailed: 'రద్దు చేయడం విఫలమైంది',
+      pickupLocation: 'పికప్ స్థానం',
+      dropoffLocation: 'డ్రాప్‌ఆఫ్ స్థానం',
+      routeLocationsNotAvailable: 'మార్గ స్థానాలు అందుబాటులో లేవు',
+      mapLoadingError: 'మ్యాప్ లోడింగ్ లోపం',
+      unableToLoadRoute: 'మార్గ వివరాలను లోడ్ చేయలేకపోయాము, కానీ రైడ్ అంగీకారం విజయవంతమైంది. మీరు ఇంకా మాన్యువల్‌గా నావిగేట్ చేయవచ్చు.',
+      googleMapsNotInstalled: 'ఈ పరికరంపై Google Maps ఇన్‌స్టాల్ చేయబడలేదు',
+      couldNotOpenGoogleMaps: 'Google Maps తెరవలేకపోయాము',
+      pickupLocationNotAvailable: 'పికప్ స్థానం అందుబాటులో లేదు',
+      dropoffLocationNotAvailable: 'డ్రాప్‌ఆఫ్ స్థానం అందుబాటులో లేదు',
+      customer: 'కస్టమర్',
+      ok: 'సరే',
+      home: 'హోమ్',
+      endRide: 'రైడ్ ముగించండి',
+    },
+
+    // Chat
+    chat: {
+      imHere: 'నేను ఇక్కడ ఉన్నాను',
+      runningLate: '2 నిమిషాలు ఆలస్యంగా వస్తున్నాను',
+      canYouWait: 'మీరు వేచి ఉండగలరా?',
+      thankYou: 'ధన్యవాదాలు',
+      typeMessage: 'సందేశం టైప్ చేయండి...',
+      send: 'పంపండి',
     }
   }
 };

@@ -18,6 +18,7 @@ import { Layout } from '../../constants/Layout';
 import socketManager from '../../utils/socket';
 import { useAuth } from '@clerk/clerk-expo';
 import { getUserIdFromJWT } from '../../utils/jwtDecoder';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ChatMessage {
   id: string;
@@ -29,16 +30,18 @@ interface ChatMessage {
   isRead: boolean;
 }
 
-const quickReplies = [
-  'I\'m here',
-  'Running 2 mins late',
-  'Can you wait?',
-  'Thank you',
-];
-
 export default function ChatScreen({ navigation, route }: any) {
   const { ride, user } = route.params;
   const { getToken, isLoaded } = useAuth();
+  const { t } = useLanguage();
+  
+  const quickReplies = [
+    t('chat.imHere'),
+    t('chat.runningLate'),
+    t('chat.canYouWait'),
+    t('chat.thankYou'),
+  ];
+  
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -367,7 +370,7 @@ export default function ChatScreen({ navigation, route }: any) {
         <View style={styles.inputRow}>
           <TextInput
             style={styles.textInput}
-            placeholder="Type a message..."
+                          placeholder={t('chat.typeMessage')}
             value={newMessage}
             onChangeText={handleTyping}
             multiline

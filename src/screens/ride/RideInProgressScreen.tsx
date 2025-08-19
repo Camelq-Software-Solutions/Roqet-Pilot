@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import Polyline from '@mapbox/polyline';
 import socketManager from '../../utils/socket';
 import { Colors } from '../../constants/Colors';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
@@ -51,6 +52,7 @@ interface RideInProgressScreenProps {
 
 export default function RideInProgressScreen({ route, navigation }: RideInProgressScreenProps) {
   const { ride } = route.params;
+  const { t } = useLanguage();
   const anim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
   const [routeCoords, setRouteCoords] = useState<Array<{latitude: number, longitude: number}>>([]);
@@ -410,7 +412,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
                 <Ionicons name="flag" size={16} color="#fff" />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', color: '#222', marginBottom: 2 }}>Dropoff</Text>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: '#222', marginBottom: 2 }}>{t('ride.dropoffLocation')}</Text>
                 <Text style={{ fontSize: 13, color: '#222', lineHeight: 16 }} numberOfLines={2}>{ride.dropoffAddress}</Text>
               </View>
             </Animated.View>
@@ -427,7 +429,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
             activeOpacity={0.8}
           >
             <Ionicons name="flag" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Navigate to Dropoff</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.navigateToDropoff')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
@@ -450,7 +452,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
             activeOpacity={0.8}
           >
             <Ionicons name="chatbubble" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Chat with Customer</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.chatWithCustomer')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
@@ -473,7 +475,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
             activeOpacity={0.8}
           >
             <Ionicons name="stop-circle" size={24} color="#fff" style={{ marginRight: 12 }} />
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>End Ride</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>{t('ride.endRide')}</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity
             style={{ 

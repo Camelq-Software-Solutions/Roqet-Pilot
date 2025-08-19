@@ -521,7 +521,7 @@ export default function HomeScreen() {
   const { getUserInfo } = useUserFromJWT();
   const { t } = useLanguage();
   const { isInitialized: pushNotificationsInitialized } = usePushNotifications();
-  const { sendOfflineNotification, sendRideRequestNotification, sendRideCompletedNotification } = useRideNotifications();
+  const { sendRideRequestNotification, sendSurgeNotification, scheduleSurgeNotifications } = useRideNotifications();
   const { 
     isOnline, 
     setIsOnline, 
@@ -988,22 +988,31 @@ export default function HomeScreen() {
     }).start();
   };
 
+  // Add a ref to track if goOffline is already being processed
+  const isGoingOffline = useRef(false);
+
   const goOffline = async () => {
+    // Prevent multiple rapid calls
+    if (isGoingOffline.current) {
+      console.log('🔄 goOffline already in progress, skipping...');
+      return;
+    }
+
+    isGoingOffline.current = true;
+    console.log('🔄 goOffline function called - isOnline:', isOnline, 'pushNotificationsInitialized:', pushNotificationsInitialized);
+    
     setShowOfflineScreen(true);
     Animated.spring(offlineSwipeX, {
       toValue: 0,
       useNativeDriver: false,
     }).start();
 
-    // Send offline notification when driver goes offline
-    if (pushNotificationsInitialized) {
-      try {
-        await sendOfflineNotification();
-        console.log('📱 Offline notification sent');
-      } catch (error) {
-        console.error('❌ Failed to send offline notification:', error);
-      }
-    }
+    // Offline notification code removed as requested
+
+    // Reset the flag after a delay to allow for normal operation
+    setTimeout(() => {
+      isGoingOffline.current = false;
+    }, 2000);
   };
 
   const cancelOffline = () => {
@@ -1034,7 +1043,7 @@ export default function HomeScreen() {
   const handleAcceptRide = async (ride: BackendRideRequest) => {
     acceptRide(ride);
     
-    // Send ride accepted notification
+    // Send ride request notification
     if (pushNotificationsInitialized) {
       try {
         await sendRideRequestNotification({
@@ -1043,9 +1052,9 @@ export default function HomeScreen() {
           dropoffLocation: ride.drop.address || ride.drop.name,
           fare: ride.price,
         });
-        console.log('📱 Ride accepted notification sent');
+        console.log('📱 Ride request notification sent');
       } catch (error) {
-        console.error('❌ Failed to send ride accepted notification:', error);
+        console.error('❌ Failed to send ride request notification:', error);
       }
     }
   };
@@ -1110,20 +1119,7 @@ export default function HomeScreen() {
     resetDriverStatus();
     console.log('✅ Ride completed, driver status reset to available');
 
-    // Send ride completed notification
-    if (pushNotificationsInitialized && acceptedRideDetails) {
-      try {
-        await sendRideCompletedNotification({
-          rideId: rideId,
-          pickupLocation: acceptedRideDetails.pickup.address || acceptedRideDetails.pickup.name,
-          dropoffLocation: acceptedRideDetails.drop.address || acceptedRideDetails.drop.name,
-          fare: acceptedRideDetails.price,
-        });
-        console.log('📱 Ride completed notification sent');
-      } catch (error) {
-        console.error('❌ Failed to send ride completed notification:', error);
-      }
-    }
+    // Ride completed notification code removed as requested
   };
 
   const isRideActive = !!(rideRequest);
@@ -1197,9 +1193,12 @@ export default function HomeScreen() {
           // Play haptic feedback for new ride request
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           
-          // Send push notification for new ride request with distance and price
+          // Send push notification for new ride request
           if (pushNotificationsInitialized) {
             try {
+              console.log('🔔 Attempting to send ride request notification...');
+              console.log('🔔 Push notifications initialized:', pushNotificationsInitialized);
+              
               // Extract distance from route info
               let distance = 'Unknown distance';
               let duration = 'Unknown time';
@@ -1210,18 +1209,24 @@ export default function HomeScreen() {
                 if (durationMatch) duration = durationMatch[1].trim();
               }
               
-              await sendRideRequestNotification({
+              const notificationData = {
                 rideId: currentRideRequest.rideId,
                 pickupLocation: currentRideRequest.pickup.address || currentRideRequest.pickup.name,
                 dropoffLocation: currentRideRequest.drop.address || currentRideRequest.drop.name,
                 fare: currentRideRequest.price,
                 estimatedTime: duration,
                 distance: distance,
-              });
+              };
+              
+              console.log('🔔 Notification data:', notificationData);
+              
+              await sendRideRequestNotification(notificationData);
               console.log('📱 New ride request notification sent with distance and price');
             } catch (error) {
               console.error('❌ Failed to send new ride request notification:', error);
             }
+          } else {
+            console.log('⚠️ Push notifications not initialized, skipping notification');
           }
         }
       }
@@ -1302,6 +1307,14 @@ export default function HomeScreen() {
     }
     requestLocationPermission();
   }, []);
+
+  // Schedule surge notifications when push notifications are initialized
+  useEffect(() => {
+    if (pushNotificationsInitialized) {
+      console.log('📅 Scheduling daily surge notifications...');
+      scheduleSurgeNotifications();
+    }
+  }, [pushNotificationsInitialized, scheduleSurgeNotifications]);
 
   // Refresh state when screen comes into focus (e.g., after cancellation)
   useFocusEffect(
@@ -1819,16 +1832,18 @@ export default function HomeScreen() {
                 paddingHorizontal: 32,
                 shadowColor: Colors.modernYellow,
                 shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.3,
-                shadowRadius: 16,
-                elevation: 12,
+                shadowOpacity: 0.4,
+                shadowRadius: 20,
+                elevation: 16,
                 borderWidth: 2,
-                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+                position: 'relative',
+                overflow: 'hidden',
               }}
               {...offlinePanResponder.panHandlers}
             >
-              {/* Background Pattern */}
-              <View
+              {/* Animated Background Pattern */}
+              <Animated.View
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -1836,12 +1851,16 @@ export default function HomeScreen() {
                   right: 0,
                   bottom: 0,
                   borderRadius: 40,
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  opacity: 0.3,
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  opacity: offlineSwipeX.interpolate({
+                    inputRange: [0, offlineSwipeWidth - 72],
+                    outputRange: [0.1, 0.3],
+                    extrapolate: 'clamp',
+                  }),
                 }}
               />
               
-              {/* Enhanced Swipe Handle */}
+              {/* Enhanced Swipe Handle with Better Visual Feedback */}
               <Animated.View
                 style={{
                   position: 'absolute',
@@ -1859,13 +1878,36 @@ export default function HomeScreen() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 6 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 12,
-                  elevation: 12,
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: offlineSwipeX.interpolate({
+                    inputRange: [0, offlineSwipeWidth - 72],
+                    outputRange: [0.2, 0.4],
+                    extrapolate: 'clamp',
+                  }),
+                  shadowRadius: offlineSwipeX.interpolate({
+                    inputRange: [0, offlineSwipeWidth - 72],
+                    outputRange: [12, 16],
+                    extrapolate: 'clamp',
+                  }),
+                  elevation: offlineSwipeX.interpolate({
+                    inputRange: [0, offlineSwipeWidth - 72],
+                    outputRange: [12, 20],
+                    extrapolate: 'clamp',
+                  }),
                   zIndex: 2,
                   borderWidth: 3,
-                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                  borderColor: offlineSwipeX.interpolate({
+                    inputRange: [0, offlineSwipeWidth - 72],
+                    outputRange: ['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.6)'],
+                    extrapolate: 'clamp',
+                  }),
+                  transform: [{
+                    scale: offlineSwipeX.interpolate({
+                      inputRange: [0, offlineSwipeWidth - 72],
+                      outputRange: [1, 1.05],
+                      extrapolate: 'clamp',
+                    })
+                  }],
                 }}
               >
                 <Animated.View
@@ -1880,42 +1922,88 @@ export default function HomeScreen() {
                       outputRange: ['#2d3748', '#000000'],
                       extrapolate: 'clamp',
                     }),
+                    borderWidth: 2,
+                    borderColor: offlineSwipeX.interpolate({
+                      inputRange: [0, offlineSwipeWidth - 72],
+                      outputRange: ['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.4)'],
+                      extrapolate: 'clamp',
+                    }),
                   }}
                 >
-                  <Ionicons name="arrow-forward" size={32} color="#fff" />
+                  <Animated.View
+                    style={{
+                      transform: [{
+                        rotate: offlineSwipeX.interpolate({
+                          inputRange: [0, offlineSwipeWidth - 72],
+                          outputRange: ['0deg', '15deg'],
+                          extrapolate: 'clamp',
+                        })
+                      }]
+                    }}
+                  >
+                    <Ionicons 
+                      name="arrow-forward" 
+                      size={32} 
+                      color="#fff" 
+                    />
+                  </Animated.View>
                 </Animated.View>
               </Animated.View>
               
-              {/* Enhanced Text with Icon */}
+              {/* Enhanced Text with Icon and Better Typography */}
               <View style={{ marginLeft: 90, flexDirection: 'row', alignItems: 'center', zIndex: 1 }}>
-                <Ionicons name="power" size={20} color="#fff" style={{ marginRight: 8 }} />
-                <Text
+                <Animated.View
+                  style={{
+                    opacity: offlineSwipeX.interpolate({
+                      inputRange: [0, offlineSwipeWidth - 72],
+                      outputRange: [1, 0.7],
+                      extrapolate: 'clamp',
+                    }),
+                    transform: [{
+                      scale: offlineSwipeX.interpolate({
+                        inputRange: [0, offlineSwipeWidth - 72],
+                        outputRange: [1, 0.95],
+                        extrapolate: 'clamp',
+                      })
+                    }]
+                  }}
+                >
+                  <Ionicons name="power" size={20} color="#fff" style={{ marginRight: 8 }} />
+                </Animated.View>
+                <Animated.Text
                   style={{
                     color: '#fff',
                     fontWeight: '700',
                     fontSize: 18,
                     letterSpacing: 0.8,
-                    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-                    textShadowOffset: { width: 0, height: 1 },
-                    textShadowRadius: 2,
+                    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+                    textShadowOffset: { width: 0, height: 2 },
+                    textShadowRadius: 3,
+                    opacity: offlineSwipeX.interpolate({
+                      inputRange: [0, offlineSwipeWidth - 72],
+                      outputRange: [1, 0.8],
+                      extrapolate: 'clamp',
+                    }),
                   }}
                 >
                   {t('home.swipeToGoOffline')}
-                </Text>
+                </Animated.Text>
               </View>
               
-              {/* Progress Indicator */}
+              {/* Enhanced Progress Indicator */}
               <Animated.View
                 style={{
                   position: 'absolute',
                   right: 20,
                   top: '50%',
-                  transform: [{ translateY: -2 }],
+                  transform: [{ translateY: -3 }],
                   width: 60,
-                  height: 4,
-                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                  borderRadius: 2,
+                  height: 6,
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: 3,
                   overflow: 'hidden',
+                  borderWidth: 1,
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
                 }}
               >
                 <Animated.View
@@ -1927,9 +2015,53 @@ export default function HomeScreen() {
                     }),
                     height: '100%',
                     backgroundColor: '#fff',
-                    borderRadius: 2,
+                    borderRadius: 3,
+                    shadowColor: '#fff',
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.8,
+                    shadowRadius: 4,
                   }}
                 />
+              </Animated.View>
+              
+              {/* Success Checkmark (appears when swipe is complete) */}
+              <Animated.View
+                style={{
+                  position: 'absolute',
+                  right: 20,
+                  top: '50%',
+                  transform: [
+                    { translateY: -16 },
+                    {
+                      scale: offlineSwipeX.interpolate({
+                        inputRange: [offlineSwipeWidth - 100, offlineSwipeWidth - 72],
+                        outputRange: [0.5, 1],
+                        extrapolate: 'clamp',
+                      })
+                    }
+                  ],
+                  opacity: offlineSwipeX.interpolate({
+                    inputRange: [offlineSwipeWidth - 100, offlineSwipeWidth - 72],
+                    outputRange: [0, 1],
+                    extrapolate: 'clamp',
+                  }),
+                }}
+              >
+                <View style={{
+                  backgroundColor: '#22c55e',
+                  borderRadius: 20,
+                  width: 32,
+                  height: 32,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  shadowColor: '#22c55e',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.6,
+                  shadowRadius: 8,
+                  elevation: 8,
+                }}>
+                  <Ionicons name="checkmark" size={20} color="#fff" />
+                </View>
               </Animated.View>
             </LinearGradient>
           </View>
@@ -1997,6 +2129,8 @@ export default function HomeScreen() {
               </Text>
             </View>
           )}
+
+          
           <TouchableOpacity style={styles.iconCircle} onPress={() => navigation.navigate('Profile')}>
             <Ionicons name="person-circle" size={32} color="#222" />
           </TouchableOpacity>
@@ -2146,7 +2280,7 @@ export default function HomeScreen() {
           }}>
             {/* Safety Toolkit Icon - left of swipe bar */}
 
-            {/* Swipe Bar */}
+            {/* Enhanced Swipe Bar */}
             <View style={{
               flex: 1,
               flexDirection: 'row',
@@ -2156,15 +2290,17 @@ export default function HomeScreen() {
               paddingVertical: 20,
               paddingHorizontal: 24,
               shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.18,
-              shadowRadius: 12,
-              elevation: 10,
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.25,
+              shadowRadius: 16,
+              elevation: 12,
               overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: 'rgba(255, 255, 255, 0.1)',
             }}
               {...panResponder.panHandlers}
             >
-              {/* Gradient Progress Bar Background */}
+              {/* Enhanced Gradient Progress Bar Background */}
               <Animated.View style={{
                 position: 'absolute',
                 left: 0,
@@ -2183,7 +2319,7 @@ export default function HomeScreen() {
                   end={{ x: 1, y: 0 }}
                   style={{ flex: 1, borderRadius: 32 }}
                 />
-                {/* Ripple shimmer effect */}
+                {/* Enhanced Ripple shimmer effect */}
                 <Animated.View
                   style={{
                     position: 'absolute',
@@ -2194,19 +2330,21 @@ export default function HomeScreen() {
                     top: 0,
                     bottom: 0,
                     width: 60,
-                    opacity: 0.35,
+                    opacity: 0.4,
                     zIndex: 2,
                   }}
                   pointerEvents="none"
                 >
                   <LinearGradient
-                    colors={['rgba(255,255,255,0.2)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.2)']}
+                    colors={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,0.3)']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={{ flex: 1, borderRadius: 32 }}
                   />
                 </Animated.View>
               </Animated.View>
+              
+              {/* Enhanced Swipe Handle */}
               <Animated.View style={{
                 position: 'absolute',
                 left: swipeX,
@@ -2214,29 +2352,131 @@ export default function HomeScreen() {
                 bottom: 0,
                 width: 66,
                 height: 66,
-                borderRadius: 28,
+                borderRadius: 33,
                 backgroundColor: Colors.modernYellow,
                 alignItems: 'center',
                 justifyContent: 'center',
-                shadowColor: '#26304A',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.18,
-                shadowRadius: 8,
-                elevation: 8,
+                shadowColor: Colors.modernYellow,
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: swipeX.interpolate({
+                  inputRange: [0, SWIPE_WIDTH - 56],
+                  outputRange: [0.2, 0.5],
+                  extrapolate: 'clamp',
+                }),
+                shadowRadius: swipeX.interpolate({
+                  inputRange: [0, SWIPE_WIDTH - 56],
+                  outputRange: [8, 12],
+                  extrapolate: 'clamp',
+                }),
+                elevation: swipeX.interpolate({
+                  inputRange: [0, SWIPE_WIDTH - 56],
+                  outputRange: [8, 16],
+                  extrapolate: 'clamp',
+                }),
                 zIndex: 3,
+                borderWidth: 2,
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+                transform: [{
+                  scale: swipeX.interpolate({
+                    inputRange: [0, SWIPE_WIDTH - 56],
+                    outputRange: [1, 1.05],
+                    extrapolate: 'clamp',
+                  })
+                }],
               }}>
-                <Ionicons name="arrow-forward" size={32} color="#fff" />
+                <Animated.View
+                  style={{
+                    transform: [{
+                      rotate: swipeX.interpolate({
+                        inputRange: [0, SWIPE_WIDTH - 56],
+                        outputRange: ['0deg', '15deg'],
+                        extrapolate: 'clamp',
+                      })
+                    }]
+                  }}
+                >
+                  <Ionicons name="arrow-forward" size={32} color="#fff" />
+                </Animated.View>
             </Animated.View>
-              <Text style={{
-                color: '#fff',
-                fontWeight: 'bold',
-                fontSize: 20,
-                marginLeft: 70,
-                letterSpacing: 0.5,
-                zIndex: 4,
-              }}>
-                Swipe to go online
-              </Text>
+              
+              {/* Enhanced Text with Icon */}
+              <View style={{ marginLeft: 70, flexDirection: 'row', alignItems: 'center', zIndex: 4 }}>
+                <Animated.View
+                  style={{
+                    opacity: swipeX.interpolate({
+                      inputRange: [0, SWIPE_WIDTH - 56],
+                      outputRange: [1, 0.7],
+                      extrapolate: 'clamp',
+                    }),
+                    transform: [{
+                      scale: swipeX.interpolate({
+                        inputRange: [0, SWIPE_WIDTH - 56],
+                        outputRange: [1, 0.95],
+                        extrapolate: 'clamp',
+                      })
+                    }]
+                  }}
+                >
+                  <Ionicons name="power" size={20} color="#fff" style={{ marginRight: 8 }} />
+                </Animated.View>
+                <Animated.Text style={{
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                  letterSpacing: 0.5,
+                  zIndex: 4,
+                  textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                  textShadowOffset: { width: 0, height: 1 },
+                  textShadowRadius: 2,
+                  opacity: swipeX.interpolate({
+                    inputRange: [0, SWIPE_WIDTH - 56],
+                    outputRange: [1, 0.8],
+                    extrapolate: 'clamp',
+                  }),
+                }}>
+                  Swipe to go online
+                </Animated.Text>
+              </View>
+              
+              {/* Success Checkmark for Online Swipe */}
+              <Animated.View
+                style={{
+                  position: 'absolute',
+                  right: 20,
+                  top: '50%',
+                  transform: [
+                    { translateY: -16 },
+                    {
+                      scale: swipeX.interpolate({
+                        inputRange: [SWIPE_WIDTH - 100, SWIPE_WIDTH - 56],
+                        outputRange: [0.5, 1],
+                        extrapolate: 'clamp',
+                      })
+                    }
+                  ],
+                  opacity: swipeX.interpolate({
+                    inputRange: [SWIPE_WIDTH - 100, SWIPE_WIDTH - 56],
+                    outputRange: [0, 1],
+                    extrapolate: 'clamp',
+                  }),
+                }}
+              >
+                <View style={{
+                  backgroundColor: '#22c55e',
+                  borderRadius: 20,
+                  width: 32,
+                  height: 32,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  shadowColor: '#22c55e',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.6,
+                  shadowRadius: 8,
+                  elevation: 8,
+                }}>
+                  <Ionicons name="checkmark" size={20} color="#fff" />
+                </View>
+              </Animated.View>
           </View>
       </View>
         </SafeAreaView>

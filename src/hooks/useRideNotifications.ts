@@ -237,6 +237,98 @@ export const useRideNotifications = () => {
     [sendLocalNotification, t]
   );
 
+  /**
+   * Send surge notification during peak hours
+   */
+  const sendSurgeNotification = useCallback(
+    async (surgeMultiplier?: number) => {
+      const notificationData: NotificationData = {
+        type: 'system',
+        title: t('notifications.surgePricing'),
+        body: surgeMultiplier 
+          ? t('notifications.surgePricingBody', { multiplier: surgeMultiplier })
+          : t('notifications.surgePricingDefault'),
+        data: {
+          type: 'system',
+          action: 'go_online',
+          surge: true,
+          multiplier: surgeMultiplier,
+        },
+      };
+
+      await sendLocalNotification(notificationData);
+    },
+    [sendLocalNotification, t]
+  );
+
+  /**
+   * Schedule daily surge notifications at 9 AM and 6 PM
+   */
+  const scheduleSurgeNotifications = useCallback(
+    async () => {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      // Schedule for 9 AM today
+      const nineAM = new Date(today);
+      nineAM.setHours(9, 0, 0, 0);
+      
+      // Schedule for 6 PM today
+      const sixPM = new Date(today);
+      sixPM.setHours(18, 0, 0, 0);
+      
+      // If it's already past 9 AM, schedule for tomorrow
+      if (now.getHours() >= 9) {
+        nineAM.setDate(nineAM.getDate() + 1);
+      }
+      
+      // If it's already past 6 PM, schedule for tomorrow
+      if (now.getHours() >= 18) {
+        sixPM.setDate(sixPM.getDate() + 1);
+      }
+
+      try {
+        // Schedule 9 AM notification
+        const nineAMNotification: NotificationData = {
+          type: 'system',
+          title: t('notifications.morningSurge'),
+          body: t('notifications.morningSurgeBody'),
+          data: {
+            type: 'system',
+            action: 'go_online',
+            surge: true,
+            time: 'morning',
+          },
+        };
+
+        const nineAMTrigger = { date: nineAM };
+        await scheduleNotification(nineAMNotification, nineAMTrigger);
+        console.log('📅 Scheduled morning surge notification for:', nineAM.toLocaleString());
+
+        // Schedule 6 PM notification
+        const sixPMNotification: NotificationData = {
+          type: 'system',
+          title: t('notifications.eveningSurge'),
+          body: t('notifications.eveningSurgeBody'),
+          data: {
+            type: 'system',
+            action: 'go_online',
+            surge: true,
+            time: 'evening',
+          },
+        };
+
+        const sixPMTrigger = { date: sixPM };
+        await scheduleNotification(sixPMNotification, sixPMTrigger);
+        console.log('📅 Scheduled evening surge notification for:', sixPM.toLocaleString());
+
+      } catch (error) {
+        console.error('❌ Failed to schedule surge notifications:', error);
+      }
+    },
+    [scheduleNotification, t]
+  );
+
   return {
     sendRideRequestNotification,
     sendRideUpdateNotification,
@@ -247,5 +339,7 @@ export const useRideNotifications = () => {
     cancelRideNotifications,
     sendSystemNotification,
     sendOfflineNotification,
+    sendSurgeNotification,
+    scheduleSurgeNotifications,
   };
 };
