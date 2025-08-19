@@ -14,6 +14,7 @@ import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { mockPaymentMethods } from '../../data/mockData';
 import Button from '../../components/common/Button';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
@@ -47,6 +48,7 @@ const walletTransactions = [
 export default function WalletScreen({ navigation }: any) {
   const [walletBalance] = useState(1250);
   const [selectedTab, setSelectedTab] = useState('wallet');
+  const { t } = useLanguage();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -142,7 +144,7 @@ export default function WalletScreen({ navigation }: any) {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Wallet</Text>
+        <Text style={styles.headerTitle}>{t('home.wallet')}</Text>
         <TouchableOpacity style={styles.helpButton} activeOpacity={0.7}>
           <Ionicons name="help-circle-outline" size={24} color={Colors.text} />
         </TouchableOpacity>
@@ -164,7 +166,7 @@ export default function WalletScreen({ navigation }: any) {
               selectedTab === 'wallet' && styles.activeTabText,
             ]}
           >
-            Wallet
+                          {t('home.wallet')}
           </Text>
         </TouchableOpacity> */}
         {/* <TouchableOpacity
@@ -192,7 +194,7 @@ export default function WalletScreen({ navigation }: any) {
             {/* Wallet Balance */}
             <Animated.View style={[styles.walletCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
               <View style={styles.balanceContainer}>
-                <Text style={styles.balanceLabel}>Wallet Balance</Text>
+                <Text style={styles.balanceLabel}>{t('wallet.balance')}</Text>
                 <Text style={styles.balanceAmount}>₹{walletBalance}</Text>
               </View>
               <View style={styles.walletActions}>

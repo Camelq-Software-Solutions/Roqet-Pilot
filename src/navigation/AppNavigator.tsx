@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@clerk/clerk-expo';
 import { useAuthStore } from '../store/useAuthStore';
+import { PushNotificationProvider } from '../contexts/PushNotificationContext';
 
 // Auth Screens
 import SplashScreen from '../screens/auth/SplashScreen';
@@ -156,7 +157,9 @@ export default function AppNavigator() {
 
   return (
     <NavigationContainer>
-      {shouldShowMainApp ? <MainNavigator /> : <AuthNavigator />}
+      <PushNotificationProvider>
+        {shouldShowMainApp ? <MainNavigator /> : <AuthNavigator />}
+      </PushNotificationProvider>
     </NavigationContainer>
   );
 }

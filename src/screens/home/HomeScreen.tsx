@@ -28,6 +28,9 @@ import { useLocationStore } from '../../store/useLocationStore';
 import { logJWTDetails } from '../../utils/jwtDecoder';
 import { formatRidePrice, getRidePrice } from '../../utils/priceUtils';
 import { Colors } from '../../constants/Colors';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { usePushNotifications } from '../../contexts/PushNotificationContext';
+import { useRideNotifications } from '../../hooks/useRideNotifications';
 
 const { width, height } = Dimensions.get('window');
 
@@ -160,6 +163,7 @@ const getFallbackCoordinates = (address: string) => {
 
 const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { visible: boolean; onClose: () => void; onNavigate: (screen: string) => void; halfScreen?: boolean; onLogout: () => void }) => {
   const { user } = useUser();
+  const { t } = useLanguage();
   
   // Get driver's full name
   const driverName = user?.fullName || user?.firstName || 'Driver';
@@ -195,7 +199,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
             borderBottomWidth: 1,
             borderBottomColor: '#f0f0f0',
           }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Menu</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('home.menu')}</Text>
             <TouchableOpacity 
               onPress={onClose} 
               style={{ 
@@ -241,7 +245,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               {driverName}
             </Text>
             <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
-              Professional Driver
+              {t('home.professionalDriver')}
             </Text>
           </View>
 
@@ -270,7 +274,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               }}>
                 <Ionicons name="home" size={18} color="#fff" />
               </View>
-              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Home</Text>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>{t('home.home')}</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
             </TouchableOpacity>
 
@@ -296,7 +300,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               }}>
                 <Ionicons name="gift" size={18} color="#fff" />
           </View>
-              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Refer & Earn</Text>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>{t('home.referAndEarn')}</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
 
@@ -326,7 +330,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               }}>
                 <Ionicons name="time" size={18} color="#fff" />
               </View>
-              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Ride History</Text>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>{t('home.rideHistory')}</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
 
@@ -352,7 +356,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               }}>
                 <Ionicons name="wallet" size={18} color="#fff" />
               </View>
-              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Wallet</Text>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>{t('home.wallet')}</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
 
@@ -378,7 +382,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               }}>
                 <Ionicons name="settings" size={18} color="#fff" />
               </View>
-              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Settings</Text>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>{t('home.settings')}</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
 
@@ -404,7 +408,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               }}>
                 <Ionicons name="help-circle" size={18} color="#fff" />
               </View>
-              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Support</Text>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>{t('home.support')}</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
           </ScrollView>
@@ -435,7 +439,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               activeOpacity={0.8}
             >
               <Ionicons name="log-out" size={18} color="#fff" style={{ marginRight: 8 }} />
-              <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}>Logout</Text>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}>{t('home.logout')}</Text>
           </TouchableOpacity>
 
             <Text style={{ 
@@ -444,7 +448,7 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
               marginTop: 12,
               textAlign: 'center'
             }}>
-              RiderSony Driver App v1.0.0
+              {t('home.appVersion')}
             </Text>
           </View>
         </Animated.View>
@@ -515,6 +519,9 @@ export default function HomeScreen() {
   const { getToken, signOut } = useAuth();
   const navigation = useNavigation<NavigationProp<any>>();
   const { getUserInfo } = useUserFromJWT();
+  const { t } = useLanguage();
+  const { isInitialized: pushNotificationsInitialized } = usePushNotifications();
+  const { sendOfflineNotification, sendRideRequestNotification, sendRideCompletedNotification } = useRideNotifications();
   const { 
     isOnline, 
     setIsOnline, 
@@ -791,9 +798,8 @@ export default function HomeScreen() {
       onStartShouldSetPanResponder: () => !isOnline,
       onMoveShouldSetPanResponder: (_, gesture) => !isOnline && Math.abs(gesture.dx) > 5,
       onPanResponderGrant: () => {
-        if (Platform.OS === 'android') {
-          Vibration.vibrate([0, 2000], true);
-        }
+        // Softer initial feedback (no continuous vibration)
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       },
       onPanResponderMove: (e, gestureState) => {
         if (isOnline) return;
@@ -803,8 +809,8 @@ export default function HomeScreen() {
         swipeX.setValue(newX);
         // Throttle haptic feedback
         const now = Date.now();
-        if (now - lastHaptic.current > 60) {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        if (now - lastHaptic.current > 250) {
+          Haptics.selectionAsync().catch(() => {});
           lastHaptic.current = now;
         }
       },
@@ -889,9 +895,8 @@ export default function HomeScreen() {
         return isOnline && showOfflineScreen && Math.abs(gesture.dx) > 5;
       },
       onPanResponderGrant: () => {
-        if (Platform.OS === 'android') {
-          Vibration.vibrate([0, 2000], true);
-        }
+        // Softer initial feedback (no continuous vibration)
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       },
       onPanResponderMove: (e, gestureState) => {
         if (!isOnline || !showOfflineScreen) return;
@@ -901,8 +906,8 @@ export default function HomeScreen() {
         offlineSwipeX.setValue(newX);
         // Throttle haptic feedback
         const now = Date.now();
-        if (now - lastHaptic.current > 60) {
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        if (now - lastHaptic.current > 250) {
+          Haptics.selectionAsync().catch(() => {});
           lastHaptic.current = now;
         }
       },
@@ -983,12 +988,22 @@ export default function HomeScreen() {
     }).start();
   };
 
-  const goOffline = () => {
+  const goOffline = async () => {
     setShowOfflineScreen(true);
     Animated.spring(offlineSwipeX, {
       toValue: 0,
       useNativeDriver: false,
     }).start();
+
+    // Send offline notification when driver goes offline
+    if (pushNotificationsInitialized) {
+      try {
+        await sendOfflineNotification();
+        console.log('📱 Offline notification sent');
+      } catch (error) {
+        console.error('❌ Failed to send offline notification:', error);
+      }
+    }
   };
 
   const cancelOffline = () => {
@@ -1016,8 +1031,23 @@ export default function HomeScreen() {
     };
   }
 
-  const handleAcceptRide = (ride: BackendRideRequest) => {
+  const handleAcceptRide = async (ride: BackendRideRequest) => {
     acceptRide(ride);
+    
+    // Send ride accepted notification
+    if (pushNotificationsInitialized) {
+      try {
+        await sendRideRequestNotification({
+          rideId: ride.rideId,
+          pickupLocation: ride.pickup.address || ride.pickup.name,
+          dropoffLocation: ride.drop.address || ride.drop.name,
+          fare: ride.price,
+        });
+        console.log('📱 Ride accepted notification sent');
+      } catch (error) {
+        console.error('❌ Failed to send ride accepted notification:', error);
+      }
+    }
   };
 
   const handleRejectRide = (ride: BackendRideRequest) => {
@@ -1072,13 +1102,28 @@ export default function HomeScreen() {
     }
   };
 
-  const handleRideCompleted = (rideId: string) => {
+  const handleRideCompleted = async (rideId: string) => {
     // Complete the ride on the server
     completeRide(rideId);
     
     // Reset driver status when ride is completed
     resetDriverStatus();
     console.log('✅ Ride completed, driver status reset to available');
+
+    // Send ride completed notification
+    if (pushNotificationsInitialized && acceptedRideDetails) {
+      try {
+        await sendRideCompletedNotification({
+          rideId: rideId,
+          pickupLocation: acceptedRideDetails.pickup.address || acceptedRideDetails.pickup.name,
+          dropoffLocation: acceptedRideDetails.drop.address || acceptedRideDetails.drop.name,
+          fare: acceptedRideDetails.price,
+        });
+        console.log('📱 Ride completed notification sent');
+      } catch (error) {
+        console.error('❌ Failed to send ride completed notification:', error);
+      }
+    }
   };
 
   const isRideActive = !!(rideRequest);
@@ -1151,6 +1196,33 @@ export default function HomeScreen() {
           setRideRequest(localRideRequest);
           // Play haptic feedback for new ride request
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          
+          // Send push notification for new ride request with distance and price
+          if (pushNotificationsInitialized) {
+            try {
+              // Extract distance from route info
+              let distance = 'Unknown distance';
+              let duration = 'Unknown time';
+              if (pickup.includes('(') && pickup.includes(')')) {
+                const distanceMatch = pickup.match(/\(([^)]+)\)/);
+                const durationMatch = pickup.match(/^([^(]+)/);
+                if (distanceMatch) distance = distanceMatch[1];
+                if (durationMatch) duration = durationMatch[1].trim();
+              }
+              
+              await sendRideRequestNotification({
+                rideId: currentRideRequest.rideId,
+                pickupLocation: currentRideRequest.pickup.address || currentRideRequest.pickup.name,
+                dropoffLocation: currentRideRequest.drop.address || currentRideRequest.drop.name,
+                fare: currentRideRequest.price,
+                estimatedTime: duration,
+                distance: distance,
+              });
+              console.log('📱 New ride request notification sent with distance and price');
+            } catch (error) {
+              console.error('❌ Failed to send new ride request notification:', error);
+            }
+          }
         }
       }
     }
@@ -1690,7 +1762,7 @@ export default function HomeScreen() {
                 marginBottom: 12,
               }}
             >
-              Going Offline?
+              {t('home.goOffline')}
             </Text>
 
             {/* Subtitle */}
@@ -1703,7 +1775,7 @@ export default function HomeScreen() {
                 lineHeight: 24,
               }}
             >
-              You won't receive new ride requests
+              {t('home.youWontReceiveNewRideRequests')}
             </Text>
 
             {/* Additional Info */}
@@ -1715,7 +1787,7 @@ export default function HomeScreen() {
                 lineHeight: 20,
               }}
             >
-              Swipe the bar below to confirm
+              {t('home.swipeBarBelowToConfirm')}
             </Text>
           </View>
 
@@ -1779,7 +1851,11 @@ export default function HomeScreen() {
                   width: 72,
                   height: 72,
                   borderRadius: 36,
-                  backgroundColor: '#1a1a2e',
+                  backgroundColor: offlineSwipeX.interpolate({
+                    inputRange: [0, offlineSwipeWidth - 72],
+                    outputRange: ['#1a1a2e', '#000000'],
+                    extrapolate: 'clamp',
+                  }),
                   alignItems: 'center',
                   justifyContent: 'center',
                   shadowColor: '#000',
@@ -1792,18 +1868,22 @@ export default function HomeScreen() {
                   borderColor: 'rgba(255, 255, 255, 0.3)',
                 }}
               >
-                <LinearGradient
-                  colors={['#2d3748', '#1a1a2e']}
+                <Animated.View
                   style={{
                     width: 66,
                     height: 66,
                     borderRadius: 33,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    backgroundColor: offlineSwipeX.interpolate({
+                      inputRange: [0, offlineSwipeWidth - 72],
+                      outputRange: ['#2d3748', '#000000'],
+                      extrapolate: 'clamp',
+                    }),
                   }}
                 >
                   <Ionicons name="arrow-forward" size={32} color="#fff" />
-                </LinearGradient>
+                </Animated.View>
               </Animated.View>
               
               {/* Enhanced Text with Icon */}
@@ -1820,7 +1900,7 @@ export default function HomeScreen() {
                     textShadowRadius: 2,
                   }}
                 >
-                  Swipe to go offline
+                  {t('home.swipeToGoOffline')}
                 </Text>
               </View>
               
@@ -2032,7 +2112,7 @@ export default function HomeScreen() {
                 textAlign: 'center',
                 flex: 1,
               }}>
-                You're online
+                {t('home.youreOnline')}
               </Text>
               {/* Hamburger Icon (right) */}
               <TouchableOpacity 

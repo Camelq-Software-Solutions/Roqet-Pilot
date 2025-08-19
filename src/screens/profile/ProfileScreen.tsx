@@ -17,12 +17,14 @@ import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
 export default function ProfileScreen() {
   const { user, signOut } = useAuth();
   const navigation = useNavigation();
+  const { t } = useLanguage();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
@@ -129,7 +131,7 @@ export default function ProfileScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={26} color={Colors.modernYellow} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Profile</Text>
+        <Text style={styles.headerTitle}>{t('home.profile')}</Text>
         <TouchableOpacity style={styles.editButton}>
           <Ionicons name="create-outline" size={24} color={Colors.modernYellow} />
         </TouchableOpacity>
@@ -148,7 +150,7 @@ export default function ProfileScreen() {
           
           {/* Profile Info */}
           <Text style={styles.profileName}>{getUserName()}</Text>
-          <Text style={styles.profileSubtitle}>Professional Driver</Text>
+          <Text style={styles.profileSubtitle}>{t('profile.professionalDriver')}</Text>
           
           {/* Member Since Badge */}
           <View style={styles.memberBadge}>

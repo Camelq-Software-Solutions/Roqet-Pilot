@@ -17,6 +17,7 @@ import { useRideHistory } from '../../store/RideHistoryContext';
 import { RefreshControl } from 'react-native';
 import { useAuth } from '@clerk/clerk-expo';
 import { formatRidePrice } from '../../utils/priceUtils';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
@@ -26,6 +27,7 @@ export default function RideHistoryScreen({ navigation }: any) {
   const slideAnim = useRef(new Animated.Value(30)).current;
   const { rides, loading, error, hasLoaded, clearHistory, refreshRideHistory } = useRideHistory();
   const { getToken } = useAuth();
+  const { t } = useLanguage();
 
   useEffect(() => {
     Animated.parallel([
@@ -158,7 +160,7 @@ export default function RideHistoryScreen({ navigation }: any) {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Ride History</Text>
+        <Text style={styles.headerTitle}>{t('home.rideHistory')}</Text>
         <TouchableOpacity 
           style={styles.filterButton} 
           activeOpacity={0.7}
@@ -248,12 +250,12 @@ export default function RideHistoryScreen({ navigation }: any) {
           <View style={styles.emptyContainer}>
             {loading ? (
               <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>Loading ride history...</Text>
+                <Text style={styles.loadingText}>{t('common.loading')} {t('home.rideHistory').toLowerCase()}...</Text>
               </View>
             ) : error ? (
               <View style={styles.errorContainer}>
                 <Ionicons name="alert-circle" size={48} color={Colors.error} />
-                <Text style={styles.errorText}>Failed to load ride history</Text>
+                <Text style={styles.errorText}>{t('common.error')}: {t('home.rideHistory').toLowerCase()}</Text>
                 <Text style={styles.errorSubtext}>{error}</Text>
                 <TouchableOpacity style={styles.retryButton} onPress={async () => {
                   try {
@@ -271,7 +273,7 @@ export default function RideHistoryScreen({ navigation }: any) {
             ) : (
               <View style={styles.emptyStateContainer}>
                 <Ionicons name="time" size={48} color={Colors.gray400} />
-                <Text style={styles.emptyStateText}>No ride history yet</Text>
+                <Text style={styles.emptyStateText}>No {t('home.rideHistory').toLowerCase()} yet</Text>
                 <Text style={styles.emptyStateSubtext}>Your completed rides will appear here</Text>
               </View>
             )}
@@ -280,7 +282,7 @@ export default function RideHistoryScreen({ navigation }: any) {
       />
       {/* Clear History Button */}
       <TouchableOpacity style={{ alignSelf: 'center', margin: 16 }} onPress={clearHistory}>
-        <Text style={{ color: Colors.modernYellow, fontWeight: 'bold' }}>Clear Ride History</Text>
+                    <Text style={{ color: Colors.modernYellow, fontWeight: 'bold' }}>Clear {t('home.rideHistory')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

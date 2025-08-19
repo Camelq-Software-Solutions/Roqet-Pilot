@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, TITLE_COLOR, SUBTITLE_COLOR, PRIMARY_GREEN } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
@@ -30,6 +31,7 @@ const extraMenu = [
 export default function HelpSupportScreen({ navigation }: any) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
+  const { t } = useLanguage();
 
   useEffect(() => {
     Animated.parallel([
@@ -54,7 +56,7 @@ export default function HelpSupportScreen({ navigation }: any) {
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back" activeOpacity={0.7}>
           <Ionicons name="arrow-back" size={24} color={Colors.modernYellow} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Help & Support</Text>
+        <Text style={styles.headerTitle}>{t('support.helpAndSupport')}</Text>
         <View style={{ width: 24 }} />
       </Animated.View>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -74,7 +76,12 @@ export default function HelpSupportScreen({ navigation }: any) {
         </Animated.View> */}
         {/* Menu Items */}
         <Animated.View style={[styles.menuSection, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          {menuItems.map((item) => (
+          {[
+            { key: 'ride', label: t('support.rideIssues'), screen: 'RideIssues', icon: 'car-outline' },
+            { key: 'payments', label: t('support.paymentsAndRefunds'), screen: 'PaymentsIssues', icon: 'card-outline' },
+            { key: 'account', label: t('support.accountIssues'), screen: 'AccountIssues', icon: 'person-outline' },
+            { key: 'other', label: t('support.otherIssues'), screen: 'OtherIssues', icon: 'help-circle-outline' },
+          ].map((item) => (
             <TouchableOpacity
               key={item.key}
               style={styles.menuItem}
@@ -92,9 +99,12 @@ export default function HelpSupportScreen({ navigation }: any) {
             </TouchableOpacity>
           ))}
         </Animated.View>
-        {/* Extra Menu */}
+                {/* Extra Menu */}
         <Animated.View style={[styles.menuSection, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          {extraMenu.map((item) => (
+          {[
+            { key: 'privacy', label: t('support.privacyPolicy'), screen: 'PersonalInfoUpdate', icon: 'shield-outline' },
+            { key: 'terms', label: t('support.termsAndConditions'), screen: 'TermsCondition', icon: 'document-text-outline' },
+          ].map((item) => (
             <TouchableOpacity
               key={item.key}
               style={styles.menuItem}
@@ -106,7 +116,7 @@ export default function HelpSupportScreen({ navigation }: any) {
                 <View style={styles.menuIcon}>
                   <Ionicons name={item.icon as any} size={20} color={Colors.modernYellow} />
                 </View>
-              <Text style={styles.menuText}>{item.label}</Text>
+                <Text style={styles.menuText}>{item.label}</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color={Colors.gray400} />
             </TouchableOpacity>

@@ -98,6 +98,7 @@ function NameStep({ firstName, lastName, setFirstName, setLastName, onNext, fade
     console.log('SignUpScreen - NameStep handleNext called');
     console.log('SignUpScreen - First name:', firstName);
     console.log('SignUpScreen - Last name:', lastName);
+    console.log('SignUpScreen - onNext function:', typeof onNext);
     
     if (!isValidName(firstName.trim())) {
       console.log('SignUpScreen - First name validation failed');
@@ -111,7 +112,12 @@ function NameStep({ firstName, lastName, setFirstName, setLastName, onNext, fade
     }
     
     console.log('SignUpScreen - Name validation passed, calling onNext');
-    onNext();
+    try {
+      onNext();
+      console.log('SignUpScreen - onNext called successfully');
+    } catch (error) {
+      console.error('SignUpScreen - Error calling onNext:', error);
+    }
   };
   
   return (
@@ -552,46 +558,74 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
     }
   }, [isSignedIn]);
 
+  // Monitor step changes
+  useEffect(() => {
+    console.log('SignUpScreen - Step changed to:', step);
+  }, [step]);
+
   // Step navigation with animations
   const goToNextStep = () => {
     console.log('SignUpScreen - goToNextStep called, current step:', step);
+    
+    // Reset animations
     fadeAnim.setValue(0);
     slideAnim.setValue(30);
-    setStep((s) => {
-      const newStep = s + 1;
-      console.log('SignUpScreen - Step changed from', s, 'to', newStep);
-      return newStep;
+    
+    // Update step first
+    const newStep = step + 1;
+    console.log('SignUpScreen - Step changing from', step, 'to', newStep);
+    
+    // Use functional update to ensure we're working with the latest state
+    setStep((currentStep) => {
+      const nextStep = currentStep + 1;
+      console.log('SignUpScreen - Functional update: currentStep =', currentStep, 'nextStep =', nextStep);
+      return nextStep;
     });
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    
+    // Start animations after a brief delay to ensure state update
+    setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, 100); // Increased delay slightly
   };
   
   const goToPrevStep = () => {
+    console.log('SignUpScreen - goToPrevStep called, current step:', step);
+    
+    // Reset animations
     fadeAnim.setValue(0);
     slideAnim.setValue(-30);
-    setStep((s) => s - 1);
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    
+    // Update step first
+    const newStep = step - 1;
+    console.log('SignUpScreen - Step changing from', step, 'to', newStep);
+    setStep(newStep);
+    
+    // Start animations after a brief delay to ensure state update
+    setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }, 50);
   };
 
   // Initialize animations
@@ -989,10 +1023,10 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
               {/* Default Image/Illustration */}
               <View style={styles.illustrationContainer}>
                 <View style={styles.illustrationCircle}>
-                  <Ionicons name="person-add" size={80} color={Colors.modernYellow} />
+                  <Ionicons name="person-add" size={40} color={Colors.modernYellow} />
                 </View>
                 <View style={styles.illustrationBadge}>
-                  <Ionicons name="checkmark-circle" size={24} color={Colors.white} />
+                  <Ionicons name="checkmark-circle" size={16} color={Colors.white} />
                 </View>
               </View>
             </View>
@@ -1077,6 +1111,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 100,
+    justifyContent: 'center',
+    minHeight: '100%',
   },
   header: {
     paddingHorizontal: Layout.spacing.lg,
@@ -1097,9 +1133,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: Layout.spacing.lg,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
   },
   stepContainer: {
-    marginTop: 40,
+    marginTop: 20,
     backgroundColor: Colors.sandLight,
     borderRadius: 24,
     padding: 24,
@@ -1108,6 +1147,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 20,
     elevation: 10,
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 380,
+    minWidth: 320,
   },
   progressContainer: {
     marginBottom: 24,
@@ -1298,39 +1341,39 @@ const styles = StyleSheet.create({
   },
   illustrationContainer: {
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 30,
+    marginTop: 15,
+    marginBottom: 25,
   },
   illustrationCircle: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: Colors.sandLight,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   illustrationBadge: {
     position: 'absolute',
-    top: 20,
-    right: 20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    top: 10,
+    right: 10,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: Colors.modernYellow,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: Colors.white,
     shadowColor: Colors.modernYellow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
   otpIllustrationContainer: {
     alignItems: 'center',

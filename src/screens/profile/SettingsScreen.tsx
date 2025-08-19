@@ -14,11 +14,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { usePushNotifications } from '../../contexts/PushNotificationContext';
+import { useRideNotifications } from '../../hooks/useRideNotifications';
 
 const { width } = Dimensions.get('window');
 
 export default function SettingsScreen({ navigation }: any) {
   const { t } = useLanguage();
+  const { isInitialized: pushNotificationsInitialized, pushToken } = usePushNotifications();
+  const { sendSystemNotification } = useRideNotifications();
   const [notifications, setNotifications] = useState(true);
   // const [locationServices, setLocationServices] = useState(true);
   const [shareData, setShareData] = useState(true);
@@ -43,32 +47,45 @@ export default function SettingsScreen({ navigation }: any) {
 
   const settingSections = [
     {
-      title: 'Account',
+      title: t('settings.account'),
       items: [
         {
           icon: 'person-outline',
-          title: 'Personal Information',
-          subtitle: 'Update your profile details',
+          title: t('settings.personalInformation'),
+          subtitle: t('settings.updateProfileDetails'),
           action: () => navigation.navigate('PersonalDetails'),
         },
         {
           icon: 'shield-checkmark-outline',
-          title: 'Privacy & Security',
-          subtitle: 'Manage your privacy settings',
+          title: t('settings.privacySecurity'),
+          subtitle: t('settings.managePrivacySettings'),
           action: () => navigation.navigate('PrivacySecurity'),
         },
       ],
     },
     {
-      title: 'Preferences',
+      title: t('settings.preferences'),
       items: [
         {
           icon: 'notifications-outline',
-          title: 'Push Notifications',
-          subtitle: 'Receive ride updates and offers',
+          title: t('settings.pushNotifications'),
+          subtitle: pushNotificationsInitialized ? 'Push notifications enabled' : 'Push notifications disabled',
           toggle: true,
           value: notifications,
           onToggle: setNotifications,
+        },
+        {
+          icon: 'flash-outline',
+          title: t('notifications.testNotification'),
+          subtitle: t('notifications.sendTestNotification'),
+          action: async () => {
+            if (pushNotificationsInitialized) {
+              await sendSystemNotification(
+                t('notifications.testNotification'),
+                t('notifications.testNotificationMessage')
+              );
+            }
+          },
         },
         // {
         //   icon: 'location-outline',
@@ -80,42 +97,42 @@ export default function SettingsScreen({ navigation }: any) {
         // },
         {
           icon: 'card-outline',
-          title: 'Auto Payment',
-          subtitle: 'Automatically pay for rides',
+          title: t('settings.autoPayment'),
+          subtitle: t('settings.automaticallyPayForRides'),
           action: () => navigation.navigate('AutoPayment'),
         },
         {
           icon: 'language-outline',
-          title: 'Language',
-          subtitle: 'Choose your preferred language',
+          title: t('settings.language'),
+          subtitle: t('settings.choosePreferredLanguage'),
           action: () => navigation.navigate('Language'),
         },
       ],
     },
     {
-      title: 'Support',
+      title: t('settings.support'),
       items: [
         {
           icon: 'help-circle-outline',
-          title: 'Help Center',
-          subtitle: 'Get help with your account',
+          title: t('settings.helpCenter'),
+          subtitle: t('settings.getHelpWithAccount'),
           action: () => navigation.navigate('HelpSupport'),
         },
         {
           icon: 'star-outline',
-          title: 'Rate the App',
-          subtitle: 'Share your feedback',
+          title: t('settings.rateApp'),
+          subtitle: t('settings.shareFeedback'),
           action: () => console.log('Rate App'),
         },
       ],
     },
     {
-      title: 'Legal',
+      title: t('settings.legal'),
       items: [
         {
           icon: 'document-text-outline',
-          title: 'Terms of Service',
-          subtitle: 'Read our terms and conditions',
+          title: t('settings.termsOfService'),
+          subtitle: t('settings.readTermsAndConditions'),
           action: () => navigation.navigate('TermsCondition'),
         },
         // {

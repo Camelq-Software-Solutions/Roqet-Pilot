@@ -85,10 +85,16 @@ export interface Translations {
     goOffline: string;
     swipeToGoOffline: string;
     youreOnline: string;
+    youWontReceiveNewRideRequests: string;
+    swipeBarBelowToConfirm: string;
     emergencyCall: string;
     cancelRide: string;
     rideHistory: string;
     refer: string;
+    referAndEarn: string;
+    professionalDriver: string;
+    logout: string;
+    appVersion: string;
   };
 
   // Profile
@@ -128,6 +134,24 @@ export interface Translations {
     help: string;
     rateApp: string;
     shareApp: string;
+    account: string;
+    preferences: string;
+    support: string;
+    legal: string;
+    personalInformation: string;
+    updateProfileDetails: string;
+    privacySecurity: string;
+    managePrivacySettings: string;
+    pushNotifications: string;
+    receiveRideUpdates: string;
+    autoPayment: string;
+    automaticallyPayForRides: string;
+    choosePreferredLanguage: string;
+    helpCenter: string;
+    getHelpWithAccount: string;
+    shareFeedback: string;
+    termsOfService: string;
+    readTermsAndConditions: string;
   };
 
   // Support
@@ -139,6 +163,36 @@ export interface Translations {
     feedback: string;
     liveChat: string;
     callSupport: string;
+    rideIssues: string;
+    paymentsAndRefunds: string;
+    accountIssues: string;
+    otherIssues: string;
+    privacyPolicy: string;
+    termsAndConditions: string;
+  };
+
+  // Notifications
+  notifications: {
+    newRideRequest: string;
+    rideCompleted: string;
+    paymentReceived: string;
+    passengerPickedUp: string;
+    rideStatusUpdate: string;
+    pickupReminder: string;
+    youreOffline: string;
+    goBackOnline: string;
+    pickup: string;
+    distance: string;
+    time: string;
+    fare: string;
+    earned: string;
+    addedToWallet: string;
+    dontForgetPickup: string;
+    rideInProgress: string;
+    toDestination: string;
+    testNotification: string;
+    sendTestNotification: string;
+    testNotificationMessage: string;
   };
 }
 
@@ -243,10 +297,16 @@ export const translations: Record<string, Translations> = {
       goOffline: 'Go Offline',
       swipeToGoOffline: 'Swipe to go offline',
       youreOnline: "You're online",
+      youWontReceiveNewRideRequests: "You won't receive new ride requests",
+      swipeBarBelowToConfirm: 'Swipe the bar below to confirm',
       emergencyCall: 'Emergency Call',
       cancelRide: 'Cancel Ride',
       rideHistory: 'Ride History',
-      refer: 'Refer'
+      refer: 'Refer',
+      referAndEarn: 'Refer & Earn',
+      professionalDriver: 'Professional Driver',
+      logout: 'Logout',
+      appVersion: 'RiderSony Driver App v1.0.0'
     },
     profile: {
       personalDetails: 'Personal Details',
@@ -279,7 +339,25 @@ export const translations: Record<string, Translations> = {
       about: 'About',
       help: 'Help',
       rateApp: 'Rate App',
-      shareApp: 'Share App'
+      shareApp: 'Share App',
+      account: 'Account',
+      preferences: 'Preferences',
+      support: 'Support',
+      legal: 'Legal',
+      personalInformation: 'Personal Information',
+      updateProfileDetails: 'Update your profile details',
+      privacySecurity: 'Privacy & Security',
+      managePrivacySettings: 'Manage your privacy settings',
+      pushNotifications: 'Push Notifications',
+      receiveRideUpdates: 'Receive ride updates and offers',
+      autoPayment: 'Auto Payment',
+      automaticallyPayForRides: 'Automatically pay for rides',
+      choosePreferredLanguage: 'Choose your preferred language',
+      helpCenter: 'Help Center',
+      getHelpWithAccount: 'Get help with your account',
+      shareFeedback: 'Share your feedback',
+      termsOfService: 'Terms of Service',
+      readTermsAndConditions: 'Read our terms and conditions'
     },
     support: {
       helpAndSupport: 'Help & Support',
@@ -288,7 +366,37 @@ export const translations: Record<string, Translations> = {
       reportIssue: 'Report Issue',
       feedback: 'Feedback',
       liveChat: 'Live Chat',
-      callSupport: 'Call Support'
+      callSupport: 'Call Support',
+      rideIssues: 'Ride Issues',
+      paymentsAndRefunds: 'Payments and Refunds',
+      accountIssues: 'Account related issues',
+      otherIssues: 'Other Issues',
+      privacyPolicy: 'Privacy Policy',
+      termsAndConditions: 'Terms and conditions'
+    },
+
+    // Notifications
+    notifications: {
+      newRideRequest: 'New Ride Request! 🚗',
+      rideCompleted: 'Ride Completed Successfully! 🎉',
+      paymentReceived: 'Payment Received! 💰',
+      passengerPickedUp: 'Passenger Picked Up! ✅',
+      rideStatusUpdate: 'Ride Status Update',
+      pickupReminder: 'Pickup Reminder ⏰',
+      youreOffline: 'You\'re Offline 📱',
+      goBackOnline: 'Tap to go back online and start receiving ride requests',
+      pickup: 'Pickup',
+      distance: 'Distance',
+      time: 'Time',
+      fare: 'Fare',
+      earned: 'You\'ve earned',
+      addedToWallet: 'has been added to your wallet',
+      dontForgetPickup: 'Don\'t forget to pick up your passenger at',
+      rideInProgress: 'Ride in progress',
+      toDestination: 'to destination',
+      testNotification: 'Test Notification',
+      sendTestNotification: 'Send a test push notification',
+      testNotificationMessage: 'This is a test push notification from your driver app!',
     }
   },
   hi: {
@@ -364,10 +472,16 @@ export const translations: Record<string, Translations> = {
       goOffline: 'ऑफलाइन जाएं',
       swipeToGoOffline: 'ऑफलाइन जाने के लिए स्वाइप करें',
       youreOnline: 'आप ऑनलाइन हैं',
+      youWontReceiveNewRideRequests: 'आपको नए राइड अनुरोध नहीं मिलेंगे',
+      swipeBarBelowToConfirm: 'पुष्टि करने के लिए नीचे बार स्वाइप करें',
       emergencyCall: 'आपातकालीन कॉल',
       cancelRide: 'राइड रद्द करें',
       rideHistory: 'राइड इतिहास',
-      refer: 'रेफर'
+      refer: 'रेफर',
+      referAndEarn: 'रेफर और कमाएं',
+      professionalDriver: 'पेशेवर ड्राइवर',
+      logout: 'लॉगआउट',
+      appVersion: 'राइडरसोनी ड्राइवर ऐप v1.0.0'
     },
     profile: {
       personalDetails: 'व्यक्तिगत विवरण',
@@ -400,7 +514,25 @@ export const translations: Record<string, Translations> = {
       about: 'के बारे में',
       help: 'सहायता',
       rateApp: 'ऐप रेट करें',
-      shareApp: 'ऐप शेयर करें'
+      shareApp: 'ऐप शेयर करें',
+      account: 'खाता',
+      preferences: 'प्राथमिकताएं',
+      support: 'सहायता',
+      legal: 'कानूनी',
+      personalInformation: 'व्यक्तिगत जानकारी',
+      updateProfileDetails: 'अपनी प्रोफाइल जानकारी अपडेट करें',
+      privacySecurity: 'गोपनीयता और सुरक्षा',
+      managePrivacySettings: 'अपनी गोपनीयता सेटिंग्स प्रबंधित करें',
+      pushNotifications: 'पुश नोटिफिकेशन',
+      receiveRideUpdates: 'राइड अपडेट और ऑफर प्राप्त करें',
+      autoPayment: 'स्वचालित भुगतान',
+      automaticallyPayForRides: 'राइड के लिए स्वचालित रूप से भुगतान करें',
+      choosePreferredLanguage: 'अपनी पसंदीदा भाषा चुनें',
+      helpCenter: 'सहायता केंद्र',
+      getHelpWithAccount: 'अपने खाते के साथ सहायता प्राप्त करें',
+      shareFeedback: 'अपनी प्रतिक्रिया साझा करें',
+      termsOfService: 'सेवा की शर्तें',
+      readTermsAndConditions: 'हमारी शर्तें और नियम पढ़ें'
     },
     support: {
       helpAndSupport: 'सहायता और समर्थन',
@@ -409,7 +541,37 @@ export const translations: Record<string, Translations> = {
       reportIssue: 'समस्या रिपोर्ट करें',
       feedback: 'प्रतिक्रिया',
       liveChat: 'लाइव चैट',
-      callSupport: 'सहायता कॉल करें'
+      callSupport: 'सहायता कॉल करें',
+      rideIssues: 'राइड की समस्याएं',
+      paymentsAndRefunds: 'भुगतान और धनवापसी',
+      accountIssues: 'खाते से संबंधित समस्याएं',
+      otherIssues: 'अन्य समस्याएं',
+      privacyPolicy: 'गोपनीयता नीति',
+      termsAndConditions: 'नियम और शर्तें'
+    },
+
+    // Notifications
+    notifications: {
+      newRideRequest: 'नया राइड अनुरोध! 🚗',
+      rideCompleted: 'राइड सफलतापूर्वक पूरा हुआ! 🎉',
+      paymentReceived: 'भुगतान प्राप्त हुआ! 💰',
+      passengerPickedUp: 'यात्री को उठा लिया गया! ✅',
+      rideStatusUpdate: 'राइड स्थिति अपडेट',
+      pickupReminder: 'पिकअप रिमाइंडर ⏰',
+      youreOffline: 'आप ऑफलाइन हैं 📱',
+      goBackOnline: 'ऑनलाइन वापस जाने और राइड अनुरोध प्राप्त करने के लिए टैप करें',
+      pickup: 'पिकअप',
+      distance: 'दूरी',
+      time: 'समय',
+      fare: 'किराया',
+      earned: 'आपने कमाया',
+      addedToWallet: 'आपके वॉलेट में जोड़ा गया',
+      dontForgetPickup: 'अपने यात्री को पिकअप करना न भूलें',
+      rideInProgress: 'राइड जारी है',
+      toDestination: 'गंतव्य तक',
+      testNotification: 'टेस्ट नोटिफिकेशन',
+      sendTestNotification: 'एक टेस्ट पुश नोटिफिकेशन भेजें',
+      testNotificationMessage: 'यह आपके ड्राइवर ऐप से एक टेस्ट पुश नोटिफिकेशन है!',
     }
   },
   ta: {
@@ -485,10 +647,16 @@ export const translations: Record<string, Translations> = {
       goOffline: 'ஆஃப்லைனுக்கு செல்லுங்கள்',
       swipeToGoOffline: 'ஆஃப்லைனுக்கு செல்ல ஸ்வைப் செய்யுங்கள்',
       youreOnline: 'நீங்கள் ஆன்லைனில் இருக்கிறீர்கள்',
+      youWontReceiveNewRideRequests: 'நீங்கள் புதிய சவாரி கோரிக்கைகளைப் பெற மாட்டீர்கள்',
+      swipeBarBelowToConfirm: 'உறுதிப்படுத்த கீழே உள்ள பட்டையை ஸ்வைப் செய்யுங்கள்',
       emergencyCall: 'அவசர அழைப்பு',
       cancelRide: 'சவாரியை ரத்து செய்யுங்கள்',
       rideHistory: 'சவாரி வரலாறு',
-      refer: 'பரிந்துரை'
+      refer: 'பரிந்துரை',
+      referAndEarn: 'பரிந்துரை மற்றும் சம்பாதிக்கவும்',
+      professionalDriver: 'தொழில்முறை ஓட்டுநர்',
+      logout: 'வெளியேறு',
+      appVersion: 'ரைடர்சோனி டிரைவர் ஆப் v1.0.0'
     },
     profile: {
       personalDetails: 'தனிப்பட்ட விவரங்கள்',
@@ -521,7 +689,25 @@ export const translations: Record<string, Translations> = {
       about: 'பற்றி',
       help: 'உதவி',
       rateApp: 'பயன்பாட்டை மதிப்பிடுங்கள்',
-      shareApp: 'பயன்பாட்டை பகிரவும்'
+      shareApp: 'பயன்பாட்டை பகிரவும்',
+      account: 'கணக்கு',
+      preferences: 'விருப்பங்கள்',
+      support: 'ஆதரவு',
+      legal: 'சட்ட',
+      personalInformation: 'தனிப்பட்ட தகவல்',
+      updateProfileDetails: 'உங்கள் சுயவிவர விவரங்களை புதுப்பிக்கவும்',
+      privacySecurity: 'தனியுரிமை மற்றும் பாதுகாப்பு',
+      managePrivacySettings: 'உங்கள் தனியுரிமை அமைப்புகளை நிர்வகிக்கவும்',
+      pushNotifications: 'புஷ் அறிவிப்புகள்',
+      receiveRideUpdates: 'சவாரி புதுப்பிப்புகள் மற்றும் சலுகைகளைப் பெறவும்',
+      autoPayment: 'தானியங்கி கட்டணம்',
+      automaticallyPayForRides: 'சவாரிகளுக்கு தானாக கட்டணம் செலுத்தவும்',
+      choosePreferredLanguage: 'உங்கள் விரும்பிய மொழியைத் தேர்ந்தெடுக்கவும்',
+      helpCenter: 'உதவி மையம்',
+      getHelpWithAccount: 'உங்கள் கணக்குடன் உதவி பெறவும்',
+      shareFeedback: 'உங்கள் கருத்தை பகிரவும்',
+      termsOfService: 'சேவை விதிமுறைகள்',
+      readTermsAndConditions: 'எங்கள் விதிமுறைகள் மற்றும் நிபந்தனைகளைப் படிக்கவும்'
     },
     support: {
       helpAndSupport: 'உதவி மற்றும் ஆதரவு',
@@ -530,7 +716,37 @@ export const translations: Record<string, Translations> = {
       reportIssue: 'சிக்கலை அறிக்கையிடுங்கள்',
       feedback: 'கருத்து',
       liveChat: 'நேரலை அரட்டை',
-      callSupport: 'ஆதரவு அழைப்பு'
+      callSupport: 'ஆதரவு அழைப்பு',
+      rideIssues: 'சவாரி சிக்கல்கள்',
+      paymentsAndRefunds: 'கட்டணம் மற்றும் பணத்திருப்பம்',
+      accountIssues: 'கணக்கு தொடர்பான சிக்கல்கள்',
+      otherIssues: 'பிற சிக்கல்கள்',
+      privacyPolicy: 'தனியுரிமைக் கொள்கை',
+      termsAndConditions: 'விதிமுறைகள் மற்றும் நிபந்தனைகள்'
+    },
+
+    // Notifications
+    notifications: {
+      newRideRequest: 'புதிய சவாரி கோரிக்கை! 🚗',
+      rideCompleted: 'சவாரி வெற்றிகரமாக முடிந்தது! 🎉',
+      paymentReceived: 'பணம் பெறப்பட்டது! 💰',
+      passengerPickedUp: 'பயணி எடுக்கப்பட்டார்! ✅',
+      rideStatusUpdate: 'சவாரி நிலை புதுப்பிப்பு',
+      pickupReminder: 'பிக்-அப் நினைவூட்டல் ⏰',
+      youreOffline: 'நீங்கள் ஆஃப்லைனில் இருக்கிறீர்கள் 📱',
+      goBackOnline: 'ஆன்லைனுக்கு திரும்பிச் சென்று சவாரி கோரிக்கைகளைப் பெற டேப் செய்யவும்',
+      pickup: 'பிக்-அப்',
+      distance: 'தூரம்',
+      time: 'நேரம்',
+      fare: 'கட்டணம்',
+      earned: 'நீங்கள் சம்பாதித்துள்ளீர்கள்',
+      addedToWallet: 'உங்கள் பணப்பையில் சேர்க்கப்பட்டது',
+      dontForgetPickup: 'உங்கள் பயணியை எடுப்பதை மறக்க வேண்டாம்',
+      rideInProgress: 'சவாரி நடைபெறுகிறது',
+      toDestination: 'இலக்குக்கு',
+      testNotification: 'சோதனை அறிவிப்பு',
+      sendTestNotification: 'ஒரு சோதனை புஷ் அறிவிப்பை அனுப்பவும்',
+      testNotificationMessage: 'இது உங்கள் டிரைவர் செயலியிலிருந்து ஒரு சோதனை புஷ் அறிவிப்பு!',
     }
   },
   te: {
@@ -606,10 +822,16 @@ export const translations: Record<string, Translations> = {
       goOffline: 'ఆఫ్‌లైన్‌కి వెళ్లండి',
       swipeToGoOffline: 'ఆఫ్‌లైన్‌కి వెళ్లడానికి స్వైప్ చేయండి',
       youreOnline: 'మీరు ఆన్‌లైన్‌లో ఉన్నారు',
+      youWontReceiveNewRideRequests: 'మీకు కొత్త రైడ్ అభ్యర్థనలు రావు',
+      swipeBarBelowToConfirm: 'నిర్ధారించడానికి క్రింద బార్‌ని స్వైప్ చేయండి',
       emergencyCall: 'అత్యవసర కాల్',
       cancelRide: 'రైడ్‌ని రద్దు చేయండి',
       rideHistory: 'రైడ్ చరిత్ర',
-      refer: 'రిఫర్'
+      refer: 'రిఫర్',
+      referAndEarn: 'రిఫర్ మరియు సంపాదించండి',
+      professionalDriver: 'వృత్తిపరమైన డ్రైవర్',
+      logout: 'లాగ్అవుట్',
+      appVersion: 'రైడర్‌సోనీ డ్రైవర్ యాప్ v1.0.0'
     },
     profile: {
       personalDetails: 'వ్యక్తిగత వివరాలు',
@@ -642,7 +864,25 @@ export const translations: Record<string, Translations> = {
       about: 'గురించి',
       help: 'సహాయం',
       rateApp: 'యాప్‌ని రేట్ చేయండి',
-      shareApp: 'యాప్‌ని షేర్ చేయండి'
+      shareApp: 'యాప్‌ని షేర్ చేయండి',
+      account: 'ఖాతా',
+      preferences: 'అభిరుచులు',
+      support: 'మద్దతు',
+      legal: 'చట్టపరమైన',
+      personalInformation: 'వ్యక్తిగత సమాచారం',
+      updateProfileDetails: 'మీ ప్రొఫైల్ వివరాలను నవీకరించండి',
+      privacySecurity: 'గోప్యత మరియు భద్రత',
+      managePrivacySettings: 'మీ గోప్యతా సెట్టింగ్‌లను నిర్వహించండి',
+      pushNotifications: 'పుష్ నోటిఫికేషన్‌లు',
+      receiveRideUpdates: 'రైడ్ అప్‌డేట్‌లు మరియు ఆఫర్‌లను స్వీకరించండి',
+      autoPayment: 'ఆటో పేమెంట్',
+      automaticallyPayForRides: 'రైడ్‌ల కోసం స్వయంచాలకంగా చెల్లించండి',
+      choosePreferredLanguage: 'మీ ఇష్టమైన భాషను ఎంచుకోండి',
+      helpCenter: 'సహాయ కేంద్రం',
+      getHelpWithAccount: 'మీ ఖాతాతో సహాయం పొందండి',
+      shareFeedback: 'మీ అభిప్రాయాన్ని షేర్ చేయండి',
+      termsOfService: 'సేవా నిబంధనలు',
+      readTermsAndConditions: 'మా నిబంధనలు మరియు షరతులను చదవండి'
     },
     support: {
       helpAndSupport: 'సహాయం మరియు మద్దతు',
@@ -651,7 +891,37 @@ export const translations: Record<string, Translations> = {
       reportIssue: 'సమస్యను నివేదించండి',
       feedback: 'అభిప్రాయం',
       liveChat: 'లైవ్ చాట్',
-      callSupport: 'మద్దతు కాల్'
+      callSupport: 'మద్దతు కాల్',
+      rideIssues: 'రైడ్ సమస్యలు',
+      paymentsAndRefunds: 'చెల్లింపులు మరియు రీఫండ్‌లు',
+      accountIssues: 'ఖాతా సంబంధిత సమస్యలు',
+      otherIssues: 'ఇతర సమస్యలు',
+      privacyPolicy: 'గోప్యతా విధానం',
+      termsAndConditions: 'నిబంధనలు మరియు షరతులు'
+    },
+
+    // Notifications
+    notifications: {
+      newRideRequest: 'కొత్త రైడ్ అభ్యర్థన! 🚗',
+      rideCompleted: 'రైడ్ విజయవంతంగా పూర్తయింది! 🎉',
+      paymentReceived: 'చెల్లింపు అందింది! 💰',
+      passengerPickedUp: 'ప్రయాణికుడిని తీసుకున్నారు! ✅',
+      rideStatusUpdate: 'రైడ్ స్థితి నవీకరణ',
+      pickupReminder: 'పికప్ రిమైండర్ ⏰',
+      youreOffline: 'మీరు ఆఫ్‌లైన్‌లో ఉన్నారు 📱',
+      goBackOnline: 'ఆన్‌లైన్‌కి తిరిగి వెళ్లి రైడ్ అభ్యర్థనలను స్వీకరించడానికి ట్యాప్ చేయండి',
+      pickup: 'పికప్',
+      distance: 'దూరం',
+      time: 'సమయం',
+      fare: 'ఛార్జ్',
+      earned: 'మీరు సంపాదించారు',
+      addedToWallet: 'మీ వాలెట్‌లో జోడించబడింది',
+      dontForgetPickup: 'మీ ప్రయాణికుడిని తీసుకోవడం మరచిపోవద్దు',
+      rideInProgress: 'రైడ్ జరుగుతోంది',
+      toDestination: 'గమ్యస్థానానికి',
+      testNotification: 'పరీక్ష నోటిఫికేషన్',
+      sendTestNotification: 'ఒక పరీక్ష పుష్ నోటిఫికేషన్ పంపండి',
+      testNotificationMessage: 'ఇది మీ డ్రైవర్ యాప్ నుండి ఒక పరీక్ష పుష్ నోటిఫికేషన్!',
     }
   }
 };
