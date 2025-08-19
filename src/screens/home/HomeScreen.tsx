@@ -897,7 +897,7 @@ export default function HomeScreen() {
         if (!isOnline || !showOfflineScreen) return;
         let newX = gestureState.dx;
         if (newX < 0) newX = 0;
-        if (newX > offlineSwipeWidth - 56) newX = offlineSwipeWidth - 56;
+        if (newX > offlineSwipeWidth - 72) newX = offlineSwipeWidth - 72;
         offlineSwipeX.setValue(newX);
         // Throttle haptic feedback
         const now = Date.now();
@@ -913,7 +913,7 @@ export default function HomeScreen() {
         if (!isOnline || !showOfflineScreen) return;
         if (gestureState.dx > offlineSwipeThreshold) {
           Animated.timing(offlineSwipeX, {
-            toValue: offlineSwipeWidth - 56,
+            toValue: offlineSwipeWidth - 72,
             duration: 120,
             useNativeDriver: false,
           }).start(async () => {
@@ -1719,7 +1719,7 @@ export default function HomeScreen() {
             </Text>
           </View>
 
-          {/* Swipe to Go Offline Bar (modal, 90% width, bottom, working like online swipe) */}
+          {/* Enhanced Swipe to Go Offline Bar */}
           <View
             style={{
               position: 'absolute',
@@ -1734,58 +1734,124 @@ export default function HomeScreen() {
             }}
             pointerEvents="box-none"
           >
-            <View
+            <LinearGradient
+              colors={[Colors.modernYellow, Colors.modernYellowDark]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={{
                 flex: 1,
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor: Colors.modernYellow,
-                borderRadius: 36,
-                paddingVertical: 20,
-                paddingHorizontal: 28,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.18,
-                shadowRadius: 12,
-                elevation: 10,
+                borderRadius: 40,
+                paddingVertical: 24,
+                paddingHorizontal: 32,
+                shadowColor: Colors.modernYellow,
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.3,
+                shadowRadius: 16,
+                elevation: 12,
+                borderWidth: 2,
+                borderColor: 'rgba(255, 255, 255, 0.2)',
               }}
               {...offlinePanResponder.panHandlers}
             >
+              {/* Background Pattern */}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: 40,
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  opacity: 0.3,
+                }}
+              />
+              
+              {/* Enhanced Swipe Handle */}
               <Animated.View
                 style={{
-                position: 'absolute',
-                left: offlineSwipeX,
-                top: 0,
-                bottom: 0,
-                  width: 66,
-                  height: 66,
-                  borderRadius: 32,
-                  backgroundColor: '#26304A',
-                alignItems: 'center',
-                justifyContent: 'center',
-                  shadowColor: '#26304A',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.18,
-                shadowRadius: 8,
-                elevation: 8,
-                zIndex: 2,
+                  position: 'absolute',
+                  left: offlineSwipeX,
+                  top: 4,
+                  bottom: 4,
+                  width: 72,
+                  height: 72,
+                  borderRadius: 36,
+                  backgroundColor: '#1a1a2e',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 12,
+                  elevation: 12,
+                  zIndex: 2,
+                  borderWidth: 3,
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
                 }}
               >
-                <Ionicons name="arrow-forward" size={36} color="#fff" />
+                <LinearGradient
+                  colors={['#2d3748', '#1a1a2e']}
+                  style={{
+                    width: 66,
+                    height: 66,
+                    borderRadius: 33,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons name="arrow-forward" size={32} color="#fff" />
+                </LinearGradient>
               </Animated.View>
-              <Text
+              
+              {/* Enhanced Text with Icon */}
+              <View style={{ marginLeft: 90, flexDirection: 'row', alignItems: 'center', zIndex: 1 }}>
+                <Ionicons name="power" size={20} color="#fff" style={{ marginRight: 8 }} />
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontWeight: '700',
+                    fontSize: 18,
+                    letterSpacing: 0.8,
+                    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                    textShadowOffset: { width: 0, height: 1 },
+                    textShadowRadius: 2,
+                  }}
+                >
+                  Swipe to go offline
+                </Text>
+              </View>
+              
+              {/* Progress Indicator */}
+              <Animated.View
                 style={{
-                color: '#fff',
-                fontWeight: 'bold',
-                  fontSize: 18,
-                  marginLeft: 80,
-                letterSpacing: 0.5,
-                zIndex: 1,
+                  position: 'absolute',
+                  right: 20,
+                  top: '50%',
+                  transform: [{ translateY: -2 }],
+                  width: 60,
+                  height: 4,
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                  borderRadius: 2,
+                  overflow: 'hidden',
                 }}
               >
-                Swipe to go offline
-              </Text>
-            </View>
+                <Animated.View
+                  style={{
+                    width: offlineSwipeX.interpolate({
+                      inputRange: [0, offlineSwipeWidth - 72],
+                      outputRange: ['0%', '100%'],
+                      extrapolate: 'clamp',
+                    }),
+                    height: '100%',
+                    backgroundColor: '#fff',
+                    borderRadius: 2,
+                  }}
+                />
+              </Animated.View>
+            </LinearGradient>
           </View>
         </View>
       </Modal>
