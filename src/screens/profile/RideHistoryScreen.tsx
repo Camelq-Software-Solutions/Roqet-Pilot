@@ -175,7 +175,7 @@ export default function RideHistoryScreen({ navigation }: any) {
           disabled={loading}
         >
           {loading ? (
-            <Ionicons name="refresh" size={24} color={Colors.primary} />
+            <Ionicons name="refresh" size={24} color={Colors.modernYellow} />
           ) : (
             <Ionicons name="refresh" size={24} color={Colors.text} />
           )}
@@ -240,8 +240,8 @@ export default function RideHistoryScreen({ navigation }: any) {
                 console.error('❌ Error refreshing ride history:', error);
               }
             }}
-            colors={[Colors.primary]}
-            tintColor={Colors.primary}
+            colors={[Colors.modernYellow]}
+            tintColor={Colors.modernYellow}
           />
         }
         ListEmptyComponent={
@@ -280,7 +280,7 @@ export default function RideHistoryScreen({ navigation }: any) {
       />
       {/* Clear History Button */}
       <TouchableOpacity style={{ alignSelf: 'center', margin: 16 }} onPress={clearHistory}>
-        <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>Clear Ride History</Text>
+        <Text style={{ color: Colors.modernYellow, fontWeight: 'bold' }}>Clear Ride History</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: Colors.primary,
+    borderBottomColor: Colors.modernYellow,
   },
   tabText: {
     fontSize: Layout.fontSize.md,
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeTabText: {
-    color: Colors.primary,
+    color: Colors.modernYellow,
     fontWeight: '600',
   },
   listContent: {
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   fareText: {
     fontSize: Layout.fontSize.md,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   rideRoute: {
     marginBottom: Layout.spacing.md,
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     marginRight: Layout.spacing.md,
   },
   destinationDot: {
@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
     marginBottom: Layout.spacing.lg,
   },
   retryButton: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     paddingHorizontal: Layout.spacing.lg,
     paddingVertical: Layout.spacing.md,
     borderRadius: Layout.borderRadius.md,

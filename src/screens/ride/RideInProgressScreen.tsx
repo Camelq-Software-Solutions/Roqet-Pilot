@@ -6,6 +6,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import * as Location from 'expo-location';
 import Polyline from '@mapbox/polyline';
 import socketManager from '../../utils/socket';
+import { Colors } from '../../constants/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -300,7 +301,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
       {/* Full Screen Map */}
       <MapView
         ref={mapRef}
@@ -351,7 +352,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
         top: 56,
         left: 16,
         right: 16,
-        backgroundColor: '#e0f7fa',
+        backgroundColor: Colors.sandLight,
         borderRadius: 20,
         padding: 20,
         shadowColor: '#000',
@@ -367,7 +368,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
             <Text style={{ fontSize: 14, color: '#666', textAlign: 'center', marginTop: 4 }}>Trip: {ride.dropoff}</Text>
           </View>
           <TouchableOpacity
-            style={{ backgroundColor: '#ff4444', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 }}
             onPress={handleCancelRide}
             activeOpacity={0.7}
           >
@@ -395,7 +396,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
             <Animated.View style={{
               flexDirection: 'row',
               alignItems: 'center',
-              backgroundColor: '#ffe0b2',
+              backgroundColor: Colors.modernYellowLight,
               borderRadius: 16,
               padding: 8,
               transform: [{ scale: dropoffPulse }],
@@ -405,7 +406,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
               shadowOffset: { width: 0, height: 2 },
               elevation: 8,
             }}>
-              <View style={{ backgroundColor: '#ffb74d', borderRadius: 16, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+              <View style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
                 <Ionicons name="flag" size={16} color="#fff" />
               </View>
               <View style={{ flex: 1 }}>
@@ -421,7 +422,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingBottom: insets.bottom > 0 ? insets.bottom + 16 : 32, zIndex: 10000 }}>
         <View style={{ gap: 12, paddingHorizontal: 20 }}>
         <TouchableOpacity
-            style={{ backgroundColor: '#3cb371', borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#FF6B35', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={openGoogleMapsToDropoff}
             activeOpacity={0.8}
           >
@@ -431,7 +432,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
           
           <TouchableOpacity
             style={{ 
-              backgroundColor: '#007AFF', 
+              backgroundColor: Colors.modernYellow, 
               borderRadius: 16, 
               paddingVertical: 18, 
               paddingHorizontal: 32, 
@@ -454,7 +455,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
           
           <TouchableOpacity
             style={{ 
-              backgroundColor: '#FF3B30', 
+              backgroundColor: Colors.modernYellow, 
               borderRadius: 16, 
               paddingVertical: 18, 
               paddingHorizontal: 32, 
@@ -476,7 +477,7 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
           </TouchableOpacity>
           {/* <TouchableOpacity
             style={{ 
-              backgroundColor: '#ff4444', 
+              backgroundColor: Colors.modernYellow, 
               borderRadius: 16, 
               paddingVertical: 16, 
               paddingHorizontal: 32, 

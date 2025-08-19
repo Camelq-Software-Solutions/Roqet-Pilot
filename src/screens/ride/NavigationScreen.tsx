@@ -7,6 +7,9 @@ import * as Location from 'expo-location';
 import Polyline from '@mapbox/polyline';
 import { RideRequest } from '../../components/RideRequestScreen';
 import socketManager from '../../utils/socket';
+import { Colors } from '../../constants/Colors';
+import BikeAnimation from '../../components/BikeAnimation';
+import CancelRideModal from '../../components/CancelRideModal';
 
 const { width } = Dimensions.get('window');
 
@@ -66,6 +69,12 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
   const pickupPulse = useRef(new Animated.Value(1)).current;
   const pickupBgOpacity = useRef(new Animated.Value(0.5)).current;
   const locationSubscription = useRef<Location.LocationSubscription | null>(null);
+  
+  // Bike animation state
+  const [showBikeAnimation, setShowBikeAnimation] = useState(true);
+  
+  // Cancel modal state
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     const startLocationTracking = async () => {
@@ -231,33 +240,35 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
 
   // Function to cancel the ride
   const handleCancelRide = () => {
+    setShowCancelModal(true);
+  };
+
+  // Function to handle cancellation confirmation
+  const handleCancelConfirm = (reason: string) => {
+    console.log('🚫 Driver cancelling ride during pickup:', {
+      rideId: ride.rideId,
+      driverId: ride.driverId,
+      reason: reason
+    });
+    
+    // Show loading state
+    setShowCancelModal(false);
+    
+    // Send cancellation to server
+    socketManager.cancelRide({
+      rideId: ride.rideId,
+      driverId: ride.driverId,
+      reason: reason
+    });
+    
+    // Show immediate feedback
     Alert.alert(
-      'Cancel Ride',
-      'Are you sure you want to cancel this ride? This action cannot be undone.',
-      [
-        { text: 'Keep Ride', style: 'cancel' },
-        { 
-          text: 'Cancel Ride', 
-          style: 'destructive',
-          onPress: () => {
-            console.log('🚫 Driver cancelling ride during pickup:', {
-              rideId: ride.rideId,
-              driverId: ride.driverId,
-              reason: 'Driver cancelled during pickup'
-            });
-            
-            // Send cancellation to server
-            socketManager.cancelRide({
-              rideId: ride.rideId,
-              driverId: ride.driverId,
-              reason: 'Driver cancelled during pickup'
-            });
-            
-            // Note: Navigation will be handled by the driver_cancellation_success event
-          }
-        }
-      ]
+      'Cancelling Ride',
+      'Please wait while we process your cancellation request...',
+      [{ text: 'OK' }]
     );
+    
+    // Note: Navigation will be handled by the driver_cancellation_success event
   };
 
   // Listen for driver cancellation success
@@ -267,19 +278,63 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
       const handleDriverCancellationSuccess = (data: any) => {
         console.log('✅ Driver cancellation success received in NavigationScreen:', data);
         // Navigate to home screen after successful cancellation
-        navigation.navigate('Home');
+        Alert.alert(
+          'Ride Cancelled',
+          'The ride has been cancelled successfully.',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                // Reset navigation stack and go to home
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Home' }],
+                });
+                
+                // The OnlineStatusContext will handle resetting the state
+                console.log('🔄 Navigation reset to Home screen');
+              }
+            }
+          ]
+        );
+      };
+
+      const handleDriverCancellationError = (data: any) => {
+        console.log('❌ Driver cancellation error received in NavigationScreen:', data);
+        Alert.alert(
+          'Cancellation Failed',
+          data.message || 'Failed to cancel the ride. Please try again.',
+          [{ text: 'OK' }]
+        );
       };
 
       socket.on('driver_cancellation_success', handleDriverCancellationSuccess);
+      socket.on('driver_cancellation_error', handleDriverCancellationError);
 
       return () => {
         socket.off('driver_cancellation_success', handleDriverCancellationSuccess);
+        socket.off('driver_cancellation_error', handleDriverCancellationError);
       };
     }
   }, [navigation]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
+      {/* Bike Animation */}
+      <BikeAnimation 
+        visible={showBikeAnimation} 
+        onAnimationComplete={() => {
+          setShowBikeAnimation(false);
+        }}
+      />
+      
+      {/* Cancel Ride Modal */}
+      <CancelRideModal
+        visible={showCancelModal}
+        onClose={() => setShowCancelModal(false)}
+        onConfirm={handleCancelConfirm}
+      />
+      
       {/* Full Screen Map */}
       <MapView
         ref={mapRef}
@@ -329,7 +384,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
         top: insets.top + 16,
         left: 16,
         right: 16,
-        backgroundColor: '#e0f7fa',
+        backgroundColor: Colors.sandLight,
         borderRadius: 20,
         padding: 20,
         shadowColor: '#000',
@@ -344,7 +399,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Text style={{ fontSize: 13, color: '#666', marginTop: 2 }}>ETA: {ride.pickup}</Text>
           </View>
           <TouchableOpacity
-            style={{ backgroundColor: '#ff4444', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 }}
             onPress={handleCancelRide}
             activeOpacity={0.7}
           >
@@ -356,13 +411,13 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Animated.View style={{
               flexDirection: 'row',
               alignItems: 'center',
-              backgroundColor: '#00e676',
+              backgroundColor: Colors.modernYellow,
               borderRadius: 16,
               marginRight: 12,
               padding: 8,
               transform: [{ scale: pickupPulse }],
             }}>
-              <View style={{ backgroundColor: '#00C853', borderRadius: 16, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+              <View style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
                 <Ionicons name="location" size={16} color="#fff" />
               </View>
               <View style={{ flex: 1 }}>
@@ -375,7 +430,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Ionicons name="arrow-forward" size={20} color="#1877f2" />
           </View>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ backgroundColor: '#FF6B35', borderRadius: 16, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+            <View style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, width: 32, height: 32, alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
               <Ionicons name="flag" size={16} color="#fff" />
             </View>
             <View style={{ flex: 1 }}>
@@ -389,7 +444,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingBottom: insets.bottom > 0 ? insets.bottom + 16 : 32, zIndex: 10000 }}>
         <View style={{ gap: 12, paddingHorizontal: 20 }}>
           <TouchableOpacity
-            style={{ backgroundColor: '#1877f2', borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#1877f2', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={openGoogleMapsToPickup}
             activeOpacity={0.8}
           >
@@ -397,7 +452,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Navigate to Pickup</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity
-            style={{ backgroundColor: '#FF6B35', borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#FF6B35', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={openGoogleMapsToDropoff}
             activeOpacity={0.8}
           >
@@ -405,7 +460,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Navigate to Dropoff</Text>
           </TouchableOpacity> */}
           <TouchableOpacity
-            style={{ backgroundColor: '#9C27B0', borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#9C27B0', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={openGoogleMapsFullRoute}
             activeOpacity={0.8}
           >
@@ -413,7 +468,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Full Route (Pickup → Dropoff)</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ backgroundColor: '#007AFF', borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#007AFF', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={() => {
               console.log('🔗 Navigating to Chat with data:', {
                 ride: { rideId: ride.rideId },
@@ -432,7 +487,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Chat with Customer</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ backgroundColor: '#00C853', borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#00C853', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 18, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={() => {
               // Send driver_arrived event to server
               socketManager.driverArrived({
@@ -449,7 +504,7 @@ export default function NavigationScreen({ route, navigation }: NavigationScreen
             <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18 }}>Arrived at Pickup</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity
-            style={{ backgroundColor: '#ff4444', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: '#ff4444', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 16, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', shadowColor: Colors.modernYellow, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 }}
             onPress={handleCancelRide}
             activeOpacity={0.8}
           >

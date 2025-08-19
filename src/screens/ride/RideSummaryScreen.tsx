@@ -139,7 +139,7 @@ export default function RideSummaryScreen({ navigation, route }: any) {
         {/* Success Header */}
         <View style={styles.successHeader}>
           <View style={styles.successIcon}>
-            <Ionicons name="checkmark-circle" size={60} color={Colors.success} />
+            <Ionicons name="checkmark-circle" size={60} color={Colors.modernYellow} />
           </View>
           <Text style={styles.successTitle}>Ride Completed!</Text>
           <Text style={styles.successSubtitle}>
@@ -200,7 +200,7 @@ export default function RideSummaryScreen({ navigation, route }: any) {
                 <Ionicons
                   name={star <= rating ? 'star' : 'star-outline'}
                   size={32}
-                  color={star <= rating ? Colors.accent : Colors.gray300}
+                  color={star <= rating ? Colors.modernYellow : Colors.gray300}
                 />
               </TouchableOpacity>
             ))}
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     marginRight: Layout.spacing.md,
   },
   destinationDot: {
@@ -434,8 +434,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
   },
   tagButtonSelected: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
+    borderColor: Colors.modernYellow,
   },
   tagText: {
     fontSize: Layout.fontSize.sm,
@@ -476,8 +476,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tipButtonSelected: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
+    borderColor: Colors.modernYellow,
   },
   tipText: {
     fontSize: Layout.fontSize.md,
@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
   paymentTotalValue: {
     fontSize: Layout.fontSize.lg,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   bottomActions: {
     backgroundColor: Colors.white,
@@ -552,6 +552,6 @@ const styles = StyleSheet.create({
   bookAnotherText: {
     fontSize: Layout.fontSize.md,
     fontWeight: '600',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
 });

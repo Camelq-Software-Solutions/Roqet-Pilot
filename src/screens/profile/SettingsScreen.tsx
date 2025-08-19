@@ -13,10 +13,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
 export default function SettingsScreen({ navigation }: any) {
+  const { t } = useLanguage();
   const [notifications, setNotifications] = useState(true);
   // const [locationServices, setLocationServices] = useState(true);
   const [shareData, setShareData] = useState(true);
@@ -82,6 +84,12 @@ export default function SettingsScreen({ navigation }: any) {
           subtitle: 'Automatically pay for rides',
           action: () => navigation.navigate('AutoPayment'),
         },
+        {
+          icon: 'language-outline',
+          title: 'Language',
+          subtitle: 'Choose your preferred language',
+          action: () => navigation.navigate('Language'),
+        },
       ],
     },
     {
@@ -132,7 +140,7 @@ export default function SettingsScreen({ navigation }: any) {
     >
       <View style={styles.settingLeft}>
         <View style={styles.settingIcon}>
-          <Ionicons name={item.icon} size={20} color={Colors.primary} />
+          <Ionicons name={item.icon} size={20} color={Colors.modernYellow} />
         </View>
         <View style={styles.settingInfo}>
           <Text style={styles.settingTitle}>{item.title}</Text>
@@ -144,7 +152,7 @@ export default function SettingsScreen({ navigation }: any) {
           <Switch
             value={item.value}
             onValueChange={item.onToggle}
-            trackColor={{ false: Colors.gray300, true: Colors.primary }}
+            trackColor={{ false: Colors.gray300, true: Colors.modernYellow }}
             thumbColor={Colors.white}
           />
         ) : (
@@ -165,7 +173,7 @@ export default function SettingsScreen({ navigation }: any) {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('settings.settings')}</Text>
         <View style={styles.placeholder} />
       </Animated.View>
 

@@ -11,9 +11,12 @@ import {
   FlatList, 
   TextInput, 
   Image, 
-  Alert 
+  Alert,
+  Animated,
+  Dimensions
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useSignUp, useUser, useAuth } from '@clerk/clerk-expo';
 import { Colors } from '../../constants/Colors';
@@ -22,6 +25,9 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logJWTDetails } from '../../utils/jwtDecoder';
+import { useLanguage } from '../../contexts/LanguageContext';
+
+const { width, height } = Dimensions.get('window');
 
 // Types
 interface NameStepProps {
@@ -30,6 +36,8 @@ interface NameStepProps {
   setFirstName: (v: string) => void;
   setLastName: (v: string) => void;
   onNext: () => void;
+  fadeAnim: Animated.Value;
+  slideAnim: Animated.Value;
 }
 
 interface PhoneStepProps {
@@ -42,6 +50,8 @@ interface PhoneStepProps {
   onNext: () => void;
   onBack: () => void;
   isLoading: boolean;
+  fadeAnim: Animated.Value;
+  slideAnim: Animated.Value;
 }
 
 interface OtpStepProps {
@@ -54,6 +64,8 @@ interface OtpStepProps {
   resendOtp: () => void;
   canResend: boolean;
   timer: number;
+  fadeAnim: Animated.Value;
+  slideAnim: Animated.Value;
 }
 
 interface PhotoStepProps {
@@ -63,6 +75,10 @@ interface PhotoStepProps {
   onSkip: () => void;
   onBack: () => void;
   isLoading: boolean;
+  firstName: string;
+  lastName: string;
+  fadeAnim: Animated.Value;
+  slideAnim: Animated.Value;
 }
 
 interface CountryItem {
@@ -70,51 +86,77 @@ interface CountryItem {
   name: string;
 }
 
-// Add a helper function for alphabetic validation
-function isAlpha(str: string) {
-  return /^[A-Za-z]+$/.test(str);
+// Add a helper function for name validation (allows letters, spaces, hyphens, apostrophes)
+function isValidName(str: string) {
+  return /^[A-Za-z\s\-']+$/.test(str) && str.trim().length >= 2;
 }
 
 // Step 1: Name Entry
-function NameStep({ firstName, lastName, setFirstName, setLastName, onNext }: NameStepProps) {
-  // Add local handler for Next button
+function NameStep({ firstName, lastName, setFirstName, setLastName, onNext, fadeAnim, slideAnim }: NameStepProps) {
+  const { t } = useLanguage();
   const handleNext = () => {
-    if (!isAlpha(firstName.trim())) {
-      Alert.alert('Invalid First Name', 'First name should contain only alphabetic characters.');
+    console.log('SignUpScreen - NameStep handleNext called');
+    console.log('SignUpScreen - First name:', firstName);
+    console.log('SignUpScreen - Last name:', lastName);
+    
+    if (!isValidName(firstName.trim())) {
+      console.log('SignUpScreen - First name validation failed');
+      Alert.alert('Invalid First Name', 'First name should contain only letters, spaces, hyphens, and apostrophes (minimum 2 characters).');
       return;
     }
-    if (!isAlpha(lastName.trim())) {
-      Alert.alert('Invalid Last Name', 'Last name should contain only alphabetic characters.');
+    if (!isValidName(lastName.trim())) {
+      console.log('SignUpScreen - Last name validation failed');
+      Alert.alert('Invalid Last Name', 'Last name should contain only letters, spaces, hyphens, and apostrophes (minimum 2 characters).');
       return;
     }
+    
+    console.log('SignUpScreen - Name validation passed, calling onNext');
     onNext();
   };
+  
   return (
-    <View style={styles.stepContainer}>
-      <Text style={styles.progress}>Step 1 of 4</Text>
-      <Text style={styles.stepTitle}>What's your name?</Text>
-      <Input
-        label="First Name"
-        placeholder="Enter your first name"
-        value={firstName}
-        onChangeText={setFirstName}
-        leftIcon="person"
-      />
-      <Input
-        label="Last Name"
-        placeholder="Enter your last name"
-        value={lastName}
-        onChangeText={setLastName}
-        leftIcon="person"
-      />
+    <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+      <View style={styles.progressContainer}>
+        <Text style={styles.progress}>{t('common.step')} 1 {t('common.of')} 4</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: '25%' }]} />
+        </View>
+      </View>
+      
+      <Text style={styles.stepTitle}>{t('auth.whatsYourName')}</Text>
+      <Text style={styles.stepSubtitle}>{t('auth.letsGetToKnowYou')}</Text>
+      
+      <View style={styles.inputWrapper}>
+        <Input
+          label={t('auth.firstName')}
+          placeholder={t('auth.firstName')}
+          value={firstName}
+          onChangeText={setFirstName}
+          leftIcon="person"
+          autoCapitalize="words"
+          returnKeyType="next"
+          blurOnSubmit={false}
+        />
+        <Input
+          label={t('auth.lastName')}
+          placeholder={t('auth.lastName')}
+          value={lastName}
+          onChangeText={setLastName}
+          leftIcon="person"
+          autoCapitalize="words"
+          returnKeyType="done"
+          blurOnSubmit={true}
+        />
+      </View>
+      
       <Button
-        title="Next"
+        title={t('common.next')}
         onPress={handleNext}
         fullWidth
         disabled={!firstName.trim() || !lastName.trim()}
-        style={{ marginTop: 24 }}
+        style={styles.primaryButton}
       />
-    </View>
+    </Animated.View>
   );
 }
 
@@ -128,7 +170,9 @@ function PhoneStep({
   setCountryModalVisible, 
   onNext, 
   onBack, 
-  isLoading 
+  isLoading,
+  fadeAnim,
+  slideAnim
 }: PhoneStepProps) {
   const countryList: CountryItem[] = [
     { code: '+91', name: 'India' },
@@ -144,26 +188,38 @@ function PhoneStep({
   ];
 
   return (
-    <View style={styles.stepContainer}>
-      <Text style={styles.progress}>Step 2 of 4</Text>
+    <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+      <View style={styles.progressContainer}>
+        <Text style={styles.progress}>Step 2 of 4</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: '50%' }]} />
+        </View>
+      </View>
+      
       <Text style={styles.stepTitle}>What's your mobile number?</Text>
-      <Input
-        label="Mobile Number"
-        placeholder="Enter your 10-digit mobile number"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        keyboardType="phone-pad"
-        maxLength={10}
-        leftElement={
-          <TouchableOpacity
-            onPress={() => setCountryModalVisible(true)}
-            style={styles.countryCodeButton}
-          >
-            <Text style={styles.countryCodeText}>{countryCode}</Text>
-            <Ionicons name="chevron-down" size={18} color={Colors.gray400} />
-          </TouchableOpacity>
-        }
-      />
+      <Text style={styles.stepSubtitle}>We'll send you a verification code</Text>
+      
+      <View style={styles.inputWrapper}>
+        <Input
+          label="Mobile Number"
+          placeholder="Enter your 10-digit mobile number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+          maxLength={10}
+          returnKeyType="done"
+          blurOnSubmit={true}
+          leftElement={
+            <TouchableOpacity
+              onPress={() => setCountryModalVisible(true)}
+              style={styles.countryCodeButton}
+            >
+              <Text style={styles.countryCodeText}>{countryCode}</Text>
+              <Ionicons name="chevron-down" size={18} color={Colors.gray400} />
+            </TouchableOpacity>
+          }
+        />
+      </View>
       
       {/* Country Code Modal */}
       <Modal
@@ -210,16 +266,16 @@ function PhoneStep({
         fullWidth
         loading={isLoading}
         disabled={phoneNumber.length !== 10}
-        style={{ marginTop: 24 }}
+        style={styles.primaryButton}
       />
       <Button
         title="Back"
         onPress={onBack}
         fullWidth
         variant="secondary"
-        style={{ marginTop: 12 }}
+        style={styles.secondaryButton}
       />
-    </View>
+    </Animated.View>
   );
 }
 
@@ -233,7 +289,9 @@ function OtpStep({
   error, 
   resendOtp, 
   canResend, 
-  timer 
+  timer,
+  fadeAnim,
+  slideAnim
 }: OtpStepProps) {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -264,10 +322,26 @@ function OtpStep({
   };
 
   return (
-    <View style={styles.stepContainer}>
-      <Text style={styles.progress}>Step 3 of 4</Text>
+    <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+      <View style={styles.progressContainer}>
+        <Text style={styles.progress}>Step 3 of 4</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: '75%' }]} />
+        </View>
+      </View>
+      
+      {/* OTP Illustration */}
+      <View style={styles.otpIllustrationContainer}>
+        <View style={styles.otpIllustrationCircle}>
+          <Ionicons name="shield-checkmark" size={60} color={Colors.modernYellow} />
+        </View>
+        <View style={styles.otpIllustrationBadge}>
+          <Ionicons name="lock-closed" size={20} color={Colors.white} />
+        </View>
+      </View>
+      
       <Text style={styles.stepTitle}>Enter 6-digit verification code</Text>
-      <Text style={styles.otpSubtitle}>
+      <Text style={styles.stepSubtitle}>
         We've sent a verification code to your mobile number
       </Text>
       
@@ -294,7 +368,7 @@ function OtpStep({
       
       <View style={styles.resendContainer}>
         {canResend ? (
-          <TouchableOpacity onPress={resendOtp}>
+          <TouchableOpacity onPress={resendOtp} style={styles.resendButton}>
             <Text style={styles.resendText}>Resend OTP</Text>
           </TouchableOpacity>
         ) : (
@@ -308,16 +382,16 @@ function OtpStep({
         fullWidth
         loading={isLoading}
         disabled={otp.join('').length !== 6}
-        style={{ marginTop: 24 }}
+        style={styles.primaryButton}
       />
       <Button
         title="Back"
         onPress={onBack}
         fullWidth
         variant="secondary"
-        style={{ marginTop: 12 }}
+        style={styles.secondaryButton}
       />
-    </View>
+    </Animated.View>
   );
 }
 
@@ -330,8 +404,10 @@ function PhotoStep({
   onBack, 
   isLoading,
   firstName,
-  lastName
-}: PhotoStepProps & { firstName: string; lastName: string }) {
+  lastName,
+  fadeAnim,
+  slideAnim
+}: PhotoStepProps) {
   const handleImagePicker = () => {
     Alert.alert(
       'Select Photo',
@@ -345,10 +421,16 @@ function PhotoStep({
   };
 
   return (
-    <View style={styles.stepContainer}>
-      <Text style={styles.progress}>Step 4 of 4</Text>
+    <Animated.View style={[styles.stepContainer, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+      <View style={styles.progressContainer}>
+        <Text style={styles.progress}>Step 4 of 4</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: '100%' }]} />
+        </View>
+      </View>
+      
       <Text style={styles.stepTitle}>Upload your photo</Text>
-      <Text style={styles.photoSubtitle}>
+      <Text style={styles.stepSubtitle}>
         Add a profile photo to help others recognize you
       </Text>
       
@@ -359,9 +441,14 @@ function PhotoStep({
         {profileImage ? (
           <Image source={{ uri: profileImage }} style={styles.profileImage} />
         ) : (
-          <View style={styles.placeholderImage}>
-            <Ionicons name="camera" size={32} color={Colors.gray400} />
-          </View>
+          <LinearGradient
+            colors={[Colors.sandWarm, Colors.sandMedium]}
+            style={styles.placeholderImage}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <Ionicons name="camera" size={32} color={Colors.text} />
+          </LinearGradient>
         )}
       </TouchableOpacity>
       
@@ -379,7 +466,7 @@ function PhotoStep({
         fullWidth
         loading={isLoading}
         disabled={!firstName.trim() || !lastName.trim()}
-        style={{ marginTop: 24 }}
+        style={styles.primaryButton}
       />
       {(!firstName.trim() || !lastName.trim()) && (
         <Button
@@ -387,24 +474,24 @@ function PhotoStep({
           onPress={onBack}
           fullWidth
           variant="secondary"
-          style={{ marginTop: 12 }}
+          style={styles.secondaryButton}
         />
       )}
       <Button
         title="I'll do it later"
         onPress={onSkip}
         fullWidth
-        variant="secondary"
-        style={{ marginTop: 12 }}
+        variant="outline"
+        style={styles.outlineButton}
       />
       <Button
         title="Back"
         onPress={onBack}
         fullWidth
         variant="ghost"
-        style={{ marginTop: 12 }}
+        style={styles.ghostButton}
       />
-    </View>
+    </Animated.View>
   );
 }
 
@@ -426,6 +513,10 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
   const { signUp, setActive: setSignUpActive, isLoaded } = useSignUp();
   const { user } = useUser();
   const { isSignedIn, getToken } = useAuth();
+
+  // Animation values
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const slideAnim = React.useRef(new Animated.Value(30)).current;
 
   // Timer for OTP resend
   useEffect(() => {
@@ -461,11 +552,63 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
     }
   }, [isSignedIn]);
 
-  // Step navigation
-  const goToNextStep = () => setStep((s) => s + 1);
-  const goToPrevStep = () => setStep((s) => s - 1);
+  // Step navigation with animations
+  const goToNextStep = () => {
+    console.log('SignUpScreen - goToNextStep called, current step:', step);
+    fadeAnim.setValue(0);
+    slideAnim.setValue(30);
+    setStep((s) => {
+      const newStep = s + 1;
+      console.log('SignUpScreen - Step changed from', s, 'to', newStep);
+      return newStep;
+    });
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+  
+  const goToPrevStep = () => {
+    fadeAnim.setValue(0);
+    slideAnim.setValue(-30);
+    setStep((s) => s - 1);
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
-
+  // Initialize animations
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   // Step 2: Send OTP
   const handleSendOTP = async () => {
@@ -673,14 +816,14 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
         return;
       }
 
-      // Add validation for alphabetic characters
-      if (!isAlpha(firstName.trim())) {
-        Alert.alert('Invalid First Name', 'First name should contain only alphabetic characters.');
+      // Add validation for name characters
+      if (!isValidName(firstName.trim())) {
+        Alert.alert('Invalid First Name', 'First name should contain only letters, spaces, hyphens, and apostrophes (minimum 2 characters).');
         setIsLoading(false);
         return;
       }
-      if (!isAlpha(lastName.trim())) {
-        Alert.alert('Invalid Last Name', 'Last name should contain only alphabetic characters.');
+      if (!isValidName(lastName.trim())) {
+        Alert.alert('Invalid Last Name', 'Last name should contain only letters, spaces, hyphens, and apostrophes (minimum 2 characters).');
         setIsLoading(false);
         return;
       }
@@ -816,64 +959,90 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <ScrollView 
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+    <LinearGradient
+      colors={Colors.backgroundGradient}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardView}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
         >
-          <View style={styles.header}>
-            {step > 1 && (
-              <TouchableOpacity onPress={goToPrevStep} style={styles.backButton}>
+          <ScrollView 
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="always"
+            keyboardDismissMode="none"
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
+            <View style={styles.header}>
+              <TouchableOpacity 
+                onPress={step > 1 ? goToPrevStep : () => navigation?.goBack?.()} 
+                style={styles.backButton}
+              >
                 <Ionicons name="arrow-back" size={24} color={Colors.text} />
               </TouchableOpacity>
-            )}
-          </View>
-          
-          <View style={styles.content}>
-            {step === 1 && (
-              <NameStep
-                firstName={firstName}
-                lastName={lastName}
-                setFirstName={setFirstName}
-                setLastName={setLastName}
-                onNext={goToNextStep}
-              />
-            )}
+              
+              {/* Default Image/Illustration */}
+              <View style={styles.illustrationContainer}>
+                <View style={styles.illustrationCircle}>
+                  <Ionicons name="person-add" size={80} color={Colors.modernYellow} />
+                </View>
+                <View style={styles.illustrationBadge}>
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.white} />
+                </View>
+              </View>
+            </View>
             
-            {step === 2 && (
-              <PhoneStep
-                phoneNumber={phoneNumber}
-                setPhoneNumber={setPhoneNumber}
-                countryCode={countryCode}
-                setCountryCode={setCountryCode}
-                countryModalVisible={countryModalVisible}
-                setCountryModalVisible={setCountryModalVisible}
-                onNext={handleSendOTP}
-                onBack={goToPrevStep}
-                isLoading={isLoading}
-              />
-            )}
-            
-            {step === 3 && (
-              <OtpStep
-                otp={otp}
-                setOtp={setOtp}
-                onVerify={handleVerifyOTP}
-                onBack={goToPrevStep}
-                isLoading={isLoading}
-                error={otpError}
-                resendOtp={handleResendOTP}
-                canResend={canResend}
-                timer={timer}
-              />
-            )}
-            
-            {step === 4 && (
-              <>
+            <View style={styles.content}>
+              {step === 1 && (
+                <NameStep
+                  firstName={firstName}
+                  lastName={lastName}
+                  setFirstName={setFirstName}
+                  setLastName={setLastName}
+                  onNext={goToNextStep}
+                  fadeAnim={fadeAnim}
+                  slideAnim={slideAnim}
+                />
+              )}
+              
+              {step === 2 && (
+                <PhoneStep
+                  phoneNumber={phoneNumber}
+                  setPhoneNumber={setPhoneNumber}
+                  countryCode={countryCode}
+                  setCountryCode={setCountryCode}
+                  countryModalVisible={countryModalVisible}
+                  setCountryModalVisible={setCountryModalVisible}
+                  onNext={handleSendOTP}
+                  onBack={goToPrevStep}
+                  isLoading={isLoading}
+                  fadeAnim={fadeAnim}
+                  slideAnim={slideAnim}
+                />
+              )}
+              
+              {step === 3 && (
+                <OtpStep
+                  otp={otp}
+                  setOtp={setOtp}
+                  onVerify={handleVerifyOTP}
+                  onBack={goToPrevStep}
+                  isLoading={isLoading}
+                  error={otpError}
+                  resendOtp={handleResendOTP}
+                  canResend={canResend}
+                  timer={timer}
+                  fadeAnim={fadeAnim}
+                  slideAnim={slideAnim}
+                />
+              )}
+              
+              {step === 4 && (
                 <PhotoStep
                   profileImage={profileImage}
                   setProfileImage={setProfileImage}
@@ -883,27 +1052,31 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
                   isLoading={isLoading}
                   firstName={firstName}
                   lastName={lastName}
+                  fadeAnim={fadeAnim}
+                  slideAnim={slideAnim}
                 />
-
-              </>
-            )}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              )}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+  },
+  safeArea: {
+    flex: 1,
   },
   keyboardView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
+    paddingBottom: 100,
   },
   header: {
     paddingHorizontal: Layout.spacing.lg,
@@ -912,6 +1085,14 @@ const styles = StyleSheet.create({
   backButton: {
     alignSelf: 'flex-start',
     padding: Layout.spacing.sm,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    marginBottom: 16,
   },
   content: {
     flex: 1,
@@ -919,19 +1100,71 @@ const styles = StyleSheet.create({
   },
   stepContainer: {
     marginTop: 40,
+    backgroundColor: Colors.sandLight,
+    borderRadius: 24,
+    padding: 24,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  progressContainer: {
+    marginBottom: 24,
   },
   progress: {
-    color: Colors.primary,
+    color: Colors.modernYellow,
     fontWeight: '600',
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: 'center',
+    fontSize: 16,
+  },
+  progressBar: {
+    height: 4,
+    backgroundColor: Colors.gray200,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: Colors.modernYellow,
+    borderRadius: 2,
   },
   stepTitle: {
-    fontSize: Layout.fontSize.xl,
+    fontSize: 28,
     fontWeight: 'bold',
     color: Colors.text,
-    marginBottom: 32,
+    marginBottom: 8,
     textAlign: 'center',
+  },
+  stepSubtitle: {
+    fontSize: 16,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: 32,
+    lineHeight: 22,
+  },
+  inputWrapper: {
+    marginBottom: 24,
+  },
+  primaryButton: {
+    backgroundColor: Colors.modernYellow,
+    shadowColor: Colors.modernYellow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  secondaryButton: {
+    marginTop: 12,
+    backgroundColor: Colors.modernYellow,
+  },
+  outlineButton: {
+    marginTop: 12,
+    borderColor: Colors.modernYellow,
+  },
+  ghostButton: {
+    marginTop: 12,
   },
   countryCodeButton: {
     flexDirection: 'row',
@@ -950,22 +1183,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: Colors.white,
+    borderRadius: 16,
     width: '85%',
     maxHeight: '70%',
     overflow: 'hidden',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 12,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.border,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: Colors.text,
   },
@@ -973,13 +1211,14 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   countryItem: {
-    padding: 16,
+    padding: 18,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: Colors.borderLight,
   },
   countryItemText: {
     fontSize: 16,
     color: Colors.text,
+    fontWeight: '500',
   },
   otpContainer: {
     flexDirection: 'row',
@@ -988,50 +1227,48 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   otpInput: {
-    width: 45,
-    height: 55,
+    width: 50,
+    height: 60,
     borderWidth: 2,
     borderColor: Colors.border,
-    borderRadius: 8,
-    marginHorizontal: 6,
-    fontSize: 20,
+    borderRadius: 12,
+    marginHorizontal: 8,
+    fontSize: 24,
     fontWeight: '600',
     textAlign: 'center',
     backgroundColor: Colors.gray50,
   },
   otpInputFilled: {
-    borderColor: Colors.primary,
+    borderColor: Colors.modernYellow,
     backgroundColor: Colors.white,
-  },
-  otpSubtitle: {
-    color: Colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 8,
-    fontSize: 14,
+    shadowColor: Colors.modernYellow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   errorText: {
     color: Colors.error,
     textAlign: 'center',
     marginTop: 8,
     fontSize: 14,
+    fontWeight: '500',
   },
   resendContainer: {
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 16,
+  },
+  resendButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
   resendText: {
-    color: Colors.primary,
+    color: Colors.modernYellow,
     fontWeight: '600',
     fontSize: 16,
   },
   timerText: {
     color: Colors.textSecondary,
-    fontSize: 14,
-  },
-  photoSubtitle: {
-    color: Colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 32,
     fontSize: 14,
   },
   profileImageContainer: {
@@ -1047,11 +1284,10 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: Colors.gray100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: Colors.border,
+    borderWidth: 3,
+    borderColor: Colors.white,
     borderStyle: 'dashed',
   },
   imageHint: {
@@ -1059,5 +1295,77 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
     fontSize: 14,
+  },
+  illustrationContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  illustrationCircle: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: Colors.sandLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  illustrationBadge: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.modernYellow,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: Colors.white,
+    shadowColor: Colors.modernYellow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  otpIllustrationContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  otpIllustrationCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: Colors.sandLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  otpIllustrationBadge: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    backgroundColor: Colors.modernYellow,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.white,
+    shadowColor: Colors.modernYellow,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 3,
   },
 });

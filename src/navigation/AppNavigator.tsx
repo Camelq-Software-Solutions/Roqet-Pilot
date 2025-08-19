@@ -44,6 +44,7 @@ import AboutScreen from '../screens/profile/AboutScreen';
 import PrivacySecurityScreen from '../screens/profile/PrivacySecurityScreen';
 import ReferScreen from '../screens/profile/ReferScreen';
 import AutoPaymentScreen from '../screens/profile/AutoPaymentScreen';
+import LanguageScreen from '../screens/settings/LanguageScreen';
 
 // Support Screens
 import HelpSupportScreen from '../screens/support/HelpSupportScreen';
@@ -136,6 +137,7 @@ function MainNavigator() {
       <Stack.Screen name="PrivacySecurity" component={PrivacySecurityScreen} />
       <Stack.Screen name="Refer" component={ReferScreen} />
       <Stack.Screen name="AutoPayment" component={AutoPaymentScreen} />
+      <Stack.Screen name="Language" component={LanguageScreen} />
     </Stack.Navigator>
   );
 }

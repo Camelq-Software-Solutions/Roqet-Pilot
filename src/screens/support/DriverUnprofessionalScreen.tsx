@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Switch, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, PRIMARY_GREEN, TITLE_COLOR } from '../../constants/Colors';
+import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 
 const issueCategories = [
@@ -32,7 +32,7 @@ export default function DriverUnprofessionalScreen({ navigation }: any) {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back">
-          <Ionicons name="arrow-back" size={24} color={TITLE_COLOR} />
+          <Ionicons name="arrow-back" size={24} color={Colors.modernYellow} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Report Driver Issue</Text>
         <View style={{ width: 24 }} />
@@ -53,8 +53,8 @@ export default function DriverUnprofessionalScreen({ navigation }: any) {
         {issueCategories.map((cat) => (
           <TouchableOpacity key={cat} onPress={() => toggleCategory(cat)} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
             <View style={{
-              width: 20, height: 20, borderRadius: 4, borderWidth: 1, borderColor: '#007AFF',
-              backgroundColor: selectedCategories.includes(cat) ? '#007AFF' : '#FFF', marginRight: 8
+              width: 20, height: 20, borderRadius: 4, borderWidth: 1, borderColor: Colors.modernYellow,
+              backgroundColor: selectedCategories.includes(cat) ? Colors.modernYellow : '#FFF', marginRight: 8
             }} />
             <Text>{cat}</Text>
           </TouchableOpacity>
@@ -83,17 +83,17 @@ export default function DriverUnprofessionalScreen({ navigation }: any) {
         <View style={{ flexDirection: 'row', marginBottom: 8 }}>
           {[1, 2, 3, 4, 5].map((star) => (
             <TouchableOpacity key={star} onPress={() => setRating(star)}>
-              <Ionicons name={star <= rating ? 'star' : 'star-outline'} size={28} color="#FFD700" />
+              <Ionicons name={star <= rating ? 'star' : 'star-outline'} size={28} color={Colors.modernYellow} />
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Evidence */}
         <TouchableOpacity style={{ marginBottom: 8 }}>
-          <Text style={{ color: '#007AFF' }}>Upload Photo/Video</Text>
+          <Text style={{ color: Colors.modernYellow }}>Upload Photo/Video</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ marginBottom: 8 }}>
-          <Text style={{ color: '#007AFF' }}>Record Audio</Text>
+          <Text style={{ color: Colors.modernYellow }}>Record Audio</Text>
         </TouchableOpacity>
 
         {/* Anonymous Toggle */}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: Layout.fontSize.xl,
     fontWeight: 'bold',
-    color: TITLE_COLOR,
+    color: Colors.modernYellow,
   },
   content: {
     flex: 1,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: Layout.fontSize.lg,
     fontWeight: 'bold',
-    color: TITLE_COLOR,
+    color: Colors.modernYellow,
     marginBottom: Layout.spacing.md,
   },
   placeholder: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: Layout.spacing.lg,
   },
   submitBtn: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     borderRadius: Layout.borderRadius.md,
     paddingVertical: 14,
     alignItems: 'center',

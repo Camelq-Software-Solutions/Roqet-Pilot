@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Linking, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, PRIMARY_GREEN, TITLE_COLOR, SUBTITLE_COLOR } from '../../constants/Colors';
+import { Colors, TITLE_COLOR, SUBTITLE_COLOR, PRIMARY_GREEN } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -52,7 +52,7 @@ export default function HelpSupportScreen({ navigation }: any) {
       {/* Header */}
       <Animated.View style={[styles.header, { opacity: fadeAnim }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back" activeOpacity={0.7}>
-          <Ionicons name="arrow-back" size={24} color={TITLE_COLOR} />
+          <Ionicons name="arrow-back" size={24} color={Colors.modernYellow} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Help & Support</Text>
         <View style={{ width: 24 }} />
@@ -84,7 +84,7 @@ export default function HelpSupportScreen({ navigation }: any) {
             >
               <View style={styles.menuItemLeft}>
                 <View style={styles.menuIcon}>
-                  <Ionicons name={item.icon as any} size={20} color={Colors.primary} />
+                  <Ionicons name={item.icon as any} size={20} color={Colors.modernYellow} />
                 </View>
               <Text style={styles.menuText}>{item.label}</Text>
               </View>
@@ -104,7 +104,7 @@ export default function HelpSupportScreen({ navigation }: any) {
             >
               <View style={styles.menuItemLeft}>
                 <View style={styles.menuIcon}>
-                  <Ionicons name={item.icon as any} size={20} color={Colors.primary} />
+                  <Ionicons name={item.icon as any} size={20} color={Colors.modernYellow} />
                 </View>
               <Text style={styles.menuText}>{item.label}</Text>
               </View>
@@ -121,7 +121,7 @@ export default function HelpSupportScreen({ navigation }: any) {
           onPress={() => Linking.openURL('tel:+1234567890')}
           activeOpacity={0.7}
         >
-          <Ionicons name="call-outline" size={20} color={PRIMARY_GREEN} />
+          <Ionicons name="call-outline" size={20} color={Colors.modernYellow} />
           <Text style={styles.bottomButtonText}>Call</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -130,7 +130,7 @@ export default function HelpSupportScreen({ navigation }: any) {
           onPress={() => navigation.navigate('Chat', { driver: { name: 'Support' } })}
           activeOpacity={0.7}
         >
-          <Ionicons name="chatbubble-ellipses-outline" size={20} color={PRIMARY_GREEN} />
+          <Ionicons name="chatbubble-ellipses-outline" size={20} color={Colors.modernYellow} />
           <Text style={styles.bottomButtonText}>Chat</Text>
         </TouchableOpacity>
       </Animated.View>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: Layout.fontSize.lg,
     fontWeight: '600',
-    color: TITLE_COLOR,
+    color: Colors.modernYellow,
   },
   content: {
     padding: Layout.spacing.lg,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: Layout.fontSize.md,
-    color: TITLE_COLOR,
+    color: Colors.modernYellow,
     fontWeight: '500',
   },
   bottomBar: {
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   bottomButtonText: {
     marginLeft: 8,
     fontSize: Layout.fontSize.md,
-    color: PRIMARY_GREEN,
+    color: Colors.modernYellow,
     fontWeight: '600',
   },
 }); 

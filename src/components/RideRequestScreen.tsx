@@ -5,6 +5,7 @@ import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 import socketManager from '../utils/socket';
 import { useOnlineStatus } from '../store/OnlineStatusContext';
+import { Colors } from '../constants/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -217,7 +218,7 @@ const RideRequestScreen = ({ ride, onClose, onAccept, onReject, playSound = true
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, marginTop: 2 }}>
           <View style={styles.rideTypePill}><Text style={styles.rideTypeText}>{ride.type}</Text></View>
           <View style={styles.rideTypePillOutline}><Text style={styles.rideTypeTextOutline}>{ride.tag}</Text></View>
-          <MaterialIcons name="bolt" size={22} color="#007AFF" style={{ marginLeft: 4 }} />
+          <MaterialIcons name="bolt" size={22} color={Colors.modernYellow} style={{ marginLeft: 4 }} />
         </View>
         {/* Price */}
         <Text style={styles.priceText}>{ride.price}</Text>
@@ -225,8 +226,8 @@ const RideRequestScreen = ({ ride, onClose, onAccept, onReject, playSound = true
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
           <Ionicons name="star" size={20} color="#111" style={{ marginRight: 2 }} />
           <Text style={{ fontWeight: 'bold', fontSize: 18, marginRight: 8 }}>{ride.rating}</Text>
-          {ride.verified && <MaterialIcons name="verified" size={20} color="#007AFF" />}
-          {ride.verified && <Text style={{ marginLeft: 4, color: '#007AFF', fontWeight: 'bold', fontSize: 18 }}>Verified</Text>}
+          {ride.verified && <MaterialIcons name="verified" size={20} color={Colors.modernYellow} />}
+{ride.verified && <Text style={{ marginLeft: 4, color: Colors.modernYellow, fontWeight: 'bold', fontSize: 18 }}>Verified</Text>}
         </View>
         <View style={{ borderTopWidth: 1, borderTopColor: '#eee', marginVertical: 8, width: '100%' }} />
         {/* Details */}
@@ -329,14 +330,14 @@ const styles = StyleSheet.create({
   },
   rideTypePillOutline: {
     borderWidth: 2,
-    borderColor: '#007AFF',
+            borderColor: Colors.modernYellow,
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 4,
     marginRight: 8,
   },
   rideTypeTextOutline: {
-    color: '#007AFF',
+            color: Colors.modernYellow,
     fontWeight: 'bold',
     fontSize: 16,
   },

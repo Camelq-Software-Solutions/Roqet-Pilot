@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { Colors } from '../../constants/Colors';
 
 const { width } = Dimensions.get('window');
 
@@ -42,7 +43,7 @@ export default function ReferScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={26} color="#1877f2" />
+        <Ionicons name="arrow-back" size={26} color={Colors.modernYellow} />
       </TouchableOpacity>
       <View style={styles.inner}>
         <Text style={styles.title}>Refer & Earn</Text>
@@ -58,7 +59,7 @@ export default function ReferScreen() {
             <View style={styles.couponRow}>
               <Text style={styles.coupon}>{referralCode || '----'}</Text>
               <TouchableOpacity onPress={handleShare} style={styles.shareButton}>
-                <Ionicons name="share-social" size={22} color="#1877f2" />
+                <Ionicons name="share-social" size={22} color={Colors.modernYellow} />
               </TouchableOpacity>
             </View>
           </View>
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
     paddingHorizontal: 18,
     borderRadius: 18,
-    shadowColor: '#1877f2',
+    shadowColor: Colors.modernYellow,
     shadowOpacity: 0.06,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#1877f2',
+    color: Colors.modernYellow,
     textAlign: 'center',
   },
   description: {
@@ -162,12 +163,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderStyle: 'dashed',
     borderWidth: 2,
-    borderColor: '#1877f2',
+    borderColor: Colors.modernYellow,
     paddingVertical: 12,
     paddingHorizontal: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#1877f2',
+    shadowColor: Colors.modernYellow,
     shadowOpacity: 0.08,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
   },
   couponLabel: {
     fontSize: 13,
-    color: '#1877f2',
+    color: Colors.modernYellow,
     fontWeight: 'bold',
     marginBottom: 2,
   },

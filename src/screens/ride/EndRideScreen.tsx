@@ -206,13 +206,13 @@ export default function EndRideScreen({ navigation, route }: EndRideScreenProps)
         {ride && (
           <View style={styles.rideInfo}>
             <View style={styles.rideDetail}>
-              <Ionicons name="location" size={16} color={Colors.primary} />
+              <Ionicons name="location" size={16} color={Colors.modernYellow} />
               <Text style={styles.rideText}>
                 {ride.pickupAddress || 'Pickup location'} → {ride.dropoffAddress || 'Dropoff location'}
               </Text>
             </View>
             <View style={styles.rideDetail}>
-              <Ionicons name="cash" size={16} color={Colors.accent} />
+              <Ionicons name="cash" size={16} color={Colors.modernYellow} />
               <Text style={styles.rideText}>{ride.price || 'Price not available'}</Text>
             </View>
           </View>
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 3,
-    borderColor: Colors.primary,
+    borderColor: Colors.modernYellow,
   },
   title: {
     fontSize: Layout.fontSize.xl,
@@ -333,12 +333,12 @@ const styles = StyleSheet.create({
   },
   swipeBar: {
     height: 64,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     borderRadius: 32,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: Layout.spacing.lg,
-    shadowColor: Colors.shadow,
+    shadowColor: Colors.modernYellow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -348,10 +348,10 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.modernYellowDark,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.shadow,
+    shadowColor: Colors.modernYellow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

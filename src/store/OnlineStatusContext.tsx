@@ -291,8 +291,7 @@ export const OnlineStatusProvider: React.FC<{ children: React.ReactNode }> = ({ 
         status: 'online'
       });
       
-      // Show success message
-      Alert.alert('Ride Cancelled', data.message || 'Ride cancelled successfully');
+      // Note: Alert will be shown by the NavigationScreen
     });
   }, [driverId]);
 
@@ -300,7 +299,7 @@ export const OnlineStatusProvider: React.FC<{ children: React.ReactNode }> = ({ 
   useEffect(() => {
     socketManager.onDriverCancellationError((data) => {
       console.log('❌ Driver cancellation failed:', data);
-      Alert.alert('Cancellation Error', data.message || 'Failed to cancel ride');
+      // Note: Alert will be shown by the NavigationScreen
     });
   }, [driverId]);
 

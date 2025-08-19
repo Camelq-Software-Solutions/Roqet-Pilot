@@ -74,7 +74,7 @@ export default function WalletScreen({ navigation }: any) {
           <Ionicons
             name={item.type === 'upi' ? 'card' : item.type === 'card' ? 'card' : 'cash'}
             size={24}
-            color={Colors.primary}
+            color={Colors.modernYellow}
           />
         </View>
         <View style={styles.paymentMethodInfo}>
@@ -202,7 +202,7 @@ export default function WalletScreen({ navigation }: any) {
                   style={styles.addMoneyButton}
                 />
                 <TouchableOpacity style={styles.sendMoneyButton} activeOpacity={0.7}>
-                  <Ionicons name="send" size={20} color={Colors.primary} />
+                  <Ionicons name="send" size={20} color={Colors.modernYellow} />
                   <Text style={styles.sendMoneyText}>Send</Text>
                 </TouchableOpacity>
               </View>
@@ -240,7 +240,7 @@ export default function WalletScreen({ navigation }: any) {
               <View style={styles.paymentMethodsHeader}>
                 <Text style={styles.paymentMethodsTitle}>Saved Payment Methods</Text>
                 <TouchableOpacity style={styles.addPaymentButton}>
-                  <Ionicons name="add" size={20} color={Colors.primary} />
+                  <Ionicons name="add" size={20} color={Colors.modernYellow} />
                   <Text style={styles.addPaymentText}>Add</Text>
                 </TouchableOpacity>
               </View>
@@ -255,7 +255,7 @@ export default function WalletScreen({ navigation }: any) {
               
               <TouchableOpacity style={styles.settingItem}>
                 <View style={styles.settingLeft}>
-                  <Ionicons name="shield-checkmark" size={20} color={Colors.success} />
+                  <Ionicons name="shield-checkmark" size={20} color={Colors.modernYellow} />
                   <Text style={styles.settingText}>Auto-pay for rides</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={Colors.gray400} />
@@ -263,7 +263,7 @@ export default function WalletScreen({ navigation }: any) {
               
               <TouchableOpacity style={styles.settingItem}>
                 <View style={styles.settingLeft}>
-                  <Ionicons name="receipt" size={20} color={Colors.primary} />
+                  <Ionicons name="receipt" size={20} color={Colors.modernYellow} />
                   <Text style={styles.settingText}>Payment receipts</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={Colors.gray400} />
@@ -271,7 +271,7 @@ export default function WalletScreen({ navigation }: any) {
               
               <TouchableOpacity style={styles.settingItem}>
                 <View style={styles.settingLeft}>
-                  <Ionicons name="lock-closed" size={20} color={Colors.accent} />
+                  <Ionicons name="lock-closed" size={20} color={Colors.modernYellow} />
                   <Text style={styles.settingText}>Payment security</Text>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={Colors.gray400} />
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   walletCard: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     margin: Layout.spacing.lg,
     borderRadius: Layout.borderRadius.lg,
     padding: Layout.spacing.lg,
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   balanceAmount: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: Colors.white,
     marginTop: Layout.spacing.xs,
   },
   walletActions: {
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
   viewAllText: {
     fontSize: Layout.fontSize.sm,
     fontWeight: '600',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   transactionItem: {
     flexDirection: 'row',
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     marginLeft: Layout.spacing.xs,
     fontSize: Layout.fontSize.sm,
     fontWeight: '600',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   paymentMethodCard: {
     flexDirection: 'row',

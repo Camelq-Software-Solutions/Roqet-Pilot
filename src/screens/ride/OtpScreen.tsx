@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@clerk/clerk-expo';
 import socketManager from '../../utils/socket';
 import rideService from '../../services/rideService';
+import { Colors } from '../../constants/Colors';
 
 interface OtpScreenProps {
   route: any;
@@ -304,7 +305,7 @@ export default function OtpScreen({ route, navigation }: OtpScreenProps) {
         alignItems: 'center',
         transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.95, 1] }) }],
       }}>
-        <TouchableOpacity onPress={handleCancelRide} style={{ position: 'absolute', top: 18, right: 18, zIndex: 10, backgroundColor: '#f6f6f6', borderRadius: 18, padding: 6 }}>
+        <TouchableOpacity onPress={handleCancelRide} style={{ position: 'absolute', top: 18, right: 18, zIndex: 10, backgroundColor: Colors.sandLight, borderRadius: 18, padding: 6 }}>
           <Ionicons name="close" size={26} color="#888" />
         </TouchableOpacity>
         <Text style={{ fontSize: 30, fontWeight: 'bold', marginBottom: 10, color: '#1877f2', letterSpacing: 1 }}>Enter OTP</Text>
@@ -317,7 +318,7 @@ export default function OtpScreen({ route, navigation }: OtpScreenProps) {
               OTP verified successfully! Starting your ride...
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#1877f2', marginRight: 8 }} />
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: Colors.modernYellow, marginRight: 8 }} />
               <Text style={{ fontSize: 12, color: '#888' }}>Connecting to ride...</Text>
             </View>
           </View>
@@ -334,7 +335,7 @@ export default function OtpScreen({ route, navigation }: OtpScreenProps) {
                 borderRadius: 12,
                 borderWidth: 2,
                 borderColor: focusedIndex === idx ? '#1877f2' : '#e0e0e0',
-                backgroundColor: '#f7faff',
+                backgroundColor: Colors.sandLight,
                 fontSize: 28,
                 color: '#222',
                 textAlign: 'center',
@@ -357,7 +358,7 @@ export default function OtpScreen({ route, navigation }: OtpScreenProps) {
           ))}
         </View>
         <TouchableOpacity
-          style={{ backgroundColor: otp.every(d => d) && !isVerifying ? '#1877f2' : '#b0b0b0', borderRadius: 14, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', marginBottom: 12 }}
+          style={{ backgroundColor: otp.every(d => d) && !isVerifying ? Colors.modernYellow : '#b0b0b0', borderRadius: 14, paddingVertical: 16, paddingHorizontal: 32, width: '100%', alignItems: 'center', marginBottom: 12 }}
           onPress={handleSubmit}
           disabled={!otp.every(d => d) || isVerifying}
           activeOpacity={otp.every(d => d) && !isVerifying ? 0.8 : 1}
@@ -370,7 +371,7 @@ export default function OtpScreen({ route, navigation }: OtpScreenProps) {
         {/* Show manual proceed button if waiting for ride_started event */}
         {isWaitingForRideStarted && (
           <TouchableOpacity
-            style={{ backgroundColor: '#22C55E', borderRadius: 14, paddingVertical: 12, paddingHorizontal: 32, width: '100%', alignItems: 'center', marginTop: 8 }}
+            style={{ backgroundColor: Colors.modernYellow, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 32, width: '100%', alignItems: 'center', marginTop: 8 }}
             onPress={handleManualProceed}
             activeOpacity={0.8}
           >
@@ -379,7 +380,7 @@ export default function OtpScreen({ route, navigation }: OtpScreenProps) {
         )}
         
         {/* <TouchableOpacity
-          style={{ backgroundColor: '#ff4444', borderRadius: 14, paddingVertical: 12, paddingHorizontal: 32, width: '100%', alignItems: 'center' }}
+          style={{ backgroundColor: Colors.modernYellow, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 32, width: '100%', alignItems: 'center' }}
           onPress={handleCancelRide}
           activeOpacity={0.8}
         >

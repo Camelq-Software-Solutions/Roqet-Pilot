@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,10 @@ import {
   Platform,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser, useAuth } from '@clerk/clerk-expo';
 import { Colors } from '../../constants/Colors';
@@ -29,9 +31,69 @@ export default function ProfileSetupScreen({ navigation }: any) {
   const { user } = useUser();
   const { getToken } = useAuth();
 
+  // Animation values
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const slideAnim = React.useRef(new Animated.Value(50)).current;
+  const scaleAnim = React.useRef(new Animated.Value(0.9)).current;
+  const imageScaleAnim = React.useRef(new Animated.Value(0.8)).current;
+  const buttonScaleAnim = React.useRef(new Animated.Value(0.8)).current;
+
   useAssignUserType('driver');
 
+  useEffect(() => {
+    // Enhanced staggered animations
+    Animated.sequence([
+      // Initial fade in
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      // Staggered animations
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+        Animated.spring(imageScaleAnim, {
+          toValue: 1,
+          tension: 60,
+          friction: 8,
+          useNativeDriver: true,
+        }),
+        Animated.spring(buttonScaleAnim, {
+          toValue: 1,
+          tension: 70,
+          friction: 9,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  }, []);
+
   const handleImagePicker = () => {
+    // Animate image picker press
+    Animated.sequence([
+      Animated.timing(imageScaleAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.spring(imageScaleAnim, {
+        toValue: 1,
+        tension: 100,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     Alert.alert(
       'Select Profile Photo',
       'Choose an option',
@@ -49,33 +111,43 @@ export default function ProfileSetupScreen({ navigation }: any) {
       return;
     }
 
+    // Animate button press
+    Animated.sequence([
+      Animated.timing(buttonScaleAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.spring(buttonScaleAnim, {
+        toValue: 1,
+        tension: 100,
+        friction: 5,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     setIsLoading(true);
     
     try {
-      // Update user profile with Clerk
       await user?.update({
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         unsafeMetadata: { ...user.unsafeMetadata, type: 'driver' }
       });
 
-      // Add email if provided
       if (email.trim()) {
         await user?.createEmailAddress({ email: email.trim() });
       }
 
-      // Force new JWT with updated custom fields
       if (typeof getToken === 'function') {
         const newToken = await getToken({ template: 'driver_app_token', skipCache: true });
         console.log('ProfileSetupScreen - New JWT with complete user data:', newToken ? 'Generated' : 'Failed');
         
-        // Log the JWT details to verify custom fields
         if (newToken) {
           await logJWTDetails(getToken, 'ProfileSetup JWT Analysis');
         }
       }
 
-      // Don't navigate manually - the auth state will handle the transition
       Alert.alert('Success', 'Profile updated successfully!');
     } catch (err: any) {
       console.error('Error updating profile:', err);
@@ -86,91 +158,128 @@ export default function ProfileSetupScreen({ navigation }: any) {
   };
 
   const handleSkip = () => {
-    // Don't navigate manually - the auth state will handle the transition
     Alert.alert('Profile Setup', 'You can complete your profile later from the settings.');
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Complete Your Profile</Text>
-            <Text style={styles.subtitle}>
-              Help us personalize your experience
-            </Text>
-          </View>
+    <LinearGradient
+      colors={['#00CED1', '#40E0D0']}
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.keyboardView}
+        >
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <Animated.View style={[
+              styles.header, 
+              { 
+                opacity: fadeAnim, 
+                transform: [{ translateY: slideAnim }] 
+              }
+            ]}>
+              <Text style={styles.title}>Complete Your Profile</Text>
+              <Text style={styles.subtitle}>
+                Help us personalize your experience
+              </Text>
+            </Animated.View>
 
-          <View style={styles.profileImageContainer}>
-            <TouchableOpacity
-              onPress={handleImagePicker}
-              style={styles.imagePickerButton}
-            >
-              {profileImage ? (
-                <Image source={{ uri: profileImage }} style={styles.profileImage} />
-              ) : (
-                <View style={styles.placeholderImage}>
-                  <Ionicons name="camera" size={32} color={Colors.gray400} />
+            <Animated.View style={[
+              styles.profileImageContainer, 
+              { 
+                opacity: fadeAnim, 
+                transform: [{ scale: imageScaleAnim }] 
+              }
+            ]}>
+              <TouchableOpacity
+                onPress={handleImagePicker}
+                style={styles.imagePickerButton}
+              >
+                {profileImage ? (
+                  <Image source={{ uri: profileImage }} style={styles.profileImage} />
+                ) : (
+                  <View style={styles.placeholderImage}>
+                    <Ionicons name="camera" size={32} color="#ffffff" />
+                  </View>
+                )}
+                <View style={styles.cameraIcon}>
+                  <Ionicons name="camera" size={16} color={Colors.primary} />
                 </View>
-              )}
-              <View style={styles.cameraIcon}>
-                <Ionicons name="camera" size={16} color={Colors.white} />
+              </TouchableOpacity>
+              <Text style={styles.imageHint}>Add Profile Photo</Text>
+            </Animated.View>
+
+            <Animated.View style={[
+              styles.form, 
+              { 
+                opacity: fadeAnim, 
+                transform: [{ translateY: slideAnim }, { scale: scaleAnim }] 
+              }
+            ]}>
+              <View style={styles.inputContainer}>
+                <Input
+                  label="First Name *"
+                  placeholder="Enter your first name"
+                  value={firstName}
+                  onChangeText={setFirstName}
+                  leftIcon="person"
+                />
               </View>
-            </TouchableOpacity>
-            <Text style={styles.imageHint}>Add Profile Photo</Text>
-          </View>
 
-          <View style={styles.form}>
-            <Input
-              label="First Name *"
-              placeholder="Enter your first name"
-              value={firstName}
-              onChangeText={setFirstName}
-              leftIcon="person"
-            />
+              <View style={styles.inputContainer}>
+                <Input
+                  label="Last Name"
+                  placeholder="Enter your last name"
+                  value={lastName}
+                  onChangeText={setLastName}
+                  leftIcon="person"
+                />
+              </View>
 
-            <Input
-              label="Last Name"
-              placeholder="Enter your last name"
-              value={lastName}
-              onChangeText={setLastName}
-              leftIcon="person"
-            />
+              <View style={styles.inputContainer}>
+                <Input
+                  label="Email Address"
+                  placeholder="Enter your email (optional)"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  leftIcon="mail"
+                />
+              </View>
 
-            <Input
-              label="Email Address"
-              placeholder="Enter your email (optional)"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              leftIcon="mail"
-            />
+              <Animated.View style={[
+                styles.buttonContainer,
+                { transform: [{ scale: buttonScaleAnim }] }
+              ]}>
+                <Button
+                  title="Complete Setup"
+                  onPress={handleCompleteSetup}
+                  loading={isLoading}
+                  fullWidth
+                  disabled={!firstName.trim()}
+                />
+              </Animated.View>
 
-            <Button
-              title="Complete Setup"
-              onPress={handleCompleteSetup}
-              loading={isLoading}
-              fullWidth
-              disabled={!firstName.trim()}
-            />
-
-            <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-              <Text style={styles.skipText}>Skip for now</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
+                <Text style={styles.skipText}>Skip for now</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+  },
+  safeArea: {
+    flex: 1,
   },
   keyboardView: {
     flex: 1,
@@ -185,14 +294,14 @@ const styles = StyleSheet.create({
     paddingBottom: Layout.spacing.lg,
   },
   title: {
-    fontSize: Layout.fontSize.xxl,
+    fontSize: Layout.fontSize.xl,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: '#ffffff',
     marginBottom: Layout.spacing.sm,
   },
   subtitle: {
     fontSize: Layout.fontSize.md,
-    color: Colors.textSecondary,
+    color: '#ffffff',
     textAlign: 'center',
   },
   profileImageContainer: {
@@ -212,11 +321,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: Colors.gray100,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: Colors.border,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     borderStyle: 'dashed',
   },
   cameraIcon: {
@@ -226,18 +335,32 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.primary,
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: Colors.white,
+    borderColor: Colors.primary,
   },
   imageHint: {
     fontSize: Layout.fontSize.sm,
-    color: Colors.textSecondary,
+    color: '#ffffff',
   },
   form: {
     flex: 1,
+  },
+  inputContainer: {
+    marginBottom: Layout.spacing.lg,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  buttonContainer: {
+    marginBottom: Layout.spacing.md,
   },
   skipButton: {
     alignItems: 'center',
@@ -246,7 +369,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: Layout.fontSize.md,
-    color: Colors.textSecondary,
+    color: '#ffffff',
     fontWeight: '600',
   },
 });

@@ -72,11 +72,11 @@ export default function RideEstimateScreen({ navigation, route }: any) {
             <Text style={styles.routeTitle}>Route Details</Text>
             <View style={styles.routeStats}>
               <View style={styles.statItem}>
-                <Ionicons name="location" size={16} color={Colors.primary} />
+                <Ionicons name="location" size={16} color={Colors.modernYellow} />
                 <Text style={styles.statText}>{rideEstimate.distance}</Text>
               </View>
               <View style={styles.statItem}>
-                <Ionicons name="time" size={16} color={Colors.accent} />
+                <Ionicons name="time" size={16} color={Colors.modernYellow} />
                 <Text style={styles.statText}>{rideEstimate.duration}</Text>
               </View>
             </View>
@@ -147,7 +147,7 @@ export default function RideEstimateScreen({ navigation, route }: any) {
                 <Ionicons
                   name={method.icon as any}
                   size={20}
-                  color={selectedPayment === method.id ? Colors.primary : Colors.gray400}
+                  color={selectedPayment === method.id ? Colors.modernYellow : Colors.gray400}
                 />
                 <Text
                   style={[
@@ -175,7 +175,7 @@ export default function RideEstimateScreen({ navigation, route }: any) {
         {/* Promo Code */}
         <TouchableOpacity style={styles.promoCard}>
           <View style={styles.promoLeft}>
-            <Ionicons name="pricetag" size={20} color={Colors.accent} />
+            <Ionicons name="pricetag" size={20} color={Colors.modernYellow} />
             <Text style={styles.promoText}>Apply Promo Code</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color={Colors.gray400} />
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     marginRight: Layout.spacing.md,
   },
   destinationDot: {
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   fareTotalValue: {
     fontSize: Layout.fontSize.lg,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   paymentCard: {
     backgroundColor: Colors.white,
@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
   },
   paymentMethodTextSelected: {
     fontWeight: '600',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   radioButton: {
     width: 20,
@@ -429,13 +429,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   radioButtonSelected: {
-    borderColor: Colors.primary,
+    borderColor: Colors.modernYellow,
   },
   radioButtonInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
   },
   promoCard: {
     flexDirection: 'row',
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
   fareDisplayValue: {
     fontSize: Layout.fontSize.xl,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: Colors.modernYellow,
   },
   confirmButton: {
     marginTop: Layout.spacing.sm,

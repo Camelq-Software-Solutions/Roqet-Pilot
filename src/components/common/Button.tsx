@@ -63,18 +63,18 @@ export default function Button({
     // Variant styles
     switch (variant) {
       case 'secondary':
-        baseStyle.backgroundColor = Colors.secondary;
+        baseStyle.backgroundColor = Colors.modernYellow;
         break;
       case 'outline':
         baseStyle.backgroundColor = 'transparent';
-        baseStyle.borderWidth = 1;
-        baseStyle.borderColor = Colors.primary;
+        baseStyle.borderWidth = 2;
+        baseStyle.borderColor = Colors.modernYellow;
         break;
       case 'ghost':
         baseStyle.backgroundColor = 'transparent';
         break;
       default:
-        baseStyle.backgroundColor = Colors.primary;
+        baseStyle.backgroundColor = Colors.modernYellow;
     }
 
     // Disabled state
@@ -111,10 +111,13 @@ export default function Button({
     // Variant styles
     switch (variant) {
       case 'outline':
-        baseTextStyle.color = Colors.primary;
+        baseTextStyle.color = Colors.modernYellow;
         break;
       case 'ghost':
-        baseTextStyle.color = Colors.primary;
+        baseTextStyle.color = Colors.modernYellow;
+        break;
+      case 'secondary':
+        baseTextStyle.color = Colors.white;
         break;
       default:
         baseTextStyle.color = Colors.white;
@@ -133,7 +136,7 @@ export default function Button({
       {loading && (
         <ActivityIndicator
           size="small"
-          color={variant === 'outline' || variant === 'ghost' ? Colors.primary : Colors.white}
+          color={variant === 'outline' || variant === 'ghost' ? Colors.modernYellow : Colors.white}
           style={{ marginRight: Layout.spacing.sm }}
         />
       )}

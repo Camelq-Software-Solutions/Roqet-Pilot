@@ -7,6 +7,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { OnlineStatusProvider } from './src/store/OnlineStatusContext';
 import { RideHistoryProvider } from './src/store/RideHistoryContext';
 import { ChatProvider } from './src/store/ChatContext';
+import { LanguageProvider } from './src/contexts/LanguageContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const tokenCache = {
@@ -66,19 +67,21 @@ function SocketInitializer() {
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <RideHistoryProvider>
-        <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
-          <SafeAreaProvider>
-            <OnlineStatusProvider>
-              <StatusBar style="dark" backgroundColor="#ffffff" />
-              <SocketInitializer />
-              <ChatProvider>
-                <AppNavigator />
-              </ChatProvider>
-            </OnlineStatusProvider>
-          </SafeAreaProvider>
-        </ClerkProvider>
-      </RideHistoryProvider>
+      <LanguageProvider>
+        <RideHistoryProvider>
+          <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+            <SafeAreaProvider>
+              <OnlineStatusProvider>
+                <StatusBar style="dark" backgroundColor="#ffffff" />
+                <SocketInitializer />
+                <ChatProvider>
+                  <AppNavigator />
+                </ChatProvider>
+              </OnlineStatusProvider>
+            </SafeAreaProvider>
+          </ClerkProvider>
+        </RideHistoryProvider>
+      </LanguageProvider>
     </GestureHandlerRootView>
   );
 }

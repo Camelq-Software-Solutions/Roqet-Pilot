@@ -4,8 +4,10 @@ import MapView, { Marker, Polyline as MapPolyline, MapViewProps } from 'react-na
 import { MaterialIcons, Ionicons, FontAwesome, Entypo, FontAwesome5 } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import RideRequestScreen, { RideRequest, stopAllNotificationSounds } from '../../components/RideRequestScreen';
+import CancelRideModal from '../../components/CancelRideModal';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
@@ -25,149 +27,13 @@ import { useLocationStore } from '../../store/useLocationStore';
 
 import { logJWTDetails } from '../../utils/jwtDecoder';
 import { formatRidePrice, getRidePrice } from '../../utils/priceUtils';
+import { Colors } from '../../constants/Colors';
 
 const { width, height } = Dimensions.get('window');
 
 // Add at the top, after imports
 function goToHome(navigation: any) {
   navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
-}
-
-function CancelRideModal({ visible, onClose, onConfirm }: { visible: boolean; onClose: () => void; onConfirm: (reason: string) => void }) {
-  const [selectedReason, setSelectedReason] = useState<string>('');
-  const anim = useRef(new Animated.Value(0)).current;
-  const insets = useSafeAreaInsets();
-
-  const cancelReasons = [
-    'Passenger not found at pickup location',
-    'Passenger requested cancellation',
-    'Vehicle breakdown',
-    'Traffic/road conditions',
-    'Personal emergency',
-    'Unsafe pickup location',
-    'Other'
-  ];
-
-  React.useEffect(() => {
-    Animated.timing(anim, {
-      toValue: visible ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [visible]);
-
-  const handleConfirm = () => {
-    if (selectedReason) {
-      onConfirm(selectedReason);
-      setSelectedReason('');
-    }
-  };
-
-  if (!visible) return null;
-
-  return (
-    <Animated.View style={{
-      position: 'absolute',
-      top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: anim.interpolate({ inputRange: [0, 1], outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)'] }),
-      justifyContent: 'center',
-      alignItems: 'center',
-      opacity: anim,
-      zIndex: 10000,
-    }}>
-      {/* <Animated.View style={{
-        width: width - 40,
-        backgroundColor: '#fff',
-        borderRadius: 20,
-        padding: 24,
-        transform: [{ scale: anim.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1] }) }],
-      }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222', marginBottom: 16, textAlign: 'center' }}>
-          Cancel Ride
-        </Text>
-        <Text style={{ fontSize: 16, color: '#666', marginBottom: 20, textAlign: 'center' }}>
-          Please select a reason for cancelling this ride
-        </Text>
-        
-        <ScrollView style={{ maxHeight: 300 }} showsVerticalScrollIndicator={false}>
-          {cancelReasons.map((reason, index) => (
-            <TouchableOpacity
-              key={index}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: 12,
-                paddingHorizontal: 16,
-                borderRadius: 12,
-                backgroundColor: selectedReason === reason ? '#e3f2fd' : '#f8f9fa',
-                marginBottom: 8,
-                borderWidth: 2,
-                borderColor: selectedReason === reason ? '#1877f2' : 'transparent',
-              }}
-              onPress={() => setSelectedReason(reason)}
-              activeOpacity={0.7}
-            >
-              <View style={{
-                width: 20,
-                height: 20,
-                borderRadius: 10,
-                borderWidth: 2,
-                borderColor: selectedReason === reason ? '#1877f2' : '#ccc',
-                backgroundColor: selectedReason === reason ? '#1877f2' : 'transparent',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 12,
-              }}>
-                {selectedReason === reason && (
-                  <Ionicons name="checkmark" size={12} color="#fff" />
-                )}
-              </View>
-              <Text style={{
-                fontSize: 15,
-                color: selectedReason === reason ? '#1877f2' : '#333',
-                fontWeight: selectedReason === reason ? '600' : '400',
-                flex: 1,
-              }}>
-                {reason}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        <View style={{ flexDirection: 'row', marginTop: 20, gap: 12 }}>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: '#f8f9fa',
-              borderRadius: 12,
-              paddingVertical: 14,
-              alignItems: 'center',
-              borderWidth: 1,
-              borderColor: '#e0e0e0',
-            }}
-            onPress={onClose}
-            activeOpacity={0.7}
-          >
-            <Text style={{ color: '#666', fontWeight: '600', fontSize: 16 }}>Back</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: selectedReason ? '#ff4444' : '#ccc',
-              borderRadius: 12,
-              paddingVertical: 14,
-              alignItems: 'center',
-            }}
-            onPress={handleConfirm}
-            disabled={!selectedReason}
-            activeOpacity={selectedReason ? 0.7 : 1}
-          >
-            <Text style={{ color: '#fff', fontWeight: '600', fontSize: 16 }}>Cancel Ride</Text>
-          </TouchableOpacity>
-        </View>
-      </Animated.View> */}
-    </Animated.View>
-  );
 }
 
 function SOSModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
@@ -179,7 +45,7 @@ function SOSModal({ visible, onClose }: { visible: boolean; onClose: () => void 
       onRequestClose={onClose}
     >
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'center', alignItems: 'center' }}>
-        <View style={{ backgroundColor: '#fff', borderRadius: 24, padding: 28, alignItems: 'center', width: 320, elevation: 12 }}>
+        <View style={{ backgroundColor: Colors.surface, borderRadius: 24, padding: 28, alignItems: 'center', width: 320, elevation: 12 }}>
           <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
             <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#222', textAlign: 'center', flex: 1 }}>Call</Text>
             <Pressable onPress={onClose} style={{ marginLeft: 10 }}>
@@ -191,7 +57,7 @@ function SOSModal({ visible, onClose }: { visible: boolean; onClose: () => void 
               style={{ alignItems: 'center' }}
               onPress={() => Linking.openURL('tel:108')}
             >
-              <View style={{ backgroundColor: '#3EC6FF', borderRadius: 50, width: 90, height: 90, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ backgroundColor: Colors.modernYellow, borderRadius: 50, width: 90, height: 90, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
                 <FontAwesome5 name="ambulance" size={48} color="#fff" />
               </View>
               <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#222' }}>108</Text>
@@ -200,7 +66,7 @@ function SOSModal({ visible, onClose }: { visible: boolean; onClose: () => void 
               style={{ alignItems: 'center' }}
               onPress={() => Linking.openURL('tel:100')}
             >
-              <View style={{ backgroundColor: '#FF3B30', borderRadius: 50, width: 90, height: 90, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
+              <View style={{ backgroundColor: Colors.modernYellow, borderRadius: 50, width: 90, height: 90, justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
                 <FontAwesome5 name="user-shield" size={48} color="#fff" />
               </View>
               <Text style={{ fontWeight: 'bold', fontSize: 16, color: '#222' }}>100</Text>
@@ -293,89 +159,309 @@ const getFallbackCoordinates = (address: string) => {
 };
 
 const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { visible: boolean; onClose: () => void; onNavigate: (screen: string) => void; halfScreen?: boolean; onLogout: () => void }) => {
+  const { user } = useUser();
+  
+  // Get driver's full name
+  const driverName = user?.fullName || user?.firstName || 'Driver';
+  
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="fade"
+      animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1, flexDirection: 'row' }}>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}>
         <Animated.View style={{
           backgroundColor: '#fff',
           borderTopRightRadius: 24,
           borderBottomRightRadius: 24,
-          padding: 28,
-          width: Math.round(width * 0.7),
+          width: Math.round(width * 0.8),
           height: '100%',
           elevation: 16,
           shadowColor: '#000',
-          shadowOpacity: 0.18,
+          shadowOpacity: 0.2,
           shadowRadius: 24,
-          shadowOffset: { width: 0, height: 15 },
-          alignItems: 'stretch',
-          justifyContent: 'flex-start',
+          shadowOffset: { width: 0, height: 12 },
         }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 18 }}>
+          {/* Header */}
+          <View style={{ 
+            flexDirection: 'row', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            paddingHorizontal: 20,
+            paddingTop: 20,
+            paddingBottom: 16,
+            borderBottomWidth: 1,
+            borderBottomColor: '#f0f0f0',
+          }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Menu</Text>
             <TouchableOpacity 
               onPress={onClose} 
               style={{ 
-                backgroundColor: '#1877f2', 
-                borderRadius: 25, 
-                width: 50,
-                height: 50,
+                backgroundColor: '#f5f5f5', 
+                borderRadius: 16, 
+                width: 32,
+                height: 32,
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginRight: 16,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.2,
-                shadowRadius: 4,
-                elevation: 4
               }}
-              activeOpacity={0.8}
+              activeOpacity={0.7}
             >
-              <Ionicons name="arrow-back" size={24} color="#fff" />
+              <Ionicons name="close" size={18} color="#666" />
             </TouchableOpacity>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#222' }}>Menu</Text>
           </View>
-          <TouchableOpacity key="home" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Home'); onClose(); }}>
-            <Ionicons name="home" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Home</Text>
+
+          {/* Driver Profile Card */}
+          <View style={{
+            margin: 20,
+            backgroundColor: Colors.sandLight,
+            borderRadius: 16,
+            padding: 16,
+            alignItems: 'center',
+            shadowColor: Colors.shadow,
+                shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.08,
+            shadowRadius: 8,
+            elevation: 2,
+          }}>
+            <View style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              backgroundColor: Colors.modernYellow,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 12,
+            }}>
+              <Ionicons name="person" size={28} color="#fff" />
+            </View>
+            
+            <Text style={{ fontSize: 15, fontWeight: '600', color: Colors.text, marginBottom: 4 }}>
+              {driverName}
+            </Text>
+            <Text style={{ fontSize: 12, color: Colors.textSecondary }}>
+              Professional Driver
+            </Text>
+          </View>
+
+          {/* Menu Items */}
+          <ScrollView style={{ flex: 1, paddingHorizontal: 20 }} showsVerticalScrollIndicator={false}>
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                marginBottom: 4,
+                backgroundColor: Colors.modernYellow + '08'
+              }} 
+              onPress={() => { onNavigate('Home'); onClose(); }}
+            >
+              <View style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 14,
+              }}>
+                <Ionicons name="home" size={18} color="#fff" />
+              </View>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Home</Text>
+              <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                marginBottom: 4
+              }} 
+              onPress={() => { onNavigate('Refer'); onClose(); }}
+            >
+              <View style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 14,
+              }}>
+                <Ionicons name="gift" size={18} color="#fff" />
+          </View>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Refer & Earn</Text>
+              <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
-          <TouchableOpacity key="refer" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Refer'); onClose(); }}>
-            <Ionicons name="gift" size={26} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Refer</Text>
-          </TouchableOpacity>
-          <TouchableOpacity key="rideHistory" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { 
+
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                marginBottom: 4
+              }} 
+              onPress={() => { 
             console.log('🚀 Ride History button clicked - navigating to RideHistory screen');
             onNavigate('RideHistory'); 
             onClose(); 
-          }}>
-            <Ionicons name="time" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Ride History</Text>
-          </TouchableOpacity>
-          <TouchableOpacity key="wallet" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Wallet'); onClose(); }}>
-            <Ionicons name="wallet" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Wallet</Text>
+              }}
+            >
+              <View style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 14,
+              }}>
+                <Ionicons name="time" size={18} color="#fff" />
+              </View>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Ride History</Text>
+              <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
 
-          <TouchableOpacity key="settings" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Settings'); onClose(); }}>
-            <Ionicons name="settings" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Settings</Text>
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                marginBottom: 4
+              }} 
+              onPress={() => { onNavigate('Wallet'); onClose(); }}
+            >
+              <View style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 14,
+              }}>
+                <Ionicons name="wallet" size={18} color="#fff" />
+              </View>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Wallet</Text>
+              <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
-          <TouchableOpacity key="helpSupport" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('HelpSupport'); onClose(); }}>
-            <Ionicons name="help-circle" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Support</Text>
+
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                marginBottom: 4
+              }} 
+              onPress={() => { onNavigate('Settings'); onClose(); }}
+            >
+              <View style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 14,
+              }}>
+                <Ionicons name="settings" size={18} color="#fff" />
+              </View>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Settings</Text>
+              <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
-          <View key="divider" style={{ borderTopWidth: 1, borderTopColor: '#eee', marginVertical: 16 }} />
-          <TouchableOpacity key="logout" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={onLogout}>
-            <Ionicons name="log-out" size={24} color="#FF3B30" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FF3B30' }}>Logout</Text>
+
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                marginBottom: 4
+              }} 
+              onPress={() => { onNavigate('HelpSupport'); onClose(); }}
+            >
+              <View style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 14,
+              }}>
+                <Ionicons name="help-circle" size={18} color="#fff" />
+              </View>
+              <Text style={{ fontSize: 15, fontWeight: '500', color: '#222', flex: 1 }}>Support</Text>
+              <Ionicons name="chevron-forward" size={14} color={Colors.modernYellow} />
           </TouchableOpacity>
+          </ScrollView>
+
+          {/* Logout Section */}
+          <View style={{ 
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+            borderTopWidth: 1, 
+            borderTopColor: '#f0f0f0',
+          }}>
+            <TouchableOpacity 
+              style={{ 
+                flexDirection: 'row', 
+                alignItems: 'center', 
+                paddingVertical: 14,
+                paddingHorizontal: 16,
+                borderRadius: 12,
+                backgroundColor: '#FF3B30',
+                justifyContent: 'center',
+                shadowColor: '#FF3B30',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.15,
+                shadowRadius: 4,
+                elevation: 3,
+              }} 
+              onPress={onLogout}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="log-out" size={18} color="#fff" style={{ marginRight: 8 }} />
+              <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff' }}>Logout</Text>
+          </TouchableOpacity>
+
+            <Text style={{ 
+              fontSize: 11, 
+              color: Colors.textSecondary, 
+              marginTop: 12,
+              textAlign: 'center'
+            }}>
+              RiderSony Driver App v1.0.0
+            </Text>
+          </View>
         </Animated.View>
-        {/* Always render the overlay for closing */}
-        <TouchableOpacity style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.35)' }} onPress={onClose} activeOpacity={1} />
+        
+        {/* Overlay to close menu */}
+        <TouchableOpacity 
+          style={{ 
+            position: 'absolute',
+            top: 0,
+            left: Math.round(width * 0.8),
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'transparent'
+          }} 
+          onPress={onClose} 
+          activeOpacity={1} 
+        />
       </View>
     </Modal>
   );
@@ -648,8 +734,8 @@ export default function HomeScreen() {
   const getDriverStatusColor = () => {
     if (!isSocketConnected) return '#FF3B30'; // Red for disconnected
     if (acceptedRideDetails) return '#FF9500'; // Orange for busy/on ride
-    if (contextRideRequests.length > 0) return '#007AFF'; // Blue for considering ride
-    return '#00C853'; // Green for available
+    if (contextRideRequests.length > 0) return Colors.modernYellow; // Yellow for considering ride
+    return Colors.modernYellow; // Yellow for available
   };
 
   const getDriverStatusText = () => {
@@ -1145,6 +1231,20 @@ export default function HomeScreen() {
     requestLocationPermission();
   }, []);
 
+  // Refresh state when screen comes into focus (e.g., after cancellation)
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('🔄 HomeScreen focused - refreshing state');
+      // Force a refresh of the online status context
+      if (isSocketConnected) {
+        sendDriverStatus({
+          driverId,
+          status: 'online'
+        });
+      }
+    }, [isSocketConnected, driverId, sendDriverStatus])
+  );
+
   useEffect(() => {
     // Only run if user is loaded, user exists, and we haven't created the driver yet
     if (!isLoaded || !user || driverCreated || driverCreationStarted.current) return;
@@ -1321,12 +1421,12 @@ export default function HomeScreen() {
   return (
     <Animated.View 
       style={[
-        { flex: 1, backgroundColor: '#fff' },
+        { flex: 1, backgroundColor: Colors.background },
       ]}
     >
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} edges={['top', 'bottom', 'left', 'right']}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={['top', 'bottom', 'left', 'right']}>
       {/* StatusBar background fix for edge-to-edge */}
-      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top, backgroundColor: '#fff', zIndex: 10000 }} />
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: insets.top, backgroundColor: Colors.background, zIndex: 10000 }} />
       <StatusBar barStyle="dark-content" translucent />
       {/* Map */}
       <MapView
@@ -1423,23 +1523,201 @@ export default function HomeScreen() {
           style={{
             flex: 1,
             backgroundColor: '#fff',
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
+            justifyContent: 'center',
+            alignItems: 'center',
             paddingTop: insets.top + 24,
-            paddingHorizontal: 0,
+            paddingHorizontal: 24,
           }}
           pointerEvents="box-none"
         >
-          {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginLeft: 24, marginBottom: 24, color: '#111' }}>Recommended for you</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 24, marginBottom: 16 }}>
-            <Ionicons name="compass-outline" size={22} color="#111" style={{ marginRight: 8 }} />
-            <TouchableOpacity onPress={() => Alert.alert('Driving Time', 'Driving time feature coming soon!')}>
-              <Text style={{ fontSize: 16, color: '#111' }}>See driving time</Text>
-            </TouchableOpacity>
+          {/* Enhanced Default Image and Content */}
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {/* Top Decorative Element */}
+            <View
+              style={{
+                position: 'absolute',
+                top: 60,
+                right: 30,
+                width: 80,
+                height: 80,
+                borderRadius: 40,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                opacity: 0.1,
+              }}
+            >
+              <Ionicons name="pause-circle" size={40} color={Colors.text} />
           </View>
-          <TouchableOpacity style={{ marginLeft: 24, marginBottom: 32 }} onPress={() => Alert.alert('Waybill', 'Waybill feature coming soon!')}>
-            <Text style={{ color: '#007AFF', fontSize: 16, fontWeight: '500' }}>Waybill</Text>
-          </TouchableOpacity> */}
+            
+            <View
+              style={{
+                position: 'absolute',
+                top: 100,
+                left: 30,
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: Colors.modernYellow,
+                justifyContent: 'center',
+                alignItems: 'center',
+                opacity: 0.08,
+              }}
+            >
+              <Ionicons name="time" size={30} color={Colors.text} />
+            </View>
+
+            {/* Main Illustration Container */}
+            <View
+              style={{
+                width: 240,
+                height: 240,
+                borderRadius: 120,
+                backgroundColor: Colors.sandLight,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 40,
+                shadowColor: Colors.shadow,
+                shadowOffset: { width: 0, height: 12 },
+                shadowOpacity: 0.15,
+                shadowRadius: 20,
+                elevation: 12,
+                borderWidth: 3,
+                borderColor: Colors.modernYellow,
+                borderStyle: 'dashed',
+              }}
+            >
+              {/* Central Bike Icon */}
+              <View
+                style={{
+                  width: 140,
+                  height: 140,
+                  borderRadius: 70,
+                  backgroundColor: Colors.modernYellow,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  shadowColor: Colors.modernYellow,
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: 0.4,
+                  shadowRadius: 12,
+                  elevation: 8,
+                }}
+              >
+                <Ionicons name="bicycle" size={70} color="#fff" />
+              </View>
+              
+              {/* Offline Status Badge */}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 25,
+                  right: 25,
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+                  backgroundColor: '#FF6B6B',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderWidth: 4,
+                  borderColor: '#fff',
+                  shadowColor: '#FF6B6B',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  elevation: 6,
+                }}
+              >
+                <Ionicons name="wifi-outline" size={24} color="#fff" />
+                <View
+                  style={{
+                    position: 'absolute',
+                    width: 35,
+                    height: 4,
+                    backgroundColor: '#fff',
+                    borderRadius: 2,
+                    transform: [{ rotate: '-45deg' }],
+                  }}
+                />
+              </View>
+
+              {/* Status Indicator Dots */}
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 20,
+                  left: 20,
+                  flexDirection: 'row',
+                  gap: 8,
+                }}
+              >
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 6,
+                    backgroundColor: Colors.modernYellow,
+                    opacity: 0.6,
+                  }}
+                />
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 6,
+                    backgroundColor: Colors.modernYellow,
+                    opacity: 0.4,
+                  }}
+                />
+                <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 6,
+                    backgroundColor: Colors.modernYellow,
+                    opacity: 0.2,
+                  }}
+                />
+              </View>
+            </View>
+
+            {/* Title */}
+            <Text
+              style={{
+                fontSize: 28,
+                fontWeight: 'bold',
+                color: Colors.text,
+                textAlign: 'center',
+                marginBottom: 12,
+              }}
+            >
+              Going Offline?
+            </Text>
+
+            {/* Subtitle */}
+            <Text
+              style={{
+                fontSize: 16,
+                color: Colors.textSecondary,
+                textAlign: 'center',
+                marginBottom: 8,
+                lineHeight: 24,
+              }}
+            >
+              You won't receive new ride requests
+            </Text>
+
+            {/* Additional Info */}
+            <Text
+              style={{
+                fontSize: 14,
+                color: Colors.textLight,
+                textAlign: 'center',
+                lineHeight: 20,
+              }}
+            >
+              Swipe the bar below to confirm
+            </Text>
+          </View>
 
           {/* Swipe to Go Offline Bar (modal, 90% width, bottom, working like online swipe) */}
           <View
@@ -1461,7 +1739,7 @@ export default function HomeScreen() {
                 flex: 1,
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor: 'green',
+                backgroundColor: Colors.modernYellow,
                 borderRadius: 36,
                 paddingVertical: 20,
                 paddingHorizontal: 28,
@@ -1654,7 +1932,7 @@ export default function HomeScreen() {
             }
           }}
         >
-          <Ionicons name="navigate" size={32} color="#1877f2" />
+          <Ionicons name="navigate" size={32} color={Colors.modernYellow} />
         </TouchableOpacity>
       )}
       {/* Bottom Online/Offline Bar */}
@@ -1681,7 +1959,7 @@ export default function HomeScreen() {
             }}>
               {/* Center Text */}
               <Text style={{
-                color: '#00C853',
+                color: Colors.modernYellow,
                 fontWeight: 'bold',
                 fontSize: 30,
                 letterSpacing: 0.5,
@@ -1754,7 +2032,7 @@ export default function HomeScreen() {
                 zIndex: 1,
               }}>
                 <LinearGradient
-                  colors={['#B9F6CA', '#00C853', '#009624']}
+                  colors={[Colors.modernYellowLight, Colors.modernYellow, Colors.modernYellowDark]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={{ flex: 1, borderRadius: 32 }}
@@ -1791,7 +2069,7 @@ export default function HomeScreen() {
                 width: 66,
                 height: 66,
                 borderRadius: 28,
-                backgroundColor: 'green',
+                backgroundColor: Colors.modernYellow,
                 alignItems: 'center',
                 justifyContent: 'center',
                 shadowColor: '#26304A',
@@ -1899,7 +2177,7 @@ export default function HomeScreen() {
                 style={{
                   width: currentRideRequests.length === 1 ? '90%' : '44%',
                   marginRight: idx === 0 && currentRideRequests.length === 2 ? 16 : 0,
-                  shadowColor: idx === 0 ? '#007AFF' : '#FF9500',
+                  shadowColor: idx === 0 ? Colors.modernYellow : Colors.modernYellow,
                   shadowOffset: { width: 0, height: 8 },
                   shadowOpacity: 0.25,
                   shadowRadius: 16,
@@ -2072,7 +2350,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.modernYellow,
     borderRadius: 8,
     paddingHorizontal: 4,
     paddingVertical: 1,
@@ -2102,7 +2380,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   speedLimit: {
-    color: '#00C853',
+    color: Colors.modernYellow,
     fontSize: 20,
     fontWeight: 'bold',
   },

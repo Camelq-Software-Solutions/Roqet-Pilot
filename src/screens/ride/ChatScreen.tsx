@@ -311,7 +311,7 @@ export default function ChatScreen({ navigation, route }: any) {
           </Text>
         </View>
         <TouchableOpacity style={styles.callButton}>
-          <Ionicons name="call" size={24} color={Colors.primary} />
+          <Ionicons name="call" size={24} color={Colors.modernYellow} />
         </TouchableOpacity>
       </View>
 
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
     borderBottomRightRadius: Layout.borderRadius.sm,
   },
   driverMessage: {
@@ -530,7 +530,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   sendButtonActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.modernYellow,
   },
   messageFooter: {
     flexDirection: 'row',

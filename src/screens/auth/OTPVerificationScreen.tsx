@@ -8,8 +8,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  Animated, // <-- Add Animated import
+  Animated,
   Easing,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -332,6 +333,16 @@ export default function OTPVerificationScreen({ navigation, route }: any) {
         </View>
 
         <View style={styles.content}>
+          {/* OTP Illustration */}
+          <View style={styles.illustrationContainer}>
+            <View style={styles.illustrationCircle}>
+              <Ionicons name="shield-checkmark" size={80} color={Colors.modernYellow} />
+            </View>
+            <View style={styles.illustrationBadge}>
+              <Ionicons name="lock-closed" size={24} color={Colors.white} />
+            </View>
+          </View>
+
           <View style={styles.titleContainer}>
             <Text style={styles.title}>Verify OTP</Text>
             <Text style={styles.subtitle}>
@@ -453,12 +464,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray50,
   },
   otpInputFilled: {
-    borderColor: Colors.primary,
+    borderColor: Colors.modernYellow,
     backgroundColor: Colors.white,
   },
   otpInputFocused: {
-    borderColor: Colors.primary,
-    shadowColor: Colors.primary,
+    borderColor: Colors.modernYellow,
+    shadowColor: Colors.modernYellow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
@@ -470,11 +481,49 @@ const styles = StyleSheet.create({
   },
   resendText: {
     fontSize: Layout.fontSize.md,
-    color: Colors.primary,
+    color: Colors.modernYellow,
     fontWeight: '600',
   },
   timerText: {
     fontSize: Layout.fontSize.md,
     color: Colors.textSecondary,
+  },
+  illustrationContainer: {
+    alignItems: 'center',
+    marginBottom: Layout.spacing.xl,
+    position: 'relative',
+  },
+  illustrationCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: Colors.sandLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: Colors.modernYellow,
+    shadowColor: Colors.modernYellow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  illustrationBadge: {
+    position: 'absolute',
+    bottom: -10,
+    right: 40,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.modernYellow,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: Colors.white,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
 });

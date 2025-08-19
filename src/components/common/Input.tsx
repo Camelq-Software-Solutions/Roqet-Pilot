@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   TextInput,
@@ -34,6 +34,11 @@ export default function Input({
 }: InputProps) {
   const [isSecure, setIsSecure] = useState(secureTextEntry);
   const [isFocused, setIsFocused] = useState(false);
+  const inputRef = React.useRef<TextInput>(null);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
 
   const toggleSecureEntry = () => {
     setIsSecure(!isSecure);
@@ -42,11 +47,15 @@ export default function Input({
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[
-        styles.inputContainer,
-        isFocused && styles.inputContainerFocused,
-        error && styles.inputContainerError,
-      ]}>
+      <TouchableOpacity 
+        style={[
+          styles.inputContainer,
+          isFocused && styles.inputContainerFocused,
+          error && styles.inputContainerError,
+        ]}
+        activeOpacity={1}
+        onPress={() => inputRef.current?.focus()}
+      >
         {leftElement ? (
           <View style={styles.leftElement}>{leftElement}</View>
         ) : leftIcon ? (
@@ -58,11 +67,26 @@ export default function Input({
           />
         ) : null}
         <TextInput
-          style={[styles.input, (leftIcon || leftElement) && styles.inputWithLeftIcon]}
+          ref={inputRef}
+          style={[styles.input, (leftIcon || leftElement) ? styles.inputWithLeftIcon : null]}
           placeholderTextColor={Colors.gray400}
           secureTextEntry={isSecure}
-          onFocus={() => setIsFocused(true)}
+          autoCorrect={false}
+          autoCapitalize={props.autoCapitalize || "none"}
+          returnKeyType={props.returnKeyType || "next"}
+          blurOnSubmit={props.blurOnSubmit !== undefined ? props.blurOnSubmit : false}
+          onFocus={handleFocus}
           onBlur={() => setIsFocused(false)}
+          keyboardType={props.keyboardType}
+          maxLength={props.maxLength}
+          value={props.value}
+          onChangeText={props.onChangeText}
+          placeholder={props.placeholder}
+          editable={props.editable !== false}
+          textAlign={props.textAlign || 'left'}
+          onKeyPress={props.onKeyPress}
+          multiline={false}
+          contextMenuHidden={false}
           {...props}
         />
         {secureTextEntry && (
@@ -83,7 +107,7 @@ export default function Input({
             />
           </TouchableOpacity>
         )}
-      </View>
+      </TouchableOpacity>
       {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
@@ -103,14 +127,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.gray50,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: Colors.border,
     borderRadius: Layout.borderRadius.md,
     paddingHorizontal: Layout.spacing.md,
+    minHeight: 50,
   },
   inputContainerFocused: {
-    borderColor: Colors.primary,
+    borderColor: Colors.modernGreen,
     backgroundColor: Colors.white,
+    shadowColor: Colors.modernGreen,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
   },
   inputContainerError: {
     borderColor: Colors.error,
