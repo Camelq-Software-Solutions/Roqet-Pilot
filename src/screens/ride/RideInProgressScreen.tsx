@@ -8,6 +8,8 @@ import Polyline from '@mapbox/polyline';
 import socketManager from '../../utils/socket';
 import { Colors } from '../../constants/Colors';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useRideNotifications } from '../../hooks/useRideNotifications';
+import { usePushNotifications } from '../../contexts/PushNotificationContext';
 
 const { width } = Dimensions.get('window');
 
@@ -53,6 +55,8 @@ interface RideInProgressScreenProps {
 export default function RideInProgressScreen({ route, navigation }: RideInProgressScreenProps) {
   const { ride } = route.params;
   const { t } = useLanguage();
+  const { sendRideCompletedNotification } = useRideNotifications();
+  const { isInitialized: pushNotificationsInitialized } = usePushNotifications();
   const anim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
   const [routeCoords, setRouteCoords] = useState<Array<{latitude: number, longitude: number}>>([]);
@@ -216,12 +220,29 @@ export default function RideInProgressScreen({ route, navigation }: RideInProgre
 
   // Listen for ride completed event from server
   useEffect(() => {
-    const handleRideCompleted = (data: { rideId: string; status: string; message: string; timestamp: number }) => {
+    const handleRideCompleted = async (data: { rideId: string; status: string; message: string; timestamp: number }) => {
       console.log('✅ RideInProgressScreen received ride completed event:', data);
       console.log('✅ Checking if rideId matches:', data.rideId, '===', ride?.rideId);
       
       if (data.rideId === ride?.rideId) {
         console.log('✅ Ride completed event matches current ride, navigating to RideSummary');
+        
+        // Send ride completion notification
+        if (pushNotificationsInitialized) {
+          try {
+            await sendRideCompletedNotification({
+              rideId: data.rideId,
+              pickupLocation: ride?.pickupAddress || 'Pickup Location',
+              dropoffLocation: ride?.dropoffAddress || 'Dropoff Location',
+              fare: parseInt(ride?.price?.replace('₹', '') || '0'),
+              distance: 'Unknown distance',
+            });
+            console.log('📱 Ride completion notification sent from RideInProgressScreen');
+          } catch (error) {
+            console.error('❌ Failed to send ride completion notification:', error);
+          }
+        }
+        
         const summaryData = {
           destination: { name: ride?.dropoffAddress || 'Destination' },
           estimate: {

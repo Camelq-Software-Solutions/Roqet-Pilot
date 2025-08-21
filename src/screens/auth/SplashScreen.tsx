@@ -17,15 +17,63 @@ import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width, height } = Dimensions.get('window');
 
+// Responsive dimensions based on screen size
+const isSmallScreen = height < 700; // 5-inch screens and smaller
+const isMediumScreen = height >= 700 && height < 800;
+const isLargeScreen = height >= 800;
+
+// Responsive sizing functions
+const getResponsiveSize = (small: number, medium: number, large: number) => {
+  if (isSmallScreen) return small;
+  if (isMediumScreen) return medium;
+  return large;
+};
+
+const getCardSize = () => {
+  if (isSmallScreen) return { width: width * 0.8, height: height * 0.28 }; // Smaller for small screens
+  if (isMediumScreen) return { width: width * 0.75, height: height * 0.35 };
+  return { width: 300, height: 300 };
+};
+
+const getImageSize = () => {
+  if (isSmallScreen) return { width: width * 0.6, height: height * 0.18 }; // Smaller for small screens
+  if (isMediumScreen) return { width: width * 0.6, height: height * 0.25 };
+  return { width: 340, height: 370 };
+};
+
+const getTitleSize = () => getResponsiveSize(18, 22, 32); // Even smaller title for small screens
+const getSubtitleSize = () => getResponsiveSize(11, 13, 18); // Even smaller subtitle for small screens
+const getButtonTextSize = () => getResponsiveSize(13, 14, 16);
+
+// Get content height based on screen size
+const getContentHeight = () => {
+  if (isSmallScreen) return height * 0.65; // Increased content area for small screens
+  if (isMediumScreen) return height * 0.7;
+  return height * 0.65;
+};
+
 const PRIMARY_TEAL = '#00CED1';
 const PRIMARY_CYAN = '#40E0D0';
 
 const screens = [
   {
     key: 'booking',
-    illustration: (
-      <View style={{ width: 300, height: 260, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-        <Image source={require('../../../assets/images/Mainlogo.jpeg')} style={{ width: 340, height: 370, resizeMode: 'contain' }} />
+    illustration: (cardSize: any, imageSize: any) => (
+      <View style={{ 
+        width: cardSize.width * 0.9, 
+        height: cardSize.height * 0.8, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        marginBottom: getResponsiveSize(2, 4, 8) 
+      }}>
+        <Image 
+          source={require('../../../assets/images/Mainlogo.jpeg')} 
+          style={{ 
+            width: imageSize.width, 
+            height: imageSize.height, 
+            resizeMode: 'contain' 
+          }} 
+        />
       </View>
     ),
     title: 'onboarding.welcomeToRoqet',
@@ -33,9 +81,22 @@ const screens = [
   },
   {
     key: 'affordable',
-    illustration: (
-      <View style={{ width: 300, height: 260, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-        <Image source={require('../../../assets/images/Grow.jpg.jpeg')} style={{ width: 450, height: 390, resizeMode: 'contain' }} />
+    illustration: (cardSize: any, imageSize: any) => (
+      <View style={{ 
+        width: cardSize.width * 0.9, 
+        height: cardSize.height * 0.8, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        marginBottom: getResponsiveSize(2, 4, 8) 
+      }}>
+        <Image 
+          source={require('../../../assets/images/Grow.jpg.jpeg')} 
+          style={{ 
+            width: imageSize.width, 
+            height: imageSize.height, 
+            resizeMode: 'contain' 
+          }} 
+        />
       </View>
     ),
     title: 'onboarding.rideSmartEarnMore',
@@ -43,9 +104,22 @@ const screens = [
   },
   {
     key: 'safe',
-    illustration: (
-      <View style={{ width: 300, height: 160, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-        <Image source={require('../../../assets/images/Bossimage.jpg.jpeg')} style={{ width: 450, height: 370, resizeMode: 'contain' }} />
+    illustration: (cardSize: any, imageSize: any) => (
+      <View style={{ 
+        width: cardSize.width * 0.9, 
+        height: cardSize.height * 0.8, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        marginBottom: getResponsiveSize(2, 4, 8) 
+      }}>
+        <Image 
+          source={require('../../../assets/images/Bossimage.jpg.jpeg')} 
+          style={{ 
+            width: imageSize.width, 
+            height: imageSize.height, 
+            resizeMode: 'contain' 
+          }} 
+        />
       </View>
     ),
     title: 'onboarding.beYourOwnBoss',
@@ -53,9 +127,22 @@ const screens = [
   },
   {
     key: 'eco',
-    illustration: (
-      <View style={{ width: 300, height: 160, alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
-        <Image source={require('../../../assets/images/Community.jpg.jpeg')} style={{ width: 450, height: 370, resizeMode: 'contain' }} />
+    illustration: (cardSize: any, imageSize: any) => (
+      <View style={{ 
+        width: cardSize.width * 0.9, 
+        height: cardSize.height * 0.8, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        marginBottom: getResponsiveSize(2, 4, 8) 
+      }}>
+        <Image 
+          source={require('../../../assets/images/Community.jpg.jpeg')} 
+          style={{ 
+            width: imageSize.width, 
+            height: imageSize.height, 
+            resizeMode: 'contain' 
+          }} 
+        />
       </View>
     ),
     title: 'onboarding.growingCommunity',
@@ -114,6 +201,19 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
     ]).start();
   }, []);
 
+  // Handle layout recalculation when language changes
+  useEffect(() => {
+    // Force layout recalculation when language changes
+    const timer = setTimeout(() => {
+      // This ensures the layout is recalculated after language change
+      if (flatListRef.current) {
+        flatListRef.current.scrollToIndex({ index, animated: false });
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [currentLanguage, index]);
+
   const handleNext = () => {
     // Animate button press
     Animated.sequence([
@@ -151,6 +251,11 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
     return currentLang ? currentLang.nativeName : 'English';
   };
 
+  // Get responsive dimensions
+  const cardSize = getCardSize();
+  const imageSize = getImageSize();
+  const contentHeight = getContentHeight();
+
   return (
     <LinearGradient
       colors={Colors.backgroundGradient}
@@ -164,9 +269,9 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
           flexDirection: 'row', 
           justifyContent: 'space-between', 
           alignItems: 'center',
-          paddingHorizontal: 24, 
-          paddingTop: 16, 
-          paddingBottom: 16,
+          paddingHorizontal: getResponsiveSize(12, 16, 24), 
+          paddingTop: getResponsiveSize(8, 10, 16), 
+          paddingBottom: getResponsiveSize(8, 10, 16),
           opacity: fadeAnim 
         }}>
           {/* Language Selector */}
@@ -175,38 +280,52 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              paddingVertical: 8,
-              paddingHorizontal: 12,
+              paddingVertical: getResponsiveSize(4, 6, 8),
+              paddingHorizontal: getResponsiveSize(6, 8, 12),
               backgroundColor: 'rgba(255,255,255,0.9)',
               borderRadius: 20,
               borderWidth: 1,
               borderColor: Colors.modernYellow,
             }}
           >
-            <Ionicons name="language" size={16} color={Colors.modernYellow} style={{ marginRight: 4 }} />
-            <Text style={{ color: Colors.modernYellow, fontSize: 14, fontWeight: '600' }}>
+            <Ionicons name="language" size={getResponsiveSize(12, 14, 16)} color={Colors.modernYellow} style={{ marginRight: 4 }} />
+            <Text style={{ 
+              color: Colors.modernYellow, 
+              fontSize: getResponsiveSize(10, 12, 14), 
+              fontWeight: '600' 
+            }}>
               {getCurrentLanguageName()}
             </Text>
-            <Ionicons name="chevron-down" size={14} color={Colors.modernYellow} style={{ marginLeft: 4 }} />
+            <Ionicons name="chevron-down" size={getResponsiveSize(10, 12, 14)} color={Colors.modernYellow} style={{ marginLeft: 4 }} />
           </TouchableOpacity>
 
           {/* Skip Button */}
           <TouchableOpacity onPress={handleSkip} style={{
             flexDirection: 'row',
             alignItems: 'center',
-            paddingVertical: 12,
-            paddingHorizontal: 16,
+            paddingVertical: getResponsiveSize(6, 8, 12),
+            paddingHorizontal: getResponsiveSize(8, 12, 16),
             backgroundColor: 'rgba(0,0,0,0.05)',
             borderRadius: 25,
             borderWidth: 1,
             borderColor: 'rgba(0,0,0,0.1)',
           }}>
-            <Text style={{ color: Colors.text, fontSize: 16, fontWeight: '600' }}>{t('common.skip')}</Text>
+            <Text style={{ 
+              color: Colors.text, 
+              fontSize: getResponsiveSize(12, 14, 16), 
+              fontWeight: '600' 
+            }}>
+              {t('common.skip')}
+            </Text>
           </TouchableOpacity>
         </Animated.View>
 
         {/* Main Content Container */}
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ 
+          flex: 1, 
+          justifyContent: 'center',
+          paddingVertical: getResponsiveSize(2, 5, 20)
+        }}>
           <FlatList
             ref={flatListRef}
             data={screens}
@@ -221,69 +340,70 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
             renderItem={({ item }) => (
               <Animated.View style={{ 
                 width, 
-                height: height * 0.6, 
+                height: contentHeight, 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                paddingHorizontal: 24,
+                paddingHorizontal: getResponsiveSize(12, 16, 24),
                 opacity: fadeAnim,
                 transform: [{ translateY: slideAnim }, { scale: scaleAnim }]
               }}>
-              <View style={{
-                width: 300,
-                height: 300,
-                borderRadius: 24,
-                overflow: 'hidden',
-                marginBottom: 24,
-                backgroundColor: 'rgba(0, 0, 0, 0.02)',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 12 },
-                shadowOpacity: 0.1,
-                shadowRadius: 24,
-                elevation: 8,
-                borderWidth: 1,
-                borderColor: 'rgba(0, 0, 0, 0.05)',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-                {item.illustration}
                 <View style={{
-                  position: 'absolute',
-                  top: -10,
-                  left: -10,
-                  right: -10,
-                  bottom: -10,
-                  borderRadius: 34,
+                  width: cardSize.width,
+                  height: cardSize.height,
+                  borderRadius: getResponsiveSize(12, 16, 24),
+                  overflow: 'hidden',
+                  marginBottom: getResponsiveSize(8, 12, 24),
                   backgroundColor: 'rgba(0, 0, 0, 0.02)',
-                  shadowColor: Colors.modernYellow,
-                  shadowOffset: { width: 0, height: 0 },
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: getResponsiveSize(4, 8, 12) },
                   shadowOpacity: 0.1,
-                  shadowRadius: 20,
-                  elevation: 5,
-                }} />
-              </View>
-                             <Text style={{ 
-                 fontSize: 32, 
-                 fontWeight: 'bold', 
-                 color: Colors.text, 
-                 marginTop: 20, 
-                 textAlign: 'center',
-                 marginBottom: 12,
-                 lineHeight: 40,
-               }}>
-                 {t(item.title)}
-               </Text>
-               <Text style={{ 
-                 fontSize: 18, 
-                 color: Colors.textSecondary, 
-                 marginTop: 12, 
-                 textAlign: 'center',
-                 lineHeight: 28,
-                 paddingHorizontal: 20,
-               }}>
-                 {t(item.subtitle)}
-               </Text>
-            </Animated.View>
-          )}
+                  shadowRadius: getResponsiveSize(8, 16, 24),
+                  elevation: 8,
+                  borderWidth: 1,
+                  borderColor: 'rgba(0, 0, 0, 0.05)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  {item.illustration(cardSize, imageSize)}
+                  <View style={{
+                    position: 'absolute',
+                    top: -getResponsiveSize(4, 6, 10),
+                    left: -getResponsiveSize(4, 6, 10),
+                    right: -getResponsiveSize(4, 6, 10),
+                    bottom: -getResponsiveSize(4, 6, 10),
+                    borderRadius: getResponsiveSize(16, 20, 34),
+                    backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                    shadowColor: Colors.modernYellow,
+                    shadowOffset: { width: 0, height: 0 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: getResponsiveSize(8, 12, 20),
+                    elevation: 5,
+                  }} />
+                </View>
+                <Text style={{ 
+                  fontSize: getTitleSize(), 
+                  fontWeight: 'bold', 
+                  color: Colors.text, 
+                  marginTop: getResponsiveSize(4, 8, 20), 
+                  textAlign: 'center',
+                  marginBottom: getResponsiveSize(2, 4, 12),
+                  lineHeight: getTitleSize() * 1.15,
+                  paddingHorizontal: getResponsiveSize(8, 12, 20),
+                }}>
+                  {t(item.title)}
+                </Text>
+                <Text style={{ 
+                  fontSize: getSubtitleSize(), 
+                  color: Colors.textSecondary, 
+                  marginTop: getResponsiveSize(2, 4, 12), 
+                  textAlign: 'center',
+                  lineHeight: getSubtitleSize() * 1.25,
+                  paddingHorizontal: getResponsiveSize(12, 16, 24),
+                }}>
+                  {t(item.subtitle)}
+                </Text>
+              </Animated.View>
+            )}
           />
         </View>
 
@@ -292,17 +412,17 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
           flexDirection: 'row', 
           justifyContent: 'center', 
           alignItems: 'center', 
-          marginBottom: 24,
+          marginBottom: getResponsiveSize(4, 8, 24),
           opacity: paginationAnim
         }}>
           {screens.map((_, i) => (
             <View
               key={i}
               style={{
-                marginHorizontal: 6,
+                marginHorizontal: getResponsiveSize(3, 4, 6),
                 borderRadius: 5,
-                width: i === index ? 30 : 10,
-                height: 10,
+                width: i === index ? getResponsiveSize(20, 24, 30) : getResponsiveSize(6, 8, 10),
+                height: getResponsiveSize(6, 8, 10),
                 backgroundColor: i === index ? Colors.modernYellow : 'rgba(0, 0, 0, 0.2)',
                 shadowColor: i === index ? Colors.modernYellow : 'transparent',
                 shadowOffset: { width: 0, height: 2 },
@@ -319,8 +439,8 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
           flexDirection: 'row', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
-          paddingHorizontal: 32, 
-          marginBottom: 32,
+          paddingHorizontal: getResponsiveSize(16, 20, 32), 
+          marginBottom: getResponsiveSize(8, 12, 32),
           opacity: fadeAnim,
           transform: [{ translateY: slideAnim }, { scale: buttonScaleAnim }]
         }}>
@@ -334,8 +454,8 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
                 justifyContent: 'center',
                 backgroundColor: Colors.modernYellow, 
                 borderRadius: 25, 
-                paddingVertical: 14, 
-                paddingHorizontal: 32,
+                paddingVertical: getResponsiveSize(8, 10, 14), 
+                paddingHorizontal: getResponsiveSize(16, 20, 32),
                 shadowColor: Colors.modernYellow,
                 shadowOffset: { width: 0, height: 4 },
                 shadowOpacity: 0.2,
@@ -343,8 +463,15 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
                 elevation: 4,
               }}
             >
-                             <Text style={{ color: '#ffffff', fontSize: 16, fontWeight: '600', marginRight: 8 }}>{t('common.next')}</Text>
-               <Text style={{ color: '#ffffff', fontSize: 18 }}>→</Text>
+              <Text style={{ 
+                color: '#ffffff', 
+                fontSize: getButtonTextSize(), 
+                fontWeight: '600', 
+                marginRight: 8 
+              }}>
+                {t('common.next')}
+              </Text>
+              <Text style={{ color: '#ffffff', fontSize: getButtonTextSize() + 2 }}>→</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -353,7 +480,7 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
                 flex: 1, 
                 backgroundColor: Colors.modernYellow, 
                 borderRadius: 25, 
-                paddingVertical: 14, 
+                paddingVertical: getResponsiveSize(8, 10, 14), 
                 alignItems: 'center',
                 shadowColor: Colors.modernYellow,
                 shadowOffset: { width: 0, height: 4 },
@@ -362,95 +489,101 @@ export default function OnboardingSwiper({ navigation }: { navigation?: any }) {
                 elevation: 4,
               }}
             >
-                             <Text style={{ color: '#ffffff', fontSize: 16, fontWeight: '600' }}>{t('onboarding.getStarted')}</Text>
+              <Text style={{ 
+                color: '#ffffff', 
+                fontSize: getButtonTextSize(), 
+                fontWeight: '600' 
+              }}>
+                {t('onboarding.getStarted')}
+              </Text>
             </TouchableOpacity>
           )}
-                 </Animated.View>
-       </SafeAreaView>
+        </Animated.View>
+      </SafeAreaView>
 
-       {/* Language Selection Modal */}
-       <Modal
-         visible={showLanguageModal}
-         transparent={true}
-         animationType="fade"
-         onRequestClose={() => setShowLanguageModal(false)}
-       >
-         <View style={{
-           flex: 1,
-           backgroundColor: 'rgba(0, 0, 0, 0.5)',
-           justifyContent: 'center',
-           alignItems: 'center',
-         }}>
-           <View style={{
-             backgroundColor: Colors.white,
-             borderRadius: 20,
-             padding: 24,
-             width: width * 0.85,
-             maxHeight: height * 0.7,
-           }}>
-             <View style={{
-               flexDirection: 'row',
-               justifyContent: 'space-between',
-               alignItems: 'center',
-               marginBottom: 20,
-             }}>
-               <Text style={{
-                 fontSize: 20,
-                 fontWeight: 'bold',
-                 color: Colors.text,
-               }}>
-                 Choose Language
-               </Text>
-               <TouchableOpacity onPress={() => setShowLanguageModal(false)}>
-                 <Ionicons name="close" size={24} color={Colors.text} />
-               </TouchableOpacity>
-             </View>
-             
-             <FlatList
-               data={availableLanguages}
-               keyExtractor={(item) => item.code}
-               renderItem={({ item }) => (
-                 <TouchableOpacity
-                   style={{
-                     flexDirection: 'row',
-                     alignItems: 'center',
-                     paddingVertical: 16,
-                     paddingHorizontal: 12,
-                     borderBottomWidth: 1,
-                     borderBottomColor: Colors.border,
-                     backgroundColor: item.code === currentLanguage ? Colors.sandLight : 'transparent',
-                     borderRadius: 8,
-                     marginBottom: 4,
-                   }}
-                   onPress={() => handleLanguageSelect(item.code)}
-                 >
-                   <Text style={{ fontSize: 24, marginRight: 12 }}>{item.flag}</Text>
-                   <View style={{ flex: 1 }}>
-                     <Text style={{
-                       fontSize: 16,
-                       fontWeight: '600',
-                       color: Colors.text,
-                       marginBottom: 2,
-                     }}>
-                       {item.name}
-                     </Text>
-                     <Text style={{
-                       fontSize: 14,
-                       color: Colors.textSecondary,
-                     }}>
-                       {item.nativeName}
-                     </Text>
-                   </View>
-                   {item.code === currentLanguage && (
-                     <Ionicons name="checkmark-circle" size={20} color={Colors.modernYellow} />
-                   )}
-                 </TouchableOpacity>
-               )}
-               showsVerticalScrollIndicator={false}
-             />
-           </View>
-         </View>
-       </Modal>
-     </LinearGradient>
-   );
- }
+      {/* Language Selection Modal */}
+      <Modal
+        visible={showLanguageModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowLanguageModal(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <View style={{
+            backgroundColor: Colors.white,
+            borderRadius: 20,
+            padding: getResponsiveSize(16, 20, 24),
+            width: width * 0.85,
+            maxHeight: height * 0.7,
+          }}>
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: getResponsiveSize(16, 18, 20),
+            }}>
+              <Text style={{
+                fontSize: getResponsiveSize(18, 19, 20),
+                fontWeight: 'bold',
+                color: Colors.text,
+              }}>
+                Choose Language
+              </Text>
+              <TouchableOpacity onPress={() => setShowLanguageModal(false)}>
+                <Ionicons name="close" size={getResponsiveSize(20, 22, 24)} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+            
+            <FlatList
+              data={availableLanguages}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: getResponsiveSize(12, 14, 16),
+                    paddingHorizontal: getResponsiveSize(8, 10, 12),
+                    borderBottomWidth: 1,
+                    borderBottomColor: Colors.border,
+                    backgroundColor: item.code === currentLanguage ? Colors.sandLight : 'transparent',
+                    borderRadius: 8,
+                    marginBottom: 4,
+                  }}
+                  onPress={() => handleLanguageSelect(item.code)}
+                >
+                  <Text style={{ fontSize: getResponsiveSize(20, 22, 24), marginRight: 12 }}>{item.flag}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{
+                      fontSize: getResponsiveSize(14, 15, 16),
+                      fontWeight: '600',
+                      color: Colors.text,
+                      marginBottom: 2,
+                    }}>
+                      {item.name}
+                    </Text>
+                    <Text style={{
+                      fontSize: getResponsiveSize(12, 13, 14),
+                      color: Colors.textSecondary,
+                    }}>
+                      {item.nativeName}
+                    </Text>
+                  </View>
+                  {item.code === currentLanguage && (
+                    <Ionicons name="checkmark-circle" size={getResponsiveSize(18, 19, 20)} color={Colors.modernYellow} />
+                  )}
+                </TouchableOpacity>
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </View>
+      </Modal>
+    </LinearGradient>
+  );
+}

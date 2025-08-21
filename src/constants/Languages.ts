@@ -110,6 +110,44 @@ export interface Translations {
     earnings: string;
     memberSince: string;
     professionalDriver: string;
+    editProfile: string;
+    uploadPhoto: string;
+    name: string;
+    email: string;
+    phone: string;
+    gender: string;
+    emergencyContactName: string;
+    emergencyContactPhone: string;
+    enterName: string;
+    enterEmail: string;
+    enterPhone: string;
+    enterEmergencyContactName: string;
+    enterEmergencyContactPhone: string;
+    emergencyContact: string;
+    emergencyPhone: string;
+    referAndEarn: string;
+    referDescription: string;
+    yourReferralCoupon: string;
+    referMessage: string;
+    referMessageEnd: string;
+    autoPayment: string;
+    comingSoon: string;
+    autoPaymentUnderDevelopment: string;
+    autoPaymentDescription: string;
+    rateTheApp: string;
+    ratingComingSoon: string;
+    changePassword: string;
+    passwordChangeComingSoon: string;
+    privacyAndSecurity: string;
+    yourPrivacyAndSecurity: string;
+    privacySecurityDescription: string;
+    aboutThisApp: string;
+    appName: string;
+    version: string;
+    appDescription: string;
+    contactAndSupport: string;
+    developedBy: string;
+    appacellaTeam: string;
   };
 
   // Wallet
@@ -370,7 +408,45 @@ export const translations: Record<string, Translations> = {
       totalDistance: 'Total Distance',
       earnings: 'Earnings',
       memberSince: 'Member since',
-      professionalDriver: 'Professional Driver'
+      professionalDriver: 'Professional Driver',
+      editProfile: 'Edit Profile',
+      uploadPhoto: 'Upload Photo',
+      name: 'Name',
+      email: 'Email',
+      phone: 'Phone',
+      gender: 'Gender',
+      emergencyContactName: 'Emergency Contact Name',
+      emergencyContactPhone: 'Emergency Contact Phone',
+      enterName: 'Enter your name',
+      enterEmail: 'Enter your email',
+      enterPhone: 'Enter your phone number',
+      enterEmergencyContactName: 'Enter emergency contact name',
+      enterEmergencyContactPhone: 'Enter emergency contact phone',
+      emergencyContact: 'Emergency Contact',
+      emergencyPhone: 'Emergency Phone',
+      referAndEarn: 'Refer & Earn',
+      referDescription: 'Invite your friends and earn rewards when they take their first ride!',
+      yourReferralCoupon: 'Your Referral Coupon',
+      referMessage: 'Use my referral code',
+      referMessageEnd: 'to sign up and earn rewards on Riderrr!',
+      autoPayment: 'Auto Payment',
+      comingSoon: 'Coming Soon!',
+      autoPaymentUnderDevelopment: 'Auto Payment feature is under development',
+      autoPaymentDescription: "We're working hard to bring you seamless automatic payment processing. Stay tuned for updates!",
+      rateTheApp: 'Rate the App',
+      ratingComingSoon: 'Rating functionality coming soon.',
+      changePassword: 'Change Password',
+      passwordChangeComingSoon: 'Password change functionality coming soon.',
+      privacyAndSecurity: 'Privacy & Security',
+      yourPrivacyAndSecurity: 'Your Privacy & Security',
+      privacySecurityDescription: 'Here you can manage your privacy and security settings. This is a placeholder screen. Add your privacy and security options here.',
+      aboutThisApp: 'About This App',
+      appName: 'Appacella',
+      version: 'Version',
+      appDescription: 'Appacella is a modern ride-sharing application designed to make your daily commute safe, affordable, and convenient. Book rides, schedule trips, view your ride history, and manage your profile all in one place.',
+      contactAndSupport: 'Contact & Support',
+      developedBy: 'Developed by',
+      appacellaTeam: 'Appacella Team'
     },
     wallet: {
       balance: 'Balance',
@@ -596,7 +672,45 @@ export const translations: Record<string, Translations> = {
       totalDistance: 'कुल दूरी',
       earnings: 'कमाई',
       memberSince: 'सदस्यता से',
-      professionalDriver: 'पेशेवर ड्राइवर'
+      professionalDriver: 'पेशेवर ड्राइवर',
+      editProfile: 'प्रोफाइल संपादित करें',
+      uploadPhoto: 'फोटो अपलोड करें',
+      name: 'नाम',
+      email: 'ईमेल',
+      phone: 'फोन',
+      gender: 'लिंग',
+      emergencyContactName: 'आपातकालीन संपर्क नाम',
+      emergencyContactPhone: 'आपातकालीन संपर्क फोन',
+      enterName: 'अपना नाम दर्ज करें',
+      enterEmail: 'अपना ईमेल दर्ज करें',
+      enterPhone: 'अपना फोन नंबर दर्ज करें',
+      enterEmergencyContactName: 'आपातकालीन संपर्क नाम दर्ज करें',
+      enterEmergencyContactPhone: 'आपातकालीन संपर्क फोन दर्ज करें',
+      emergencyContact: 'आपातकालीन संपर्क',
+      emergencyPhone: 'आपातकालीन फोन',
+      referAndEarn: 'रेफर और कमाएं',
+      referDescription: 'अपने दोस्तों को आमंत्रित करें और उनकी पहली राइड पर पुरस्कार कमाएं!',
+      yourReferralCoupon: 'आपका रेफरल कूपन',
+      referMessage: 'मेरा रेफरल कोड उपयोग करें',
+      referMessageEnd: 'साइन अप करने और Riderrr पर पुरस्कार कमाने के लिए!',
+      autoPayment: 'स्वचालित भुगतान',
+      comingSoon: 'जल्द आ रहा है!',
+      autoPaymentUnderDevelopment: 'स्वचालित भुगतान सुविधा विकास में है',
+      autoPaymentDescription: 'हम आपके लिए निर्बाध स्वचालित भुगतान प्रसंस्करण लाने के लिए कड़ी मेहनत कर रहे हैं। अपडेट के लिए बने रहें!',
+      rateTheApp: 'ऐप को रेट करें',
+      ratingComingSoon: 'रेटिंग कार्यक्षमता जल्द आ रही है।',
+      changePassword: 'पासवर्ड बदलें',
+      passwordChangeComingSoon: 'पासवर्ड बदलने की कार्यक्षमता जल्द आ रही है।',
+      privacyAndSecurity: 'गोपनीयता और सुरक्षा',
+      yourPrivacyAndSecurity: 'आपकी गोपनीयता और सुरक्षा',
+      privacySecurityDescription: 'यहां आप अपनी गोपनीयता और सुरक्षा सेटिंग्स प्रबंधित कर सकते हैं। यह एक प्लेसहोल्डर स्क्रीन है। अपने गोपनीयता और सुरक्षा विकल्प यहां जोड़ें।',
+      aboutThisApp: 'इस ऐप के बारे में',
+      appName: 'Appacella',
+      version: 'संस्करण',
+      appDescription: 'Appacella एक आधुनिक राइड-शेयरिंग एप्लिकेशन है जो आपकी दैनिक यात्रा को सुरक्षित, सस्ती और सुविधाजनक बनाने के लिए डिज़ाइन की गई है। राइड बुक करें, यात्राओं की योजना बनाएं, अपना राइड इतिहास देखें और अपना प्रोफाइल एक ही जगह पर प्रबंधित करें।',
+      contactAndSupport: 'संपर्क और सहायता',
+      developedBy: 'द्वारा विकसित',
+      appacellaTeam: 'Appacella टीम'
     },
     wallet: {
       balance: 'बैलेंस',
@@ -822,7 +936,45 @@ export const translations: Record<string, Translations> = {
       totalDistance: 'மொத்த தூரம்',
       earnings: 'சம்பாதிப்பு',
       memberSince: 'உறுப்பினர் முதல்',
-      professionalDriver: 'தொழில்முறை ஓட்டுநர்'
+      professionalDriver: 'தொழில்முறை ஓட்டுநர்',
+      editProfile: 'சுயவிவரத்தைத் திருத்து',
+      uploadPhoto: 'புகைப்படத்தை பதிவேற்று',
+      name: 'பெயர்',
+      email: 'மின்னஞ்சல்',
+      phone: 'தொலைபேசி',
+      gender: 'பாலினம்',
+      emergencyContactName: 'அவசர தொடர்பு பெயர்',
+      emergencyContactPhone: 'அவசர தொடர்பு தொலைபேசி',
+      enterName: 'உங்கள் பெயரை உள்ளிடவும்',
+      enterEmail: 'உங்கள் மின்னஞ்சலை உள்ளிடவும்',
+      enterPhone: 'உங்கள் தொலைபேசி எண்ணை உள்ளிடவும்',
+      enterEmergencyContactName: 'அவசர தொடர்பு பெயரை உள்ளிடவும்',
+      enterEmergencyContactPhone: 'அவசர தொடர்பு தொலைபேசியை உள்ளிடவும்',
+      emergencyContact: 'அவசர தொடர்பு',
+      emergencyPhone: 'அவசர தொலைபேசி',
+      referAndEarn: 'பரிந்துரை மற்றும் சம்பாதிக்கவும்',
+      referDescription: 'உங்கள் நண்பர்களை அழைத்து அவர்களின் முதல் சவாரியில் பரிசுகளை சம்பாதிக்கவும்!',
+      yourReferralCoupon: 'உங்கள் பரிந்துரை கூப்பன்',
+      referMessage: 'எனது பரிந்துரை குறியீட்டைப் பயன்படுத்தவும்',
+      referMessageEnd: 'பதிவு செய்ய மற்றும் Riderrr இல் பரிசுகளை சம்பாதிக்க!',
+      autoPayment: 'தானியங்கி கட்டணம்',
+      comingSoon: 'விரைவில் வருகிறது!',
+      autoPaymentUnderDevelopment: 'தானியங்கி கட்டண அம்சம் வளர்ச்சியில் உள்ளது',
+      autoPaymentDescription: 'உங்களுக்கு சீரான தானியங்கி கட்டண செயலாக்கத்தை கொண்டு வர நாங்கள் கடுமையாக உழைக்கிறோம். புதுப்பிப்புகளுக்காக காத்திருக்கவும்!',
+      rateTheApp: 'பயன்பாட்டை மதிப்பிடு',
+      ratingComingSoon: 'மதிப்பீட்டு செயல்பாடு விரைவில் வருகிறது.',
+      changePassword: 'கடவுச்சொல்லை மாற்று',
+      passwordChangeComingSoon: 'கடவுச்சொல் மாற்றும் செயல்பாடு விரைவில் வருகிறது.',
+      privacyAndSecurity: 'தனியுரிமை மற்றும் பாதுகாப்பு',
+      yourPrivacyAndSecurity: 'உங்கள் தனியுரிமை மற்றும் பாதுகாப்பு',
+      privacySecurityDescription: 'இங்கே நீங்கள் உங்கள் தனியுரிமை மற்றும் பாதுகாப்பு அமைப்புகளை நிர்வகிக்கலாம். இது ஒரு பிளேஸ்ஹோல்டர் திரை. உங்கள் தனியுரிமை மற்றும் பாதுகாப்பு விருப்பங்களை இங்கே சேர்க்கவும்.',
+      aboutThisApp: 'இந்த பயன்பாட்டைப் பற்றி',
+      appName: 'Appacella',
+      version: 'பதிப்பு',
+      appDescription: 'Appacella என்பது உங்கள் தினசரி பயணத்தை பாதுகாப்பான, மலிவான மற்றும் வசதியானதாக மாற்ற வடிவமைக்கப்பட்ட நவீன சவாரி-பகிர்வு பயன்பாடு. சவாரிகளை முன்பதிவு செய்யுங்கள், பயணங்களை திட்டமிடுங்கள், உங்கள் சவாரி வரலாற்றைக் காண்க மற்றும் உங்கள் சுயவிவரத்தை ஒரு இடத்தில் நிர்வகிக்கவும்.',
+      contactAndSupport: 'தொடர்பு மற்றும் ஆதரவு',
+      developedBy: 'மூலம் உருவாக்கப்பட்டது',
+      appacellaTeam: 'Appacella குழு'
     },
     wallet: {
       balance: 'இருப்பு',
@@ -1048,7 +1200,45 @@ export const translations: Record<string, Translations> = {
       totalDistance: 'మొత్తం దూరం',
       earnings: 'సంపాదన',
       memberSince: 'సభ్యుడు నుండి',
-      professionalDriver: 'వృత్తిపరమైన డ్రైవర్'
+      professionalDriver: 'వృత్తిపరమైన డ్రైవర్',
+      editProfile: 'ప్రొఫైల్‌ని సవరించండి',
+      uploadPhoto: 'ఫోటో అప్‌లోడ్ చేయండి',
+      name: 'పేరు',
+      email: 'ఇమెయిల్',
+      phone: 'ఫోన్',
+      gender: 'లింగం',
+      emergencyContactName: 'అత్యవసర సంప్రదింపు పేరు',
+      emergencyContactPhone: 'అత్యవసర సంప్రదింపు ఫోన్',
+      enterName: 'మీ పేరును నమోదు చేయండి',
+      enterEmail: 'మీ ఇమెయిల్‌ని నమోదు చేయండి',
+      enterPhone: 'మీ ఫోన్ నంబర్‌ని నమోదు చేయండి',
+      enterEmergencyContactName: 'అత్యవసర సంప్రదింపు పేరును నమోదు చేయండి',
+      enterEmergencyContactPhone: 'అత్యవసర సంప్రదింపు ఫోన్‌ని నమోదు చేయండి',
+      emergencyContact: 'అత్యవసర సంప్రదింపు',
+      emergencyPhone: 'అత్యవసర ఫోన్',
+      referAndEarn: 'రిఫర్ మరియు సంపాదించండి',
+      referDescription: 'మీ స్నేహితులను ఆహ్వానించి వారి మొదటి రైడ్‌లో బహుమతులు సంపాదించండి!',
+      yourReferralCoupon: 'మీ రిఫరల్ కూపన్',
+      referMessage: 'నా రిఫరల్ కోడ్‌ని ఉపయోగించండి',
+      referMessageEnd: 'సైన్ అప్ చేయడానికి మరియు Riderrr లో బహుమతులు సంపాదించడానికి!',
+      autoPayment: 'ఆటో పేమెంట్',
+      comingSoon: 'త్వరలో వస్తుంది!',
+      autoPaymentUnderDevelopment: 'ఆటో పేమెంట్ ఫీచర్ అభివృద్ధిలో ఉంది',
+      autoPaymentDescription: 'మీకు నిర్విఘ్న ఆటోమేటిక్ చెల్లింపు ప్రాసెసింగ్‌ని తీసుకురావడానికి మేము కష్టపడుతున్నాము. నవీకరణల కోసం వేచి ఉండండి!',
+      rateTheApp: 'యాప్‌ని రేట్ చేయండి',
+      ratingComingSoon: 'రేటింగ్ ఫంక్షనాలిటీ త్వరలో వస్తుంది.',
+      changePassword: 'పాస్‌వర్డ్ మార్చండి',
+      passwordChangeComingSoon: 'పాస్‌వర్డ్ మార్చే ఫంక్షనాలిటీ త్వరలో వస్తుంది.',
+      privacyAndSecurity: 'గోప్యత మరియు భద్రత',
+      yourPrivacyAndSecurity: 'మీ గోప్యత మరియు భద్రత',
+      privacySecurityDescription: 'ఇక్కడ మీరు మీ గోప్యత మరియు భద్రతా సెట్టింగ్‌లను నిర్వహించవచ్చు. ఇది ఒక ప్లేస్‌హోల్డర్ స్క్రీన్. మీ గోప్యత మరియు భద్రతా ఎంపికలను ఇక్కడ జోడించండి.',
+      aboutThisApp: 'ఈ యాప్ గురించి',
+      appName: 'Appacella',
+      version: 'వెర్షన్',
+      appDescription: 'Appacella అనేది మీ రోజువారీ ప్రయాణాన్ని సురక్షితంగా, సరసమైనదిగా మరియు సౌకర్యవంతంగా చేయడానికి రూపొందించబడిన ఆధునిక రైడ్-షేరింగ్ అప్లికేషన్. రైడ్‌లను బుక్ చేయండి, ప్రయాణాలను షెడ్యూల్ చేయండి, మీ రైడ్ చరిత్రను చూడండి మరియు మీ ప్రొఫైల్‌ని ఒకే చోట నిర్వహించండి.',
+      contactAndSupport: 'సంప్రదింపు మరియు మద్దతు',
+      developedBy: 'ద్వారా అభివృద్ధి చేయబడింది',
+      appacellaTeam: 'Appacella జట్టు'
     },
     wallet: {
       balance: 'బ్యాలెన్స్',

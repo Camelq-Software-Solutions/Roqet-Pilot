@@ -7,20 +7,14 @@ import MockPushNotificationService from './MockPushNotificationService';
 import Constants from 'expo-constants';
 import NotificationSettingsService from './NotificationSettingsService';
 
-// Configure notification behavior only if not in Expo Go
-if (!Constants.appOwnership || Constants.appOwnership === 'expo') {
-  // We're in Expo Go, use mock service
-  console.log('🔧 Using Mock Push Notification Service for Expo Go');
-} else {
-  // We're in a development build, configure real notifications
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-    }),
-  });
-}
+// Configure notification behavior for all environments
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 export interface NotificationData {
   type: 'ride_request' | 'ride_update' | 'ride_completed' | 'payment_received' | 'system';
@@ -56,17 +50,7 @@ class PushNotificationService {
       // Initialize notification settings first
       await this.settingsService.initialize();
       
-      // Check if we're in Expo Go
-      if (!Constants.appOwnership || Constants.appOwnership === 'expo') {
-        // Use mock service for Expo Go
-        const mockService = MockPushNotificationService.getInstance();
-        await mockService.initialize();
-        this.expoPushToken = mockService.getCurrentToken();
-        return;
-      }
-
-      // Real push notifications for development build
-      // Request permissions
+      // Request permissions for all environments
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
 
@@ -98,7 +82,10 @@ class PushNotificationService {
           console.log('⚠️ Failed to register push token with backend');
         }
       } else {
-        console.log('Must use physical device for Push Notifications');
+        console.log('⚠️ Must use physical device for Push Notifications');
+        console.log('📱 For testing in Expo Go, notifications will be simulated');
+        // For development/testing, we can still use local notifications
+        this.expoPushToken = 'dev_token_' + Date.now();
       }
 
       // Set up notification listeners
@@ -258,6 +245,8 @@ class PushNotificationService {
    */
   public async sendLocalNotification(notificationData: NotificationData): Promise<void> {
     try {
+      console.log('🔔 Attempting to send notification:', notificationData.title);
+      
       // Check notification settings before sending
       const shouldSend = this.shouldSendNotification(notificationData.type);
       if (!shouldSend) {
@@ -265,17 +254,12 @@ class PushNotificationService {
         return;
       }
 
-      // Check if we're in Expo Go
-      if (!Constants.appOwnership || Constants.appOwnership === 'expo') {
-        // Use mock service for Expo Go
-        const mockService = MockPushNotificationService.getInstance();
-        await mockService.sendLocalNotification(notificationData);
-        return;
-      }
-
-      // Real notifications for development build
+      // Real notifications for all environments
       const channelId = this.getChannelId(notificationData.type);
       const settings = this.getNotificationSettings(notificationData.type);
+      
+      console.log('📱 Sending notification with channel:', channelId);
+      console.log('📱 Notification settings:', settings);
       
       await Notifications.scheduleNotificationAsync({
         content: {
@@ -287,8 +271,10 @@ class PushNotificationService {
         },
         trigger: null, // Send immediately
       });
+      
+      console.log('📱 Real push notification sent:', notificationData.title);
     } catch (error) {
-      console.error('Error sending local notification:', error);
+      console.error('❌ Error sending local notification:', error);
     }
   }
 
