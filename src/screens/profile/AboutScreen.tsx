@@ -3,26 +3,28 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, TITLE_COLOR } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function AboutScreen() {
+  const { t } = useLanguage();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="information-circle-outline" size={28} color={TITLE_COLOR} />
-        <Text style={styles.headerTitle}>About This App</Text>
+        <Text style={styles.headerTitle}>{t('profile.aboutThisApp')}</Text>
         <View style={{ width: 28 }} />
       </View>
       <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
-        <Text style={styles.appName}>Appacella</Text>
-        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={styles.appName}>{t('profile.appName')}</Text>
+        <Text style={styles.version}>{t('profile.version')} 1.0.0</Text>
         <Text style={styles.description}>
-          Appacella is a modern ride-sharing application designed to make your daily commute safe, affordable, and convenient. Book rides, schedule trips, view your ride history, and manage your profile all in one place.
+          {t('profile.appDescription')}
         </Text>
-        <Text style={styles.sectionTitle}>Contact & Support</Text>
-        <Text style={styles.info}>Email: support@appacella.com</Text>
-        <Text style={styles.info}>Phone: +1 234 567 8900</Text>
-        <Text style={styles.sectionTitle}>Developed by</Text>
-        <Text style={styles.info}>Appacella Team</Text>
+        <Text style={styles.sectionTitle}>{t('profile.contactAndSupport')}</Text>
+        <Text style={styles.info}>{t('profile.email')}: support@appacella.com</Text>
+        <Text style={styles.info}>{t('profile.phone')}: +1 234 567 8900</Text>
+        <Text style={styles.sectionTitle}>{t('profile.developedBy')}</Text>
+        <Text style={styles.info}>{t('profile.appacellaTeam')}</Text>
       </ScrollView>
     </View>
   );

@@ -4,8 +4,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, TITLE_COLOR } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import * as ImagePicker from 'expo-image-picker';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function EditProfileScreen({ navigation, route }: any) {
+  const { t } = useLanguage();
   const { name: initialName = '', email: initialEmail = '', phone: initialPhone = '', gender: initialGender = '', emergencyName: initialEmergencyName = '', emergencyPhone: initialEmergencyPhone = '', photo: initialPhoto = '' } = route?.params || {};
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
@@ -33,7 +35,7 @@ export default function EditProfileScreen({ navigation, route }: any) {
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back">
           <Ionicons name="arrow-back" size={24} color={TITLE_COLOR} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Profile</Text>
+        <Text style={styles.headerTitle}>{t('profile.editProfile')}</Text>
         <View style={{ width: 24 }} />
       </View>
       <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
@@ -44,36 +46,36 @@ export default function EditProfileScreen({ navigation, route }: any) {
           ) : (
             <Ionicons name="camera" size={40} color={Colors.gray400} />
           )}
-          <Text style={styles.uploadText}>Upload Photo</Text>
+          <Text style={styles.uploadText}>{t('profile.uploadPhoto')}</Text>
         </TouchableOpacity>
         {/* Name */}
-        <Text style={styles.label}>Name</Text>
+        <Text style={styles.label}>{t('profile.name')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your name"
+          placeholder={t('profile.enterName')}
           value={name}
           onChangeText={setName}
         />
         {/* Email */}
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>{t('profile.email')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your email"
+          placeholder={t('profile.enterEmail')}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
         />
         {/* Phone */}
-        <Text style={styles.label}>Phone</Text>
+        <Text style={styles.label}>{t('profile.phone')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your phone number"
+          placeholder={t('profile.enterPhone')}
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
         />
         {/* Gender */}
-        <Text style={styles.label}>Gender</Text>
+        <Text style={styles.label}>{t('profile.gender')}</Text>
         <View style={styles.genderRow}>
           {['Male', 'Female', 'Other'].map((g) => (
             <TouchableOpacity
@@ -86,18 +88,18 @@ export default function EditProfileScreen({ navigation, route }: any) {
           ))}
         </View>
         {/* Emergency Contact Name */}
-        <Text style={styles.label}>Emergency Contact Name</Text>
+        <Text style={styles.label}>{t('profile.emergencyContactName')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter emergency contact name"
+          placeholder={t('profile.enterEmergencyContactName')}
           value={emergencyName}
           onChangeText={setEmergencyName}
         />
         {/* Emergency Contact Phone */}
-        <Text style={styles.label}>Emergency Contact Phone</Text>
+        <Text style={styles.label}>{t('profile.emergencyContactPhone')}</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter emergency contact phone"
+          placeholder={t('profile.enterEmergencyContactPhone')}
           value={emergencyPhone}
           onChangeText={setEmergencyPhone}
           keyboardType="phone-pad"

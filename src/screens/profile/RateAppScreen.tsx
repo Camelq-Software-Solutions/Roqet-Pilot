@@ -3,19 +3,21 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function RateAppScreen({ navigation }: any) {
+  const { t } = useLanguage();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back">
           <Ionicons name="arrow-back" size={24} color={Colors.modernYellow} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Rate the App</Text>
+        <Text style={styles.headerTitle}>{t('profile.rateTheApp')}</Text>
         <View style={{ width: 24 }} />
       </View>
       <View style={styles.content}>
-        <Text style={styles.info}>Rating functionality coming soon.</Text>
+        <Text style={styles.info}>{t('profile.ratingComingSoon')}</Text>
       </View>
     </View>
   );

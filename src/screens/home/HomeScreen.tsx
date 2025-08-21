@@ -521,7 +521,7 @@ export default function HomeScreen() {
   const { getUserInfo } = useUserFromJWT();
   const { t } = useLanguage();
   const { isInitialized: pushNotificationsInitialized } = usePushNotifications();
-  const { sendRideRequestNotification, sendSurgeNotification, scheduleSurgeNotifications } = useRideNotifications();
+  const { sendRideRequestNotification, sendRideCompletedNotification, sendSurgeNotification, scheduleSurgeNotifications } = useRideNotifications();
   const { 
     isOnline, 
     setIsOnline, 
@@ -1119,7 +1119,21 @@ export default function HomeScreen() {
     resetDriverStatus();
     console.log('✅ Ride completed, driver status reset to available');
 
-    // Ride completed notification code removed as requested
+    // Send ride completion notification
+    if (pushNotificationsInitialized) {
+      try {
+        await sendRideCompletedNotification({
+          rideId: rideId,
+          pickupLocation: 'Pickup Location',
+          dropoffLocation: 'Dropoff Location',
+          fare: 0, // You can pass the actual fare if available
+          distance: 'Unknown distance',
+        });
+        console.log('📱 Ride completion notification sent');
+      } catch (error) {
+        console.error('❌ Failed to send ride completion notification:', error);
+      }
+    }
   };
 
   const isRideActive = !!(rideRequest);

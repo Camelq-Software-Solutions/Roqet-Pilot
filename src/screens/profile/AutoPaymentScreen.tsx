@@ -5,11 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import PriceRoundingDemo from '../../components/common/PriceRoundingDemo';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width, height } = Dimensions.get('window');
 
 export default function AutoPaymentScreen() {
   const navigation = useNavigation();
+  const { t } = useLanguage();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -58,7 +60,7 @@ export default function AutoPaymentScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#1877f2" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Auto Payment</Text>
+        <Text style={styles.headerTitle}>{t('profile.autoPayment')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -90,13 +92,12 @@ export default function AutoPaymentScreen() {
             >
               <Ionicons name="card" size={60} color="#fff" />
             </Animated.View>
-            <Text style={styles.comingSoonTitle}>Coming Soon!</Text>
+            <Text style={styles.comingSoonTitle}>{t('profile.comingSoon')}</Text>
             <Text style={styles.comingSoonSubtitle}>
-              Auto Payment feature is under development
+              {t('profile.autoPaymentUnderDevelopment')}
             </Text>
             <Text style={styles.comingSoonDescription}>
-              We're working hard to bring you seamless automatic payment processing. 
-              Stay tuned for updates!
+              {t('profile.autoPaymentDescription')}
             </Text>
           </LinearGradient>
         </Animated.View>

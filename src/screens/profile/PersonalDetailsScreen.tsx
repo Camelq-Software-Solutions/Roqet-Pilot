@@ -3,15 +3,17 @@ import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, TITLE_COLOR } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export default function PersonalDetailsScreen({ route, navigation }: any) {
+  const { t } = useLanguage();
   const { name, email, phone, gender, emergencyName, emergencyPhone, photo } = route.params || {};
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="person-circle" size={32} color={TITLE_COLOR} />
-        <Text style={styles.headerTitle}>Personal Details</Text>
+        <Text style={styles.headerTitle}>{t('profile.personalDetails')}</Text>
         <View style={{ width: 32 }} />
       </View>
       <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
@@ -23,27 +25,27 @@ export default function PersonalDetailsScreen({ route, navigation }: any) {
           )}
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.label}>Name:</Text>
+          <Text style={styles.label}>{t('profile.name')}:</Text>
           <Text style={styles.value}>{name || '-'}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.label}>{t('profile.email')}:</Text>
           <Text style={styles.value}>{email || '-'}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.label}>Phone:</Text>
+          <Text style={styles.label}>{t('profile.phone')}:</Text>
           <Text style={styles.value}>{phone || '-'}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.label}>Gender:</Text>
+          <Text style={styles.label}>{t('profile.gender')}:</Text>
           <Text style={styles.value}>{gender || '-'}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.label}>Emergency Contact:</Text>
+          <Text style={styles.label}>{t('profile.emergencyContact')}:</Text>
           <Text style={styles.value}>{emergencyName || '-'}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.label}>Emergency Phone:</Text>
+          <Text style={styles.label}>{t('profile.emergencyPhone')}:</Text>
           <Text style={styles.value}>{emergencyPhone || '-'}</Text>
         </View>
       </ScrollView>

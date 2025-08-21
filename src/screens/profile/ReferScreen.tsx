@@ -5,12 +5,14 @@ import { useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../constants/Colors';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
 export default function ReferScreen() {
   const { user } = useUser();
   const navigation = useNavigation();
+  const { t } = useLanguage();
 
   // Get name (firstName + lastName or fullName fallback)
   let name = '';
@@ -33,7 +35,7 @@ export default function ReferScreen() {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Use my referral code ${referralCode} to sign up and earn rewards on Riderrr!`,
+        message: `${t('profile.referMessage')} ${referralCode} ${t('profile.referMessageEnd')}`,
       });
     } catch (error) {
       // Optionally handle error
@@ -46,16 +48,16 @@ export default function ReferScreen() {
         <Ionicons name="arrow-back" size={26} color={Colors.modernYellow} />
       </TouchableOpacity>
       <View style={styles.inner}>
-        <Text style={styles.title}>Refer & Earn</Text>
+        <Text style={styles.title}>{t('profile.referAndEarn')}</Text>
         <Text style={styles.description}>
-          Invite your friends and earn rewards when they take their first ride!
+          {t('profile.referDescription')}
         </Text>
         <View style={styles.couponWrapper}>
           {/* Left cut-out */}
           <View style={styles.cutoutLeft} />
           {/* Coupon core */}
           <View style={styles.couponContainer}>
-            <Text style={styles.couponLabel}>Your Referral Coupon</Text>
+            <Text style={styles.couponLabel}>{t('profile.yourReferralCoupon')}</Text>
             <View style={styles.couponRow}>
               <Text style={styles.coupon}>{referralCode || '----'}</Text>
               <TouchableOpacity onPress={handleShare} style={styles.shareButton}>
