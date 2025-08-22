@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert, Styl
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useUser } from '@clerk/clerk-expo';
+import { useTranslation } from 'react-i18next';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // Add type for navigation prop
@@ -11,6 +12,7 @@ interface DocumentUploadScreenProps {
 }
 
 const DocumentUploadScreen = ({ navigation }: DocumentUploadScreenProps) => {
+  const { t } = useTranslation();
   const { user, isLoaded } = useUser();
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState<Date>(new Date());
@@ -69,15 +71,15 @@ const DocumentUploadScreen = ({ navigation }: DocumentUploadScreenProps) => {
 
   const handleSubmit = async () => {
     if (!isOver18) {
-      Alert.alert('Error', 'You must be at least 18 years old to register as a driver.');
+      Alert.alert(t('common.error'), t('auth.mustBe18ToRegister'));
       return;
     }
     if (!email || !gender || !bikeFrontPhoto || !bikeBackPhoto || !licensePhoto || !rcPhoto || !aadharPhoto || !panPhoto) {
-      Alert.alert('Error', 'Please fill all fields and upload all documents.');
+      Alert.alert(t('common.error'), t('auth.fillAllFieldsAndUploadDocuments'));
       return;
     }
     if (!termsAccepted) {
-      Alert.alert('Error', 'Please accept the terms and conditions.');
+      Alert.alert(t('common.error'), t('auth.acceptTermsAndConditions'));
       return;
     }
     try {
@@ -96,11 +98,11 @@ const DocumentUploadScreen = ({ navigation }: DocumentUploadScreenProps) => {
         },
       });
       setIsSaving(false);
-      Alert.alert('Success', 'Documents submitted for verification!');
+      Alert.alert(t('common.success'), t('auth.documentsSubmittedForVerification'));
       navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
     } catch (err) {
       setIsSaving(false);
-      Alert.alert('Error', 'Failed to save documents. Please try again.');
+      Alert.alert(t('common.error'), t('auth.failedToSaveDocuments'));
     }
   };
 
@@ -110,17 +112,17 @@ const DocumentUploadScreen = ({ navigation }: DocumentUploadScreenProps) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Driver Registration</Text>
-      <Text style={styles.label}>Email</Text>
+      <Text style={styles.header}>{t('auth.driverRegistration')}</Text>
+      <Text style={styles.label}>{t('auth.email')}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter your email"
+        placeholder={t('auth.enterYourEmail')}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <Text style={styles.label}>Date of Birth</Text>
+      <Text style={styles.label}>{t('auth.dateOfBirth')}</Text>
       <TouchableOpacity onPress={showDatepicker} style={styles.dateInput}>
         <Text>{formatDate(dob)}</Text>
       </TouchableOpacity>
@@ -134,59 +136,59 @@ const DocumentUploadScreen = ({ navigation }: DocumentUploadScreenProps) => {
         />
       )}
       {!isOver18 && dob && (
-        <Text style={styles.errorText}>You must be at least 18 years old to register.</Text>
+        <Text style={styles.errorText}>{t('auth.mustBe18ToRegister')}</Text>
       )}
-      <Text style={styles.label}>Gender</Text>
+      <Text style={styles.label}>{t('auth.gender')}</Text>
       <View style={styles.genderContainer}>
         <TouchableOpacity
           style={[styles.genderOption, gender === 'male' && styles.genderSelected]}
           onPress={() => setGender('male')}
         >
-          <Text>Male</Text>
+          <Text>{t('auth.male')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.genderOption, gender === 'female' && styles.genderSelected]}
           onPress={() => setGender('female')}
         >
-          <Text>Female</Text>
+          <Text>{t('auth.female')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.genderOption, gender === 'other' && styles.genderSelected]}
           onPress={() => setGender('other')}
         >
-          <Text>Other</Text>
+          <Text>{t('auth.other')}</Text>
         </TouchableOpacity>
       </View>
       {/* Document Upload Sections */}
-      <Text style={styles.sectionHeader}>Upload Documents</Text>
-      <Text style={styles.label}>Bike Front Photo</Text>
+      <Text style={styles.sectionHeader}>{t('auth.uploadDocuments')}</Text>
+      <Text style={styles.label}>{t('auth.bikeFrontPhoto')}</Text>
       <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage(setBikeFrontPhoto)}>
-        <Text>Select Image</Text>
+        <Text>{t('auth.selectImage')}</Text>
       </TouchableOpacity>
       {bikeFrontPhoto && <Image source={{ uri: bikeFrontPhoto }} style={styles.previewImage} />}
-      <Text style={styles.label}>Bike Back Photo</Text>
+      <Text style={styles.label}>{t('auth.bikeBackPhoto')}</Text>
       <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage(setBikeBackPhoto)}>
-        <Text>Select Image</Text>
+        <Text>{t('auth.selectImage')}</Text>
       </TouchableOpacity>
       {bikeBackPhoto && <Image source={{ uri: bikeBackPhoto }} style={styles.previewImage} />}
-      <Text style={styles.label}>Driver's License</Text>
+      <Text style={styles.label}>{t('auth.driversLicense')}</Text>
       <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage(setLicensePhoto)}>
-        <Text>Select Image</Text>
+        <Text>{t('auth.selectImage')}</Text>
       </TouchableOpacity>
       {licensePhoto && <Image source={{ uri: licensePhoto }} style={styles.previewImage} />}
-      <Text style={styles.label}>RC (Registration Certificate)</Text>
+      <Text style={styles.label}>{t('auth.rcRegistrationCertificate')}</Text>
       <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage(setRcPhoto)}>
-        <Text>Select Image</Text>
+        <Text>{t('auth.selectImage')}</Text>
       </TouchableOpacity>
       {rcPhoto && <Image source={{ uri: rcPhoto }} style={styles.previewImage} />}
-      <Text style={styles.label}>Aadhar Card</Text>
+      <Text style={styles.label}>{t('auth.aadharCard')}</Text>
       <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage(setAadharPhoto)}>
-        <Text>Select Image</Text>
+        <Text>{t('auth.selectImage')}</Text>
       </TouchableOpacity>
       {aadharPhoto && <Image source={{ uri: aadharPhoto }} style={styles.previewImage} />}
-      <Text style={styles.label}>PAN Card</Text>
+      <Text style={styles.label}>{t('auth.panCard')}</Text>
       <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage(setPanPhoto)}>
-        <Text>Select Image</Text>
+        <Text>{t('auth.selectImage')}</Text>
       </TouchableOpacity>
       {panPhoto && <Image source={{ uri: panPhoto }} style={styles.previewImage} />}
       <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15, marginBottom: 10 }}>
@@ -194,7 +196,7 @@ const DocumentUploadScreen = ({ navigation }: DocumentUploadScreenProps) => {
           value={termsAccepted}
           onValueChange={setTermsAccepted}
         />
-        <Text style={{ marginLeft: 8 }}>I accept the terms and conditions</Text>
+        <Text style={{ marginLeft: 8 }}>{t('auth.acceptTermsAndConditions')}</Text>
       </View>
       <TouchableOpacity 
         style={[styles.submitButton, (!isOver18 || !termsAccepted || isSaving) && styles.disabledButton]} 

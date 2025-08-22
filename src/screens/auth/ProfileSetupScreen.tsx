@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser, useAuth } from '@clerk/clerk-expo';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import Button from '../../components/common/Button';
@@ -21,6 +22,7 @@ import { useAssignUserType } from '../../utils/helpers';
 import { logJWTDetails } from '../../utils/jwtDecoder';
 
 export default function ProfileSetupScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -33,19 +35,19 @@ export default function ProfileSetupScreen({ navigation }: any) {
 
   const handleImagePicker = () => {
     Alert.alert(
-      'Select Profile Photo',
-      'Choose an option',
+      t('auth.selectProfilePhoto'),
+      t('auth.chooseOption'),
       [
-        { text: 'Camera', onPress: () => console.log('Camera selected') },
-        { text: 'Gallery', onPress: () => console.log('Gallery selected') },
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.camera'), onPress: () => console.log('Camera selected') },
+        { text: t('common.gallery'), onPress: () => console.log('Gallery selected') },
+        { text: t('common.cancel'), style: 'cancel' },
       ]
     );
   };
 
   const handleCompleteSetup = async () => {
     if (!firstName.trim()) {
-      Alert.alert('Error', 'Please enter your first name');
+      Alert.alert(t('common.error'), t('auth.pleaseEnterFirstName'));
       return;
     }
 
@@ -76,10 +78,10 @@ export default function ProfileSetupScreen({ navigation }: any) {
       }
 
       // Don't navigate manually - the auth state will handle the transition
-      Alert.alert('Success', 'Profile updated successfully!');
+      Alert.alert(t('common.success'), t('auth.profileUpdatedSuccessfully'));
     } catch (err: any) {
       console.error('Error updating profile:', err);
-      Alert.alert('Error', 'Failed to update profile. Please try again.');
+      Alert.alert(t('common.error'), t('auth.failedToUpdateProfile'));
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +89,7 @@ export default function ProfileSetupScreen({ navigation }: any) {
 
   const handleSkip = () => {
     // Don't navigate manually - the auth state will handle the transition
-    Alert.alert('Profile Setup', 'You can complete your profile later from the settings.');
+    Alert.alert(t('auth.profileSetup'), t('auth.completeProfileLater'));
   };
 
   return (
@@ -98,9 +100,9 @@ export default function ProfileSetupScreen({ navigation }: any) {
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
-            <Text style={styles.title}>Complete Your Profile</Text>
+            <Text style={styles.title}>{t('auth.completeYourProfile')}</Text>
             <Text style={styles.subtitle}>
-              Help us personalize your experience
+              {t('auth.helpUsPersonalize')}
             </Text>
           </View>
 
@@ -120,29 +122,29 @@ export default function ProfileSetupScreen({ navigation }: any) {
                 <Ionicons name="camera" size={16} color={Colors.white} />
               </View>
             </TouchableOpacity>
-            <Text style={styles.imageHint}>Add Profile Photo</Text>
+            <Text style={styles.imageHint}>{t('auth.addProfilePhoto')}</Text>
           </View>
 
           <View style={styles.form}>
             <Input
-              label="First Name *"
-              placeholder="Enter your first name"
+              label={t('auth.firstName')}
+              placeholder={t('auth.enterFirstName')}
               value={firstName}
               onChangeText={setFirstName}
               leftIcon="person"
             />
 
             <Input
-              label="Last Name"
-              placeholder="Enter your last name"
+              label={t('auth.lastName')}
+              placeholder={t('auth.enterLastName')}
               value={lastName}
               onChangeText={setLastName}
               leftIcon="person"
             />
 
             <Input
-              label="Email Address"
-              placeholder="Enter your email (optional)"
+              label={t('auth.emailAddress')}
+              placeholder={t('auth.enterEmailOptional')}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -150,7 +152,7 @@ export default function ProfileSetupScreen({ navigation }: any) {
             />
 
             <Button
-              title="Complete Setup"
+              title={t('auth.completeSetup')}
               onPress={handleCompleteSetup}
               loading={isLoading}
               fullWidth
@@ -158,7 +160,7 @@ export default function ProfileSetupScreen({ navigation }: any) {
             />
 
             <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-              <Text style={styles.skipText}>Skip for now</Text>
+              <Text style={styles.skipText}>{t('auth.skipForNow')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

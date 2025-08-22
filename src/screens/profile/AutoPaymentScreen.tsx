@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import PriceRoundingDemo from '../../components/common/PriceRoundingDemo';
 
 const { width, height } = Dimensions.get('window');
 
 export default function AutoPaymentScreen() {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -58,7 +60,7 @@ export default function AutoPaymentScreen() {
         >
           <Ionicons name="arrow-back" size={24} color="#1877f2" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Auto Payment</Text>
+        <Text style={styles.headerTitle}>{t('settings.autoPayment')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -90,13 +92,12 @@ export default function AutoPaymentScreen() {
             >
               <Ionicons name="card" size={60} color="#fff" />
             </Animated.View>
-            <Text style={styles.comingSoonTitle}>Coming Soon!</Text>
+            <Text style={styles.comingSoonTitle}>{t('autoPayment.comingSoon')}</Text>
             <Text style={styles.comingSoonSubtitle}>
-              Auto Payment feature is under development
+              {t('autoPayment.underDevelopment')}
             </Text>
             <Text style={styles.comingSoonDescription}>
-              We're working hard to bring you seamless automatic payment processing. 
-              Stay tuned for updates!
+              {t('autoPayment.workingHard')}
             </Text>
           </LinearGradient>
         </Animated.View>
@@ -111,16 +112,16 @@ export default function AutoPaymentScreen() {
             },
           ]}
         >
-          <Text style={styles.featuresTitle}>What to Expect</Text>
+          <Text style={styles.featuresTitle}>{t('autoPayment.whatToExpect')}</Text>
           
           <View style={styles.featureItem}>
             <View style={styles.featureIcon}>
               <Ionicons name="shield-checkmark" size={24} color="#00C853" />
             </View>
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Secure Payments</Text>
+              <Text style={styles.featureTitle}>{t('autoPayment.securePayments')}</Text>
               <Text style={styles.featureDescription}>
-                Bank-level security for all your transactions
+                {t('autoPayment.bankLevelSecurity')}
               </Text>
             </View>
           </View>
@@ -130,9 +131,9 @@ export default function AutoPaymentScreen() {
               <Ionicons name="time" size={24} color="#FF9500" />
             </View>
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Instant Processing</Text>
+              <Text style={styles.featureTitle}>{t('autoPayment.instantProcessing')}</Text>
               <Text style={styles.featureDescription}>
-                Payments processed in real-time
+                {t('autoPayment.realTimeProcessing')}
               </Text>
             </View>
           </View>
@@ -142,9 +143,9 @@ export default function AutoPaymentScreen() {
               <Ionicons name="notifications" size={24} color="#007AFF" />
             </View>
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Smart Notifications</Text>
+              <Text style={styles.featureTitle}>{t('autoPayment.smartNotifications')}</Text>
               <Text style={styles.featureDescription}>
-                Get notified about all payment activities
+                {t('autoPayment.paymentNotifications')}
               </Text>
             </View>
           </View>
@@ -186,7 +187,7 @@ export default function AutoPaymentScreen() {
               style={styles.buttonGradient}
             >
               <Ionicons name="notifications" size={20} color="#fff" />
-              <Text style={styles.notifyButtonText}>Notify Me When Available</Text>
+              <Text style={styles.notifyButtonText}>{t('autoPayment.notifyWhenAvailable')}</Text>
             </LinearGradient>
           </TouchableOpacity>
         </Animated.View>

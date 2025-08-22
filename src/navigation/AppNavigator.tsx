@@ -14,6 +14,7 @@ import SignUpScreen from '../screens/auth/SignUpScreen';
 import OTPVerificationScreen from '../screens/auth/OTPVerificationScreen';
 import ProfileSetupScreen from '../screens/auth/ProfileSetupScreen';
 import DocumentUploadScreen from '../screens/auth/DocumentUploadScreen';
+import LanguageSelectionScreen from '../screens/auth/LanguageSelectionScreen';
 
 // Home Screens
 import HomeScreen from '../screens/home/HomeScreen';
@@ -83,6 +84,7 @@ function AuthNavigator() {
       <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
       <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} />
       <Stack.Screen name="DocumentUpload" component={DocumentUploadScreen} />
+      <Stack.Screen name="LanguageSelection" component={LanguageSelectionScreen} />
     </Stack.Navigator>
   );
 }

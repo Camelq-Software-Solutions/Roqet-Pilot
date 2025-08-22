@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image, ScrollView, Linking, Alert, Modal, Pressable, PanResponder, TextInput, Vibration, Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import MapView, { Marker, Polyline as MapPolyline, MapViewProps } from 'react-native-maps';
 import { MaterialIcons, Ionicons, FontAwesome, Entypo, FontAwesome5 } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -35,18 +36,19 @@ function goToHome(navigation: any) {
 }
 
 function CancelRideModal({ visible, onClose, onConfirm }: { visible: boolean; onClose: () => void; onConfirm: (reason: string) => void }) {
+  const { t } = useTranslation();
   const [selectedReason, setSelectedReason] = useState<string>('');
   const anim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
 
   const cancelReasons = [
-    'Passenger not found at pickup location',
-    'Passenger requested cancellation',
-    'Vehicle breakdown',
-    'Traffic/road conditions',
-    'Personal emergency',
-    'Unsafe pickup location',
-    'Other'
+    t('ride.cancelReasons.passengerNotFound'),
+    t('ride.cancelReasons.passengerRequested'),
+    t('ride.cancelReasons.vehicleBreakdown'),
+    t('ride.cancelReasons.trafficConditions'),
+    t('ride.cancelReasons.personalEmergency'),
+    t('ride.cancelReasons.unsafeLocation'),
+    t('ride.cancelReasons.other')
   ];
 
   React.useEffect(() => {
@@ -294,6 +296,7 @@ const getFallbackCoordinates = (address: string) => {
 };
 
 const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { visible: boolean; onClose: () => void; onNavigate: (screen: string) => void; halfScreen?: boolean; onLogout: () => void }) => {
+  const { t } = useTranslation();
   return (
     <Modal
       visible={visible}
@@ -338,15 +341,15 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
             >
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#222' }}>Menu</Text>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#222' }}>{t('common.menu')}</Text>
           </View>
           <TouchableOpacity key="home" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Home'); onClose(); }}>
             <Ionicons name="home" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Home</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('home.home')}</Text>
           </TouchableOpacity>
           <TouchableOpacity key="refer" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Refer'); onClose(); }}>
             <Ionicons name="gift" size={26} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Refer</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('profile.refer')}</Text>
           </TouchableOpacity>
           <TouchableOpacity key="rideHistory" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { 
             console.log('🚀 Ride History button clicked - navigating to RideHistory screen');
@@ -354,25 +357,25 @@ const MenuModal = ({ visible, onClose, onNavigate, halfScreen, onLogout }: { vis
             onClose(); 
           }}>
             <Ionicons name="time" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Ride History</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('profile.rideHistory')}</Text>
           </TouchableOpacity>
           <TouchableOpacity key="wallet" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Wallet'); onClose(); }}>
             <Ionicons name="wallet" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Wallet</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('profile.wallet')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity key="settings" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('Settings'); onClose(); }}>
             <Ionicons name="settings" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Settings</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('profile.settings')}</Text>
           </TouchableOpacity>
           <TouchableOpacity key="helpSupport" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={() => { onNavigate('HelpSupport'); onClose(); }}>
             <Ionicons name="help-circle" size={24} color="#1877f2" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>Support</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#222' }}>{t('support.support')}</Text>
           </TouchableOpacity>
           <View key="divider" style={{ borderTopWidth: 1, borderTopColor: '#eee', marginVertical: 16 }} />
           <TouchableOpacity key="logout" style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }} onPress={onLogout}>
             <Ionicons name="log-out" size={24} color="#FF3B30" style={{ marginRight: 16 }} />
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FF3B30' }}>Logout</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FF3B30' }}>{t('auth.logout')}</Text>
           </TouchableOpacity>
         </Animated.View>
         {/* Always render the overlay for closing */}
@@ -426,7 +429,12 @@ async function updateDriverStatusOnBackend({
 
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const { user, isLoaded } = useUser();
+
+  // Debug translations
+  console.log('🌐 HomeScreen - YoureOnline text:', t('ride.youreOnline'));
+  console.log('🌐 HomeScreen - YoureOffline text:', t('ride.youreOffline'));
   const { getToken, signOut } = useAuth();
   const navigation = useNavigation<NavigationProp<any>>();
   const { getUserInfo } = useUserFromJWT();
@@ -1408,7 +1416,7 @@ export default function HomeScreen() {
               marginTop: 4,
             }}
           >
-            You're Offline
+                         {t('ride.youreOffline')}
           </Text>
         </View>
       )}
@@ -1506,7 +1514,7 @@ export default function HomeScreen() {
                 zIndex: 1,
                 }}
               >
-                Swipe to go offline
+                {t('ride.swipeToGoOffline')}
               </Text>
             </View>
           </View>
@@ -1570,7 +1578,7 @@ export default function HomeScreen() {
                 fontWeight: 'bold',
                 marginTop: 2,
               }}>
-                {isSocketConnected ? 'Connected' : 'Disconnected'}
+                {isSocketConnected ? t('ride.connected') : t('ride.disconnected')}
               </Text>
             </View>
           )}
@@ -1682,7 +1690,7 @@ export default function HomeScreen() {
                 textAlign: 'center',
                 flex: 1,
               }}>
-                You're online
+                                 {t('ride.youreOnline')}
               </Text>
               {/* Hamburger Icon (right) */}
               <TouchableOpacity 
@@ -1805,7 +1813,7 @@ export default function HomeScreen() {
                 letterSpacing: 0.5,
                 zIndex: 4,
               }}>
-                Swipe to go online
+                {t('ride.swipeToGoOnline')}
               </Text>
           </View>
       </View>
@@ -1841,7 +1849,7 @@ export default function HomeScreen() {
         onPress={() => setSOSVisible(true)}
             activeOpacity={0.85}
         >
-            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, letterSpacing: 1 }}>SOS</Text>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 20, letterSpacing: 1 }}>{t('ride.sos')}</Text>
         </TouchableOpacity>
         </Animated.View>
       )}

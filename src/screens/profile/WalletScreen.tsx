@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { mockPaymentMethods } from '../../data/mockData';
@@ -64,6 +65,7 @@ const initialWalletTransactions = [
 ];
 
 export default function WalletScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const { getToken } = useAuth();
   const [walletBalance, setWalletBalance] = useState(0);
   const [rideEarnings, setRideEarnings] = useState(0);
@@ -407,7 +409,7 @@ export default function WalletScreen({ navigation }: any) {
       <View style={styles.paymentMethodActions}>
         {item.isDefault && (
           <View style={styles.defaultBadge}>
-            <Text style={styles.defaultText}>Default</Text>
+            <Text style={styles.defaultText}>{t('wallet.default')}</Text>
           </View>
         )}
           <TouchableOpacity style={styles.moreButton} activeOpacity={0.7}>
@@ -459,7 +461,7 @@ export default function WalletScreen({ navigation }: any) {
       {isInitialLoading && (
         <View style={styles.fullScreenLoading}>
           <ActivityIndicator size="large" color={Colors.primary} />
-          <Text style={styles.loadingText}>Loading wallet data...</Text>
+          <Text style={styles.loadingText}>{t('common.loading')}</Text>
         </View>
       )}
 
@@ -472,7 +474,7 @@ export default function WalletScreen({ navigation }: any) {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Wallet</Text>
+        <Text style={styles.headerTitle}>{t('wallet.wallet')}</Text>
         <TouchableOpacity 
           style={styles.helpButton} 
           activeOpacity={0.7}
@@ -598,24 +600,24 @@ export default function WalletScreen({ navigation }: any) {
 
             {/* Earnings Summary */}
             <Animated.View style={[styles.earningsCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-              <Text style={styles.earningsTitle}>Earnings Summary</Text>
+              <Text style={styles.earningsTitle}>{t('wallet.earningsSummary')}</Text>
               <View style={styles.earningsGrid}>
                 <View style={styles.earningsItem}>
-                  <Text style={styles.earningsLabel}>Today's Earnings</Text>
+                  <Text style={styles.earningsLabel}>{t('wallet.todaysEarnings')}</Text>
                   <Text style={styles.earningsAmount}>₹{rideEarnings}</Text>
-                  <Text style={styles.earningsSubtext}>From rides</Text>
+                  <Text style={styles.earningsSubtext}>{t('wallet.fromRides')}</Text>
                 </View>
                 <View style={styles.earningsItem}>
-                  <Text style={styles.earningsLabel}>Total Earnings</Text>
+                  <Text style={styles.earningsLabel}>{t('wallet.totalEarnings')}</Text>
                   <Text style={styles.earningsAmount}>₹{totalEarnings}</Text>
-                  <Text style={styles.earningsSubtext}>All time</Text>
+                  <Text style={styles.earningsSubtext}>{t('wallet.allTime')}</Text>
                 </View>
               </View>
             </Animated.View>
 
             {/* Quick Add Amounts */}
             <Animated.View style={[styles.quickAddCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-              <Text style={styles.quickAddTitle}>Quick Add</Text>
+              <Text style={styles.quickAddTitle}>{t('wallet.quickAdd')}</Text>
               <View style={styles.quickAddButtons}>
                 {[100, 200, 500].map((amount, index) => (
                   <TouchableOpacity key={`quick-add-${amount}-${index}`} style={styles.quickAddButton} activeOpacity={0.7}>
@@ -628,9 +630,9 @@ export default function WalletScreen({ navigation }: any) {
             {/* Recent Transactions */}
             <Animated.View style={[styles.transactionsCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
               <View style={styles.transactionsHeader}>
-                <Text style={styles.transactionsTitle}>Recent Transactions</Text>
+                <Text style={styles.transactionsTitle}>{t('wallet.recentTransactions')}</Text>
                 <TouchableOpacity activeOpacity={0.7}>
-                  <Text style={styles.viewAllText}>View All</Text>
+                                      <Text style={styles.viewAllText}>{t('wallet.viewAll')}</Text>
                 </TouchableOpacity>
               </View>
               <View>

@@ -1,28 +1,31 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors, TITLE_COLOR } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 
 export default function OffersScreen({ navigation }: any) {
+  const { t } = useTranslation();
+  
   const offers = [
     {
       id: 1,
-      title: '20% Off Your Next Ride',
-      description: 'Use code RIDE20 to get 20% off your next ride. Valid for all users.',
-      expires: 'Expires: 30 June 2024',
+      title: t('offers.twentyPercentOff'),
+      description: t('offers.useCodeRide20'),
+      expires: t('offers.expiresJune30'),
     },
     {
       id: 2,
-      title: 'Refer & Earn',
-      description: 'Refer a friend and both of you get $5 ride credit after their first trip.',
-      expires: 'No expiry',
+      title: t('offers.referAndEarn'),
+      description: t('offers.referFriendDescription'),
+      expires: t('offers.noExpiry'),
     },
     {
       id: 3,
-      title: 'Weekend Special',
-      description: 'Flat $3 off on all rides this weekend. No code needed!',
-      expires: 'Expires: Sunday, 11:59 PM',
+      title: t('offers.weekendSpecial'),
+      description: t('offers.flatThreeOff'),
+      expires: t('offers.expiresSunday'),
     },
   ];
 
@@ -32,7 +35,7 @@ export default function OffersScreen({ navigation }: any) {
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back">
           <Ionicons name="arrow-back" size={24} color={TITLE_COLOR} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Offers</Text>
+        <Text style={styles.headerTitle}>{t('offers.offers')}</Text>
         <View style={{ width: 24 }} />
       </View>
       <View style={styles.content}>

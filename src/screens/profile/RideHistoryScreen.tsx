@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { mockRideHistory } from '../../data/mockData';
@@ -21,6 +22,7 @@ import { formatRidePrice } from '../../utils/priceUtils';
 const { width } = Dimensions.get('window');
 
 export default function RideHistoryScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState('completed');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -158,7 +160,7 @@ export default function RideHistoryScreen({ navigation }: any) {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Ride History</Text>
+        <Text style={styles.headerTitle}>{t('profile.rideHistory')}</Text>
         <TouchableOpacity 
           style={styles.filterButton} 
           activeOpacity={0.7}
@@ -198,7 +200,7 @@ export default function RideHistoryScreen({ navigation }: any) {
               selectedTab === 'completed' && styles.activeTabText,
             ]}
           >
-            Completed
+            {t('ride.completed')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -215,7 +217,7 @@ export default function RideHistoryScreen({ navigation }: any) {
               selectedTab === 'cancelled' && styles.activeTabText,
             ]}
           >
-            Cancelled
+            {t('ride.cancelled')}
           </Text>
         </TouchableOpacity>
       </Animated.View>
@@ -248,12 +250,12 @@ export default function RideHistoryScreen({ navigation }: any) {
           <View style={styles.emptyContainer}>
             {loading ? (
               <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>Loading ride history...</Text>
+                <Text style={styles.loadingText}>{t('ride.loadingRideHistory')}</Text>
               </View>
             ) : error ? (
               <View style={styles.errorContainer}>
                 <Ionicons name="alert-circle" size={48} color={Colors.error} />
-                <Text style={styles.errorText}>Failed to load ride history</Text>
+                <Text style={styles.errorText}>{t('ride.failedToLoadHistory')}</Text>
                 <Text style={styles.errorSubtext}>{error}</Text>
                 <TouchableOpacity style={styles.retryButton} onPress={async () => {
                   try {
@@ -265,14 +267,14 @@ export default function RideHistoryScreen({ navigation }: any) {
                     console.error('❌ Error retrying ride history:', error);
                   }
                 }}>
-                  <Text style={styles.retryButtonText}>Retry</Text>
+                  <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
                 </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.emptyStateContainer}>
                 <Ionicons name="time" size={48} color={Colors.gray400} />
-                <Text style={styles.emptyStateText}>No ride history yet</Text>
-                <Text style={styles.emptyStateSubtext}>Your completed rides will appear here</Text>
+                <Text style={styles.emptyStateText}>{t('ride.noRideHistory')}</Text>
+                <Text style={styles.emptyStateSubtext}>{t('ride.completedRidesWillAppear')}</Text>
               </View>
             )}
           </View>
@@ -280,7 +282,7 @@ export default function RideHistoryScreen({ navigation }: any) {
       />
       {/* Clear History Button */}
       <TouchableOpacity style={{ alignSelf: 'center', margin: 16 }} onPress={clearHistory}>
-        <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>Clear Ride History</Text>
+        <Text style={{ color: Colors.primary, fontWeight: 'bold' }}>{t('ride.clearRideHistory')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

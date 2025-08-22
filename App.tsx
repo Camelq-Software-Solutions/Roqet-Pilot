@@ -8,6 +8,7 @@ import { OnlineStatusProvider } from './src/store/OnlineStatusContext';
 import { RideHistoryProvider } from './src/store/RideHistoryContext';
 import { ChatProvider } from './src/store/ChatContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import './src/i18n';
 
 const tokenCache = {
   async getToken(key: string) {

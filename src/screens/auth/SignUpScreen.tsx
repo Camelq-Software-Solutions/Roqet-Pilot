@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useSignUp, useUser, useAuth } from '@clerk/clerk-expo';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import Button from '../../components/common/Button';
@@ -77,38 +78,39 @@ function isAlpha(str: string) {
 
 // Step 1: Name Entry
 function NameStep({ firstName, lastName, setFirstName, setLastName, onNext }: NameStepProps) {
+  const { t } = useTranslation();
   // Add local handler for Next button
   const handleNext = () => {
     if (!isAlpha(firstName.trim())) {
-      Alert.alert('Invalid First Name', 'First name should contain only alphabetic characters.');
+      Alert.alert(t('auth.invalidFirstName'), t('auth.firstNameAlphabeticOnly'));
       return;
     }
     if (!isAlpha(lastName.trim())) {
-      Alert.alert('Invalid Last Name', 'Last name should contain only alphabetic characters.');
+      Alert.alert(t('auth.invalidLastName'), t('auth.lastNameAlphabeticOnly'));
       return;
     }
     onNext();
   };
   return (
     <View style={styles.stepContainer}>
-      <Text style={styles.progress}>Step 1 of 4</Text>
-      <Text style={styles.stepTitle}>What's your name?</Text>
+      <Text style={styles.progress}>{t('auth.step1Of4')}</Text>
+      <Text style={styles.stepTitle}>{t('auth.whatsYourName')}</Text>
       <Input
-        label="First Name"
-        placeholder="Enter your first name"
+        label={t('auth.firstName')}
+        placeholder={t('auth.enterFirstName')}
         value={firstName}
         onChangeText={setFirstName}
         leftIcon="person"
       />
       <Input
-        label="Last Name"
-        placeholder="Enter your last name"
+        label={t('auth.lastName')}
+        placeholder={t('auth.enterLastName')}
         value={lastName}
         onChangeText={setLastName}
         leftIcon="person"
       />
       <Button
-        title="Next"
+        title={t('common.next')}
         onPress={handleNext}
         fullWidth
         disabled={!firstName.trim() || !lastName.trim()}
@@ -130,6 +132,7 @@ function PhoneStep({
   onBack, 
   isLoading 
 }: PhoneStepProps) {
+  const { t } = useTranslation();
   const countryList: CountryItem[] = [
     { code: '+91', name: 'India' },
     { code: '+1', name: 'USA' },
@@ -145,11 +148,11 @@ function PhoneStep({
 
   return (
     <View style={styles.stepContainer}>
-      <Text style={styles.progress}>Step 2 of 4</Text>
-      <Text style={styles.stepTitle}>What's your mobile number?</Text>
+      <Text style={styles.progress}>{t('auth.step2Of4')}</Text>
+      <Text style={styles.stepTitle}>{t('auth.whatsYourMobileNumber')}</Text>
       <Input
-        label="Mobile Number"
-        placeholder="Enter your 10-digit mobile number"
+        label={t('auth.mobileNumber')}
+        placeholder={t('auth.enter10DigitMobile')}
         value={phoneNumber}
         onChangeText={setPhoneNumber}
         keyboardType="phone-pad"
@@ -410,6 +413,7 @@ function PhotoStep({
 
 // Main SignUp Screen Component
 export default function SignUpScreen({ navigation }: { navigation: any }) {
+  const { t } = useTranslation();
   const [step, setStep] = useState<number>(1);
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -471,7 +475,7 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
   const handleSendOTP = async () => {
     if (!isLoaded) return;
     if (phoneNumber.length !== 10) {
-      Alert.alert('Error', 'Please enter a valid 10-digit phone number');
+      Alert.alert(t('common.error'), t('auth.enterValid10DigitPhone'));
       return;
     }
     setIsLoading(true);
@@ -483,7 +487,7 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
       
       if (!signUp) {
         console.error('SignUpScreen - SignUp object is null during OTP send');
-        Alert.alert('Error', 'Authentication service not available. Please try again.');
+        Alert.alert(t('common.error'), t('auth.authenticationServiceNotAvailable'));
         return;
       }
       
@@ -502,9 +506,9 @@ export default function SignUpScreen({ navigation }: { navigation: any }) {
       console.error('SignUpScreen - Error sending OTP:', err);
       if (typeof err === 'object' && err && 'errors' in err) {
         // @ts-ignore
-        const errorMessage = err.errors?.[0]?.message || 'Failed to send OTP';
+        const errorMessage = err.errors?.[0]?.message || t('auth.failedToSendOTP');
         console.error('SignUpScreen - Error message:', errorMessage);
-        Alert.alert('Error', errorMessage);
+        Alert.alert(t('common.error'), errorMessage);
       } else {
         console.error('SignUpScreen - Unknown error type:', err);
         Alert.alert('Error', 'Failed to send OTP');

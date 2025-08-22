@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Linking, Animated, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors, PRIMARY_GREEN, TITLE_COLOR, SUBTITLE_COLOR } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,20 +15,8 @@ const mockTrip = {
   map: 'https://maps.googleapis.com/maps/api/staticmap?center=Austin,TX&zoom=13&size=200x80&maptype=roadmap&markers=color:green%7Clabel:A%7CAustin,TX', // placeholder
 };
 
-const menuItems = [
-  { key: 'ride', label: 'Ride Issues', screen: 'RideIssues', icon: 'car-outline' },
-  { key: 'payments', label: 'Payments and Refunds', screen: 'PaymentsIssues', icon: 'card-outline' },
-
-  { key: 'account', label: 'Account related issues', screen: 'AccountIssues', icon: 'person-outline' },
-  { key: 'other', label: 'Other Issues', screen: 'OtherIssues', icon: 'help-circle-outline' },
-];
-
-const extraMenu = [
-  { key: 'privacy', label: 'Privacy Policy', screen: 'PersonalInfoUpdate', icon: 'shield-outline' },
-  { key: 'terms', label: 'Terms and conditions', screen: 'TermsCondition', icon: 'document-text-outline' },
-];
-
 export default function HelpSupportScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -47,6 +36,18 @@ export default function HelpSupportScreen({ navigation }: any) {
     ]).start();
   }, []);
 
+  const menuItems = [
+    { key: 'ride', label: t('support.rideIssues'), screen: 'RideIssues', icon: 'car-outline' },
+    { key: 'payments', label: t('support.paymentsAndRefunds'), screen: 'PaymentsIssues', icon: 'card-outline' },
+    { key: 'account', label: t('support.accountRelatedIssues'), screen: 'AccountIssues', icon: 'person-outline' },
+    { key: 'other', label: t('support.otherIssues'), screen: 'OtherIssues', icon: 'help-circle-outline' },
+  ];
+
+  const extraMenu = [
+    { key: 'privacy', label: t('support.privacyPolicy'), screen: 'PersonalInfoUpdate', icon: 'shield-outline' },
+    { key: 'terms', label: t('support.termsAndConditions'), screen: 'TermsCondition', icon: 'document-text-outline' },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -54,7 +55,7 @@ export default function HelpSupportScreen({ navigation }: any) {
         <TouchableOpacity onPress={() => navigation.goBack()} accessibilityLabel="Back" activeOpacity={0.7}>
           <Ionicons name="arrow-back" size={24} color={TITLE_COLOR} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Help & Support</Text>
+        <Text style={styles.headerTitle}>{t('support.helpAndSupport')}</Text>
         <View style={{ width: 24 }} />
       </Animated.View>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -122,7 +123,7 @@ export default function HelpSupportScreen({ navigation }: any) {
           activeOpacity={0.7}
         >
           <Ionicons name="call-outline" size={20} color={PRIMARY_GREEN} />
-          <Text style={styles.bottomButtonText}>Call</Text>
+          <Text style={styles.bottomButtonText}>{t('support.call')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.bottomButton}
@@ -131,7 +132,7 @@ export default function HelpSupportScreen({ navigation }: any) {
           activeOpacity={0.7}
         >
           <Ionicons name="chatbubble-ellipses-outline" size={20} color={PRIMARY_GREEN} />
-          <Text style={styles.bottomButtonText}>Chat</Text>
+          <Text style={styles.bottomButtonText}>{t('support.chat')}</Text>
         </TouchableOpacity>
       </Animated.View>
     </SafeAreaView>

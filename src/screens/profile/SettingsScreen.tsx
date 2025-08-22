@@ -8,18 +8,24 @@ import {
   Switch,
   Animated,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage, getSupportedLanguages } from '../../i18n';
+import LanguageSelectionScreen from '../auth/LanguageSelectionScreen';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 
 const { width } = Dimensions.get('window');
 
 export default function SettingsScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState(true);
   // const [locationServices, setLocationServices] = useState(true);
   const [shareData, setShareData] = useState(true);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -41,29 +47,29 @@ export default function SettingsScreen({ navigation }: any) {
 
   const settingSections = [
     {
-      title: 'Account',
+      title: t('profile.account'),
       items: [
         {
           icon: 'person-outline',
-          title: 'Personal Information',
-          subtitle: 'Update your profile details',
+          title: t('settings.personalInformation'),
+          subtitle: t('settings.personalInformationSubtitle'),
           action: () => navigation.navigate('PersonalDetails'),
         },
         {
           icon: 'shield-checkmark-outline',
-          title: 'Privacy & Security',
-          subtitle: 'Manage your privacy settings',
+          title: t('settings.privacySecurity'),
+          subtitle: t('settings.privacySecuritySubtitle'),
           action: () => navigation.navigate('PrivacySecurity'),
         },
       ],
     },
     {
-      title: 'Preferences',
+      title: t('profile.preferences'),
       items: [
         {
           icon: 'notifications-outline',
-          title: 'Push Notifications',
-          subtitle: 'Receive ride updates and offers',
+          title: t('settings.pushNotifications'),
+          subtitle: t('settings.pushNotificationsSubtitle'),
           toggle: true,
           value: notifications,
           onToggle: setNotifications,
@@ -78,36 +84,42 @@ export default function SettingsScreen({ navigation }: any) {
         // },
         {
           icon: 'card-outline',
-          title: 'Auto Payment',
-          subtitle: 'Automatically pay for rides',
+          title: t('settings.autoPayment'),
+          subtitle: t('settings.autoPaymentSubtitle'),
           action: () => navigation.navigate('AutoPayment'),
+        },
+        {
+          icon: 'language-outline',
+          title: t('settings.language'),
+          subtitle: t('settings.languageSubtitle'),
+          action: () => setShowLanguageModal(true),
         },
       ],
     },
     {
-      title: 'Support',
+      title: t('profile.support'),
       items: [
         {
           icon: 'help-circle-outline',
-          title: 'Help Center',
-          subtitle: 'Get help with your account',
+          title: t('settings.helpCenter'),
+          subtitle: t('settings.helpCenterSubtitle'),
           action: () => navigation.navigate('HelpSupport'),
         },
         {
           icon: 'star-outline',
-          title: 'Rate the App',
-          subtitle: 'Share your feedback',
+          title: t('settings.rateApp'),
+          subtitle: t('settings.rateAppSubtitle'),
           action: () => console.log('Rate App'),
         },
       ],
     },
     {
-      title: 'Legal',
+      title: t('profile.legal'),
       items: [
         {
           icon: 'document-text-outline',
-          title: 'Terms of Service',
-          subtitle: 'Read our terms and conditions',
+          title: t('settings.termsOfService'),
+          subtitle: t('settings.termsOfServiceSubtitle'),
           action: () => navigation.navigate('TermsCondition'),
         },
         // {
@@ -165,7 +177,7 @@ export default function SettingsScreen({ navigation }: any) {
         >
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('profile.settings')}</Text>
         <View style={styles.placeholder} />
       </Animated.View>
 
@@ -187,6 +199,19 @@ export default function SettingsScreen({ navigation }: any) {
           
         </Animated.View>
       </ScrollView>
+
+      {/* Language Selection Modal */}
+      <Modal
+        visible={showLanguageModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowLanguageModal(false)}
+      >
+        <LanguageSelectionScreen
+          isModal={true}
+          onClose={() => setShowLanguageModal(false)}
+        />
+      </Modal>
     </SafeAreaView>
   );
 }

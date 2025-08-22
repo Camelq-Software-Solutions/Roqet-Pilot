@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { onboardingData } from '../../data/mockData';
@@ -19,6 +20,7 @@ import Button from '../../components/common/Button';
 const { width, height } = Dimensions.get('window');
 
 export default function OnboardingScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   
@@ -94,7 +96,7 @@ export default function OnboardingScreen({ navigation }: any) {
       <Animated.View style={[styles.header, { opacity: fadeAnim }]}>
         <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
           <Ionicons name="close" size={20} color="#666" style={{ marginRight: 8 }} />
-          <Text style={styles.skipText}>Skip</Text>
+          <Text style={styles.skipText}>{t('common.skip')}</Text>
         </TouchableOpacity>
       </Animated.View>
 

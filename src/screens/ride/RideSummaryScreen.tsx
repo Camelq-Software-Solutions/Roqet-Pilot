@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import Button from '../../components/common/Button';
@@ -21,17 +22,8 @@ function goToHome(navigation: any) {
   navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
 }
 
-const feedbackTags = [
-  
-  'On time',
-  'Easy directions',
-  'Friendly',
-  'Late pickup',
-  'Disrespectful Behaviour',
-  'Unclear Instructions',
-];
-
 export default function RideSummaryScreen({ navigation, route }: any) {
+  const { t } = useTranslation();
   const { destination, estimate, driver } = route.params;
   const { setIsOnline, resetDriverStatus } = useOnlineStatus();
   const { getToken } = useAuth();
@@ -41,6 +33,15 @@ export default function RideSummaryScreen({ navigation, route }: any) {
   const [rating, setRating] = useState(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tip, setTip] = useState(0);
+
+  const feedbackTags = [
+    t('feedback.onTime'),
+    t('feedback.easyDirections'),
+    t('feedback.friendly'),
+    t('feedback.latePickup'),
+    t('feedback.disrespectfulBehaviour'),
+    t('feedback.unclearInstructions'),
+  ];
 
   // Function to update driver online status on backend
   const updateDriverOnlineStatusOnBackend = async (token: string) => {
@@ -141,22 +142,22 @@ export default function RideSummaryScreen({ navigation, route }: any) {
           <View style={styles.successIcon}>
             <Ionicons name="checkmark-circle" size={60} color={Colors.success} />
           </View>
-          <Text style={styles.successTitle}>Ride Completed!</Text>
+          <Text style={styles.successTitle}>{t('feedback.rideCompleted')}</Text>
           <Text style={styles.successSubtitle}>
-            Hope you had a great experience
+            {t('feedback.hopeGreatExperience')}
           </Text>
         </View>
 
         {/* Trip Summary */}
         <View style={styles.summaryCard}>
-          <Text style={styles.cardTitle}>Trip Summary</Text>
+          <Text style={styles.cardTitle}>{t('feedback.tripSummary')}</Text>
           
           <View style={styles.routeInfo}>
             <View style={styles.routePoint}>
               <View style={styles.pickupDot} />
               <View style={styles.routeDetails}>
-                <Text style={styles.routeLabel}>From</Text>
-                <Text style={styles.routeAddress}>Your pickup location</Text>
+                <Text style={styles.routeLabel}>{t('feedback.from')}</Text>
+                <Text style={styles.routeAddress}>{t('feedback.yourPickupLocation')}</Text>
               </View>
             </View>
 
@@ -165,8 +166,8 @@ export default function RideSummaryScreen({ navigation, route }: any) {
             <View style={styles.routePoint}>
               <View style={styles.destinationDot} />
               <View style={styles.routeDetails}>
-                <Text style={styles.routeLabel}>To</Text>
-                <Text style={styles.routeAddress}>{destination?.name || 'Destination'}</Text>
+                <Text style={styles.routeLabel}>{t('feedback.to')}</Text>
+                <Text style={styles.routeAddress}>{destination?.name || t('feedback.destination')}</Text>
               </View>
             </View>
           </View>
@@ -174,22 +175,22 @@ export default function RideSummaryScreen({ navigation, route }: any) {
           <View style={styles.tripStats}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{estimate.distance}</Text>
-              <Text style={styles.statLabel}>Distance</Text>
+              <Text style={styles.statLabel}>{t('feedback.distance')}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{estimate.duration}</Text>
-              <Text style={styles.statLabel}>Duration</Text>
+              <Text style={styles.statLabel}>{t('feedback.duration')}</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{estimate.fare}</Text>
-              <Text style={styles.statLabel}>Fare</Text>
+              <Text style={styles.statLabel}>{t('feedback.fare')}</Text>
             </View>
           </View>
         </View>
 
         {/* Customer Rating */}
         <View style={styles.ratingCard}>
-          <Text style={styles.cardTitle}>Rate Your Customer</Text>
+          <Text style={styles.cardTitle}>{t('feedback.rateYourCustomer')}</Text>
           <View style={styles.starsContainer}>
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity
@@ -207,7 +208,7 @@ export default function RideSummaryScreen({ navigation, route }: any) {
           </View>
           {rating > 0 && (
             <View style={styles.feedbackTags}>
-              <Text style={styles.tagsTitle}>What went well?</Text>
+              <Text style={styles.tagsTitle}>{t('feedback.whatWentWell')}</Text>
               <View style={styles.tagsContainer}>
                 {feedbackTags.map((tag) => (
                   <TouchableOpacity
@@ -234,14 +235,14 @@ export default function RideSummaryScreen({ navigation, route }: any) {
         </View>
         {/* Payment Summary */}
         <View style={styles.paymentCard}>
-          <Text style={styles.cardTitle}>Payment Summary</Text>
+          <Text style={styles.cardTitle}>{t('feedback.paymentSummary')}</Text>
           <View style={styles.paymentItem}>
-            <Text style={styles.paymentLabel}>Ride Fare</Text>
+            <Text style={styles.paymentLabel}>{t('feedback.rideFare')}</Text>
             <Text style={styles.paymentValue}>{estimate.fare}</Text>
           </View>
           <View style={styles.paymentDivider} />
           <View style={styles.paymentTotal}>
-            <Text style={styles.paymentTotalLabel}>Total Received</Text>
+            <Text style={styles.paymentTotalLabel}>{t('feedback.totalReceived')}</Text>
             <Text style={styles.paymentTotalValue}>{estimate.fare}</Text>
           </View>
         </View>
@@ -249,7 +250,7 @@ export default function RideSummaryScreen({ navigation, route }: any) {
       {/* Bottom Actions */}
       <View style={styles.bottomActions}>
         <Button
-          title="Submit Feedback"
+          title={t('feedback.submitFeedback')}
           onPress={handleSubmitFeedback}
           style={styles.submitButton}
         />

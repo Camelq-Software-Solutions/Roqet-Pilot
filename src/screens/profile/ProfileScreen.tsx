@@ -12,12 +12,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useUser } from '@clerk/clerk-expo';
 import { useAuth } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
+  const { t } = useTranslation();
   const { user, signOut } = useAuth();
   const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -120,7 +122,7 @@ export default function ProfileScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 8 }}>
           <Ionicons name="arrow-back" size={26} color={Colors.primary} />
         </TouchableOpacity>
-        <Text style={{ fontSize: 22, fontWeight: 'bold', color: Colors.text, marginLeft: 8 }}>Profile</Text>
+        <Text style={{ fontSize: 22, fontWeight: 'bold', color: Colors.text, marginLeft: 8 }}>{t('profile.profile')}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Animated.View style={[styles.profileCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>  
@@ -131,35 +133,35 @@ export default function ProfileScreen() {
           <View style={styles.statsRow}>
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{totalRides}</Text>
-              <Text style={styles.statLabel}>Total Rides</Text>
+                             <Text style={styles.statLabel}>{t('profile.totalRides')}</Text>
             </View>
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{totalEarnings}</Text>
-              <Text style={styles.statLabel}>Total Earnings</Text>
+                             <Text style={styles.statLabel}>{t('profile.totalEarnings')}</Text>
             </View>
             <View style={styles.statBox}>
               <Text style={styles.statValue}>{rating}</Text>
-              <Text style={styles.statLabel}>Rating</Text>
+                             <Text style={styles.statLabel}>{t('profile.rating')}</Text>
             </View>
           </View>
         </Animated.View>
 
         <View style={styles.detailsCard}>
           <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={styles.detailsTitle}>Personal Details</Text>
+                     <Text style={styles.detailsTitle}>{t('profile.personalDetails')}</Text>
           </View>
           {loading ? (
-            <Text>Loading driver details...</Text>
+                         <Text>{t('common.loading')}</Text>
           ) : error ? (
             <Text style={{ color: 'red' }}>{error}</Text>
           ) : driverDetails ? (
             <>
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Name:</Text>
+                <Text style={styles.detailLabel}>{t('profile.name')}:</Text>
                 <Text style={styles.detailValue}>{driverDetails.firstName} {driverDetails.lastName}</Text>
               </View>
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Phone:</Text>
+                <Text style={styles.detailLabel}>{t('profile.phone')}:</Text>
                 <Text style={styles.detailValue}>{driverDetails.phoneNumber}</Text>
               </View>
               {/* <View style={styles.detailRow}>
@@ -169,7 +171,7 @@ export default function ProfileScreen() {
               {/* Add more fields as needed */}
             </>
           ) : (
-            <Text>No driver details found.</Text>
+                         <Text>{t('profile.noDriverDetails')}</Text>
           )}
         </View>
       </ScrollView>
@@ -181,7 +183,7 @@ export default function ProfileScreen() {
             navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
           }}
         >
-          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Logout</Text>
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>{t('auth.logout')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useSignIn } from '@clerk/clerk-expo';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import Button from '../../components/common/Button';
@@ -30,6 +31,7 @@ const COUNTRY_CODES = [
 ];
 
 export default function LoginScreen({ navigation }: any) {
+  const { t } = useTranslation();
   const [countryCode, setCountryCode] = useState(COUNTRY_CODES[0].code);
   const [showDropdown, setShowDropdown] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -149,10 +151,10 @@ export default function LoginScreen({ navigation }: any) {
             <View style={styles.iconContainer}>
               <Image source={require('../../../assets/images/Mainlogo.jpeg')} style={{ width: 360, height: 360 }} />
             </View>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>
-              Enter your mobile number to sign in
-            </Text>
+            <Text style={styles.title}>{t('auth.welcomeBack')}</Text>
+                          <Text style={styles.subtitle}>
+                {t('auth.enterMobileToSignIn')}
+              </Text>
           </Animated.View>
 
           <Animated.View style={[styles.form, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>

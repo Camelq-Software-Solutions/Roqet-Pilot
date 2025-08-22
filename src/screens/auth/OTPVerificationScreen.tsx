@@ -14,12 +14,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useSignIn, useSignUp, useUser, useAuth } from '@clerk/clerk-expo';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../constants/Colors';
 import { Layout } from '../../constants/Layout';
 import Button from '../../components/common/Button';
 import { logJWTDetails } from '../../utils/jwtDecoder';
 
 export default function OTPVerificationScreen({ navigation, route }: any) {
+  const { t } = useTranslation();
   const { phoneNumber, isSignIn } = route.params;
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
@@ -205,7 +207,7 @@ export default function OTPVerificationScreen({ navigation, route }: any) {
         
         if (!signUp) {
           console.error('OTPVerificationScreen - SignUp object is null');
-          Alert.alert('Error', 'Authentication service not available. Please try again.');
+          Alert.alert(t('common.error'), t('auth.authenticationServiceNotAvailable'));
           return;
         }
         
@@ -266,14 +268,14 @@ export default function OTPVerificationScreen({ navigation, route }: any) {
       console.error('OTPVerificationScreen - Error message:', err.message);
       console.error('OTPVerificationScreen - Error code:', err.code);
       
-      let errorMessage = 'Invalid OTP. Please try again.';
+      let errorMessage = t('auth.invalidOTP');
       if (err?.errors?.[0]?.message) {
         errorMessage = err.errors[0].message;
       } else if (err?.message) {
         errorMessage = err.message;
       }
       
-      Alert.alert('Error', errorMessage);
+      Alert.alert(t('common.error'), errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -310,9 +312,9 @@ export default function OTPVerificationScreen({ navigation, route }: any) {
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
       
-      Alert.alert('Success', 'OTP sent successfully');
+      Alert.alert(t('common.success'), t('auth.otpSentSuccessfully'));
     } catch (err: any) {
-      Alert.alert('Error', 'Failed to resend OTP. Please try again.');
+      Alert.alert(t('common.error'), t('auth.failedToResendOTP'));
     }
   };
 
@@ -333,9 +335,9 @@ export default function OTPVerificationScreen({ navigation, route }: any) {
 
         <View style={styles.content}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Verify OTP</Text>
+            <Text style={styles.title}>{t('auth.verifyOTP')}</Text>
             <Text style={styles.subtitle}>
-              We've sent a 6-digit code to{'\n'}
+              {t('auth.sent6DigitCodeTo')}{'\n'}
               <Text style={styles.phoneNumber}>{phoneNumber}</Text>
             </Text>
           </View>
@@ -372,17 +374,17 @@ export default function OTPVerificationScreen({ navigation, route }: any) {
           <View style={styles.resendContainer}>
             {canResend ? (
               <TouchableOpacity onPress={handleResendOTP}>
-                <Text style={styles.resendText}>Resend OTP</Text>
+                <Text style={styles.resendText}>{t('auth.resendOTP')}</Text>
               </TouchableOpacity>
             ) : (
               <Text style={styles.timerText}>
-                Resend OTP in {timer}s
+                {t('auth.resendOTPIn')} {timer}s
               </Text>
             )}
           </View>
 
           <Button
-            title="Verify & Continue"
+            title={t('auth.verifyAndContinue')}
             onPress={handleVerifyOTP}
             loading={isLoading}
             fullWidth
