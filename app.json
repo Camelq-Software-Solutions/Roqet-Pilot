@@ -3,7 +3,7 @@
     "name": "Roqet Driver",
     "displayName": "Roqet Driver",
     "slug": "driver-app",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/Mainlogo.jpeg",
     "userInterfaceStyle": "light",
@@ -22,6 +22,7 @@
     },
     "android": {
       "package": "com.roqet.pilotapp",
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/Mainlogo.jpeg",
         "backgroundColor": "#ffffff"
