@@ -103,8 +103,8 @@ export const onboardingData = [
   },
   {
     id: '2',
-    title: 'Affordable Pricing',
-    description: 'Transparent pricing with no hidden charges. Pay less, travel more',
+    title: 'Transparent Pricing',
+    description: 'Clear pricing with no hidden charges. Know the cost before you ride.',
     image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=300&h=300&fit=crop',
   },
   {

@@ -26,8 +26,8 @@ const screens = [
         <Image source={require('../../../assets/images/Grow.jpg.jpeg')} style={{ width: 450, height: 390, resizeMode: 'contain' }} />
       </View>
     ),
-    title: 'Ride Smart Earn More',
-    subtitle: "Maximize your earnings with every ride. Flexible hours and smarter routes help you grow your income.",
+    title: 'Ride Smart',
+    subtitle: "Track your rides and manage your schedule. Set your own hours and choose routes that work for you.",
   },
   {
     key: 'safe',
@@ -46,8 +46,8 @@ const screens = [
         <Image source={require('../../../assets/images/Community.jpg.jpeg')} style={{ width: 450, height: 370, resizeMode: 'contain' }} />
       </View>
     ),
-    title: 'Youre a part of the growing community',
-    subtitle:'Join thousands of drivers moving the city forward. Drive with pride and be part of something bigger.',
+    title: 'Connect with your community',
+    subtitle:'Drive with purpose and connect with passengers in your city. Make every ride count.',
   },
 ];
 
